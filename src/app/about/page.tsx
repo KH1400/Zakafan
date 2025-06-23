@@ -34,12 +34,6 @@ const translations = {
     ar: "العودة إلى الرئيسية",
     he: "חזור לדף הבית",
   },
-  aboutTitle: {
-      en: "About Us",
-      fa: "درباره ما",
-      ar: "معلومات عنا",
-      he: "עלינו",
-  }
 };
 
 const imagePrompt = "A visually stunning, abstract representation of digital information warfare. Use dark, sophisticated tones with highlights of electric blue and glowing orange, symbolizing data streams and conflict points. The image should be clean, minimalist, and suitable for a high-tech website background. 4K, ultra-high resolution.";
@@ -129,10 +123,6 @@ export default async function AboutPage({ searchParams }: { searchParams?: { lan
                       taglineFont={langConfig.font}
                     />
                     
-                    <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-neutral-300">
-                      {translations.aboutTitle[lang]}
-                    </h2>
-
                     <p className="max-w-3xl mx-auto text-base md:text-lg text-neutral-200 mb-12 text-justify">
                       {translations.description[lang]}
                     </p>
