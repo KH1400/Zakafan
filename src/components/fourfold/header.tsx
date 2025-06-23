@@ -52,27 +52,29 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
           className="h-10 w-auto"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <text
-            x="0"
-            y="30"
-            fontSize="32"
-            fontWeight="bold"
-            fill="hsl(var(--primary))"
-            className="font-headline"
-          >
-            Zakafan
-          </text>
-          <text
-            x="0"
-            y="50"
-            fontSize="14"
-            fontWeight="bold"
-            fill="hsl(var(--foreground))"
-            opacity="0.8"
-            className={taglineFont}
-          >
-            {translations.tagline[currentLang]}
-          </text>
+          <g>
+            <text
+              x="0"
+              y="35"
+              fontSize="32"
+              fontWeight="bold"
+              fill="hsl(var(--primary))"
+              className="font-headline"
+            >
+              Zakafan
+            </text>
+            <text
+              x="0"
+              y="55"
+              fontSize="14"
+              fontWeight="bold"
+              fill="hsl(var(--foreground))"
+              opacity="0.8"
+              className={taglineFont}
+            >
+              {translations.tagline[currentLang]}
+            </text>
+          </g>
           <g transform="translate(190, 0)">
             <rect width="60" height="60" rx="12" fill="hsl(var(--accent))" />
             <g

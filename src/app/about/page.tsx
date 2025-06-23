@@ -44,22 +44,35 @@ const translations = {
 
 const imagePrompt = "A visually stunning, abstract representation of digital information warfare. Use dark, sophisticated tones with highlights of electric blue and glowing orange, symbolizing data streams and conflict points. The image should be clean, minimalist, and suitable for a high-tech website background. 4K, ultra-high resolution.";
 
-const Logo = ({ className }: { className?: string }) => (
+const Logo = ({ className, tagline, taglineFont }: { className?: string; tagline: string; taglineFont: string; }) => (
     <svg
       viewBox="0 0 250 60"
       className={cn("h-10 w-auto", className)}
       xmlns="http://www.w3.org/2000/svg"
     >
-      <text
-        x="0"
-        y="30"
-        fontSize="32"
-        fontWeight="bold"
-        fill="hsl(var(--primary))"
-        className="font-headline"
-      >
-        Zakafan
-      </text>
+      <g>
+        <text
+          x="0"
+          y="35"
+          fontSize="32"
+          fontWeight="bold"
+          fill="hsl(var(--primary))"
+          className="font-headline"
+        >
+          Zakafan
+        </text>
+        <text
+          x="0"
+          y="55"
+          fontSize="14"
+          fontWeight="bold"
+          fill="white"
+          opacity="0.9"
+          className={taglineFont}
+        >
+          {tagline}
+        </text>
+      </g>
       <g transform="translate(190, 0)">
         <rect width="60" height="60" rx="12" fill="hsl(var(--accent))" />
         <g
@@ -110,12 +123,12 @@ export default async function AboutPage({ searchParams }: { searchParams?: { lan
             
             <div className="relative z-20 flex flex-col items-center justify-center h-full text-center text-white p-4 sm:p-6 md:p-8">
                 <div className="w-full max-w-4xl">
-                    <Logo className="h-20 w-auto mx-auto mb-4" />
+                    <Logo 
+                      className="h-20 w-auto mx-auto mb-8"
+                      tagline={translations.tagline[lang]}
+                      taglineFont={langConfig.font}
+                    />
                     
-                    <h1 className={cn("text-3xl md:text-5xl font-bold font-headline mb-4 text-white drop-shadow-lg", langConfig.font)}>
-                      {translations.tagline[lang]}
-                    </h1>
-
                     <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-neutral-300">
                       {translations.aboutTitle[lang]}
                     </h2>
