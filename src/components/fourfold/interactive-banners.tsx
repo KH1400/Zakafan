@@ -15,7 +15,6 @@ const translations = {
       href: "/services",
       image: "https://placehold.co/1200x800.png",
       imageHint: "military parade",
-      prompt: "A photorealistic image of a powerful military parade. Focus on sleek, modern tanks and fighter jets in a precise formation under a clear sky, conveying a sense of strength and discipline."
     },
     {
       icon: <BarChart3 className="h-12 w-12" />,
@@ -24,7 +23,6 @@ const translations = {
       href: "/projects",
       image: "https://placehold.co/1200x800.png",
       imageHint: "data charts",
-      prompt: "An abstract digital artwork representing data analysis. Glowing charts, graphs, and complex data visualizations on a dark, technological background, symbolizing information and strategy."
     },
     {
       icon: <Trophy className="h-12 w-12" />,
@@ -33,7 +31,6 @@ const translations = {
       href: "/about",
       image: "https://placehold.co/1200x800.png",
       imageHint: "military medal",
-      prompt: "A photorealistic image of a decorated military medal for valor, resting on a dark, textured surface. The lighting should be dramatic, highlighting the intricate details of the medal and ribbon, evoking a sense of honor, sacrifice, and significant achievement in a military context."
     },
     {
       icon: <MessageSquareQuote className="h-12 w-12" />,
@@ -42,7 +39,6 @@ const translations = {
       href: "/contact",
       image: "https://placehold.co/1200x800.png",
       imageHint: "question mark",
-      prompt: "Conceptual art representing inquiry and clarification. A large, luminous question mark composed of intricate digital patterns, surrounded by swirling streams of light, against a deep blue background."
     },
   ],
   fa: [
@@ -53,7 +49,6 @@ const translations = {
       href: "/services",
       image: "https://placehold.co/1200x800.png",
       imageHint: "military parade",
-      prompt: "A photorealistic image of a powerful military parade. Focus on sleek, modern tanks and fighter jets in a precise formation under a clear sky, conveying a sense of strength and discipline."
     },
     {
       icon: <BarChart3 className="h-12 w-12" />,
@@ -62,7 +57,6 @@ const translations = {
       href: "/projects",
       image: "https://placehold.co/1200x800.png",
       imageHint: "data charts",
-      prompt: "An abstract digital artwork representing data analysis. Glowing charts, graphs, and complex data visualizations on a dark, technological background, symbolizing information and strategy."
     },
     {
       icon: <Trophy className="h-12 w-12" />,
@@ -71,7 +65,6 @@ const translations = {
       href: "/about",
       image: "https://placehold.co/1200x800.png",
       imageHint: "military medal",
-      prompt: "A photorealistic image of a decorated military medal for valor, resting on a dark, textured surface. The lighting should be dramatic, highlighting the intricate details of the medal and ribbon, evoking a sense of honor, sacrifice, and significant achievement in a military context."
     },
     {
       icon: <MessageSquareQuote className="h-12 w-12" />,
@@ -80,7 +73,6 @@ const translations = {
       href: "/contact",
       image: "https://placehold.co/1200x800.png",
       imageHint: "question mark",
-      prompt: "Conceptual art representing inquiry and clarification. A large, luminous question mark composed of intricate digital patterns, surrounded by swirling streams of light, against a deep blue background."
     },
   ],
   ar: [
@@ -91,7 +83,6 @@ const translations = {
       href: "/services",
       image: "https://placehold.co/1200x800.png",
       imageHint: "military parade",
-      prompt: "A photorealistic image of a powerful military parade. Focus on sleek, modern tanks and fighter jets in a precise formation under a clear sky, conveying a sense of strength and discipline."
     },
     {
       icon: <BarChart3 className="h-12 w-12" />,
@@ -100,7 +91,6 @@ const translations = {
       href: "/projects",
       image: "https://placehold.co/1200x800.png",
       imageHint: "data charts",
-      prompt: "An abstract digital artwork representing data analysis. Glowing charts, graphs, and complex data visualizations on a dark, technological background, symbolizing information and strategy."
     },
     {
       icon: <Trophy className="h-12 w-12" />,
@@ -109,7 +99,6 @@ const translations = {
       href: "/about",
       image: "https://placehold.co/1200x800.png",
       imageHint: "military medal",
-      prompt: "A photorealistic image of a decorated military medal for valor, resting on a dark, textured surface. The lighting should be dramatic, highlighting the intricate details of the medal and ribbon, evoking a sense of honor, sacrifice, and significant achievement in a military context."
     },
     {
       icon: <MessageSquareQuote className="h-12 w-12" />,
@@ -118,7 +107,6 @@ const translations = {
       href: "/contact",
       image: "https://placehold.co/1200x800.png",
       imageHint: "question mark",
-      prompt: "Conceptual art representing inquiry and clarification. A large, luminous question mark composed of intricate digital patterns, surrounded by swirling streams of light, against a deep blue background."
     },
   ],
   he: [
@@ -129,7 +117,6 @@ const translations = {
       href: "/services",
       image: "https://placehold.co/1200x800.png",
       imageHint: "military parade",
-      prompt: "A photorealistic image of a powerful military parade. Focus on sleek, modern tanks and fighter jets in a precise formation under a clear sky, conveying a sense of strength and discipline."
     },
     {
       icon: <BarChart3 className="h-12 w-12" />,
@@ -138,7 +125,6 @@ const translations = {
       href: "/projects",
       image: "https://placehold.co/1200x800.png",
       imageHint: "data charts",
-      prompt: "An abstract digital artwork representing data analysis. Glowing charts, graphs, and complex data visualizations on a dark, technological background, symbolizing information and strategy."
     },
     {
       icon: <Trophy className="h-12 w-12" />,
@@ -147,7 +133,6 @@ const translations = {
       href: "/about",
       image: "https://placehold.co/1200x800.png",
       imageHint: "military medal",
-      prompt: "A photorealistic image of a decorated military medal for valor, resting on a dark, textured surface. The lighting should be dramatic, highlighting the intricate details of the medal and ribbon, evoking a sense of honor, sacrifice, and significant achievement in a military context."
     },
     {
       icon: <MessageSquareQuote className="h-12 w-12" />,
@@ -156,7 +141,6 @@ const translations = {
       href: "/contact",
       image: "https://placehold.co/1200x800.png",
       imageHint: "question mark",
-      prompt: "Conceptual art representing inquiry and clarification. A large, luminous question mark composed of intricate digital patterns, surrounded by swirling streams of light, against a deep blue background."
     },
   ],
 };

@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview An AI flow to generate an image from a text prompt.
@@ -27,18 +28,8 @@ const generateImageFlow = ai.defineFlow(
     outputSchema: GenerateImageOutputSchema,
   },
   async (prompt) => {
-    const {media} = await ai.generate({
-      model: 'googleai/gemini-2.0-flash-preview-image-generation',
-      prompt: `Generate an image for a website banner with the following theme: ${prompt}. The image should be photorealistic, high-resolution, and visually compelling.`,
-      config: {
-        responseModalities: ['TEXT', 'IMAGE'],
-      },
-    });
-
-    if (!media?.url) {
-      throw new Error('Image generation failed or did not return a data URI.');
-    }
-
-    return media.url;
+    // This flow is now disabled to prevent API quota errors.
+    // It returns a static placeholder. The actual images are defined in the components.
+    return "https://placehold.co/1200x800.png";
   }
 );
