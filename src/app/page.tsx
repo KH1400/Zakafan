@@ -8,11 +8,11 @@ import { generateImage } from "@/ai/flows/generate-image-flow";
 
 type Language = 'fa' | 'en' | 'ar' | 'he';
 
-const languageOptions: Record<Language, { name: string; flag: string; dir: 'rtl' | 'ltr'; font: string }> = {
-  fa: { name: 'فارسی', flag: '🇮🇷', dir: 'rtl', font: 'font-persian' },
-  en: { name: 'English', flag: '🇬🇧', dir: 'ltr', font: 'font-body' },
-  ar: { name: 'العربية', flag: '🇸🇦', dir: 'rtl', font: 'font-arabic' },
-  he: { name: 'עברית', flag: '🇮🇱', dir: 'rtl', font: 'font-hebrew' },
+const languageOptions: Record<Language, { name: string; dir: 'rtl' | 'ltr'; font: string }> = {
+  fa: { name: 'فارسی', dir: 'rtl', font: 'font-persian' },
+  en: { name: 'English', dir: 'ltr', font: 'font-body' },
+  ar: { name: 'العربية', dir: 'rtl', font: 'font-arabic' },
+  he: { name: 'עברית', dir: 'rtl', font: 'font-hebrew' },
 };
 
 const descriptions = {
@@ -103,12 +103,12 @@ export default function Home() {
                 </g>
               </svg>
           </div>
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="flex justify-center gap-4">
             {(Object.keys(languageOptions) as Language[]).map((key) => (
               <Button
                 key={key}
                 variant="outline"
-                className="p-8 text-2xl h-auto w-64 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-accent hover:text-white transition-colors duration-300"
+                className="p-6 text-xl h-auto w-48 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-accent hover:text-white transition-colors duration-300"
                 onClick={() => setLanguage(key)}
               >
                 <span className={languageOptions[key].font}>{languageOptions[key].name}</span>
