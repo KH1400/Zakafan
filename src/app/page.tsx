@@ -1,8 +1,10 @@
+
 "use client";
 
 import { useState } from "react";
 import { Header } from "@/components/fourfold/header";
 import { InteractiveBanners } from "@/components/fourfold/interactive-banners";
+import { Footer } from "@/components/fourfold/footer";
 
 type Language = 'fa' | 'en' | 'ar' | 'he';
 
@@ -27,6 +29,7 @@ export default function Home() {
       <main className="flex-grow overflow-hidden">
         <InteractiveBanners lang={language} />
       </main>
+      <Footer lang={language} />
     </div>
   );
 }
