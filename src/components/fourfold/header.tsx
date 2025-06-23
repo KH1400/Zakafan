@@ -1,12 +1,48 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Globe } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
-type HeaderProps = {
-  onLanguageChangeClick: () => void;
+type Language = 'fa' | 'en' | 'ar' | 'he';
+
+const languageOptions: Record<Language, { name: string; }> = {
+  fa: { name: 'فارسی' },
+  en: { name: 'English' },
+  ar: { name: 'العربية' },
+  he: { name: 'עברית' },
 };
 
-export function Header({ onLanguageChangeClick }: HeaderProps) {
+const translations = {
+  language: {
+    en: 'Language',
+    fa: 'زبان',
+    ar: 'لغة',
+    he: 'שפה',
+  },
+  about: {
+    en: 'About Us',
+    fa: 'درباره ما',
+    ar: 'معلومات عنا',
+    he: 'עלינו',
+  },
+}
+
+type HeaderProps = {
+  currentLang: Language;
+  onLanguageChange: (lang: Language) => void;
+};
+
+export function Header({ currentLang, onLanguageChange }: HeaderProps) {
   return (
     <header className="flex h-20 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0">
       <Link href="/" className="flex items-center gap-3">
@@ -59,9 +95,30 @@ export function Header({ onLanguageChangeClick }: HeaderProps) {
           </g>
         </svg>
       </Link>
-      <Button variant="ghost" size="icon" onClick={onLanguageChangeClick} aria-label="Change Language">
-        <Globe className="h-5 w-5" />
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon" aria-label="Open menu">
+            <Globe className="h-5 w-5" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>{translations.language[currentLang]}</DropdownMenuLabel>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>{languageOptions[currentLang].name}</DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+              {(Object.keys(languageOptions) as Language[]).map((key) => (
+                <DropdownMenuItem key={key} onSelect={() => onLanguageChange(key)}>
+                  {languageOptions[key].name}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+            <Link href="/about">{translations.about[currentLang]}</Link>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </header>
   );
 }
