@@ -43,9 +43,8 @@ export function BannerPanel({
       <Image
         src={image}
         alt={title}
-        width={1200}
-        height={800}
-        className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
+        fill
+        className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
         data-ai-hint={imageHint}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />

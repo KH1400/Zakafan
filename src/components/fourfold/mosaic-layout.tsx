@@ -51,8 +51,11 @@ export function MosaicLayout({ panels, baseHref, lang }: MosaicLayoutProps) {
 
   const processedPanels = isRtl ? panels.map(panel => {
     const [rowStart, colStart, rowEnd, colEnd] = panel.gridArea.split(' / ').map(Number);
-    const newColStart = 4 - colEnd;
-    const newColEnd = 4 - colStart;
+    // The grid has 3 columns, defined by 4 vertical lines (1, 2, 3, 4).
+    // To mirror, a line at position `x` becomes `5 - x`.
+    // A span from `colStart` to `colEnd` becomes a span from `5 - colEnd` to `5 - colStart`.
+    const newColStart = 5 - colEnd;
+    const newColEnd = 5 - colStart;
     return {
       ...panel,
       gridArea: `${rowStart} / ${newColStart} / ${rowEnd} / ${newColEnd}`
@@ -61,7 +64,7 @@ export function MosaicLayout({ panels, baseHref, lang }: MosaicLayoutProps) {
 
   return (
     <div className="h-full w-full p-2">
-      <div className="grid h-full w-full grid-cols-3 grid-rows-3">
+      <div className="grid h-full w-full grid-cols-3 grid-rows-3 gap-2">
         {processedPanels.map((panel) => (
           <MosaicPanel key={panel.title} panel={panel} baseHref={baseHref} lang={lang} />
         ))}
