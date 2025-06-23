@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Shield, BarChart3, Trophy, MessageSquareQuote } from "lucide-react";
 import { BannerPanel } from "@/components/fourfold/banner-panel";
 import { cn } from "@/lib/utils";
+import { generateImage } from "@/ai/flows/generate-image-flow";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const translations = {
   en: [
@@ -14,6 +16,7 @@ const translations = {
       href: "/services",
       image: "https://placehold.co/1200x800.png",
       imageHint: "military parade",
+      prompt: "A photorealistic image of a powerful military parade. Focus on sleek, modern tanks and fighter jets in a precise formation under a clear sky, conveying a sense of strength and discipline."
     },
     {
       icon: <BarChart3 className="h-12 w-12" />,
@@ -22,6 +25,7 @@ const translations = {
       href: "/projects",
       image: "https://placehold.co/1200x800.png",
       imageHint: "data charts",
+      prompt: "An abstract digital artwork representing data analysis. Glowing charts, graphs, and complex data visualizations on a dark, technological background, symbolizing information and strategy."
     },
     {
       icon: <Trophy className="h-12 w-12" />,
@@ -30,6 +34,7 @@ const translations = {
       href: "/about",
       image: "https://placehold.co/1200x800.png",
       imageHint: "celebration victory",
+      prompt: "A symbolic image of victory and honor. A brilliantly lit, ornate trophy standing on a pedestal, with confetti falling around it, representing success and celebration."
     },
     {
       icon: <MessageSquareQuote className="h-12 w-12" />,
@@ -38,6 +43,7 @@ const translations = {
       href: "/contact",
       image: "https://placehold.co/1200x800.png",
       imageHint: "question mark",
+      prompt: "Conceptual art representing inquiry and clarification. A large, luminous question mark composed of intricate digital patterns, surrounded by swirling streams of light, against a deep blue background."
     },
   ],
   fa: [
@@ -48,6 +54,7 @@ const translations = {
       href: "/services",
       image: "https://placehold.co/1200x800.png",
       imageHint: "military parade",
+      prompt: "A photorealistic image of a powerful military parade. Focus on sleek, modern tanks and fighter jets in a precise formation under a clear sky, conveying a sense of strength and discipline."
     },
     {
       icon: <BarChart3 className="h-12 w-12" />,
@@ -56,6 +63,7 @@ const translations = {
       href: "/projects",
       image: "https://placehold.co/1200x800.png",
       imageHint: "data charts",
+      prompt: "An abstract digital artwork representing data analysis. Glowing charts, graphs, and complex data visualizations on a dark, technological background, symbolizing information and strategy."
     },
     {
       icon: <Trophy className="h-12 w-12" />,
@@ -64,6 +72,7 @@ const translations = {
       href: "/about",
       image: "https://placehold.co/1200x800.png",
       imageHint: "celebration victory",
+      prompt: "A symbolic image of victory and honor. A brilliantly lit, ornate trophy standing on a pedestal, with confetti falling around it, representing success and celebration."
     },
     {
       icon: <MessageSquareQuote className="h-12 w-12" />,
@@ -72,6 +81,7 @@ const translations = {
       href: "/contact",
       image: "https://placehold.co/1200x800.png",
       imageHint: "question mark",
+      prompt: "Conceptual art representing inquiry and clarification. A large, luminous question mark composed of intricate digital patterns, surrounded by swirling streams of light, against a deep blue background."
     },
   ],
   ar: [
@@ -82,6 +92,7 @@ const translations = {
       href: "/services",
       image: "https://placehold.co/1200x800.png",
       imageHint: "military parade",
+      prompt: "A photorealistic image of a powerful military parade. Focus on sleek, modern tanks and fighter jets in a precise formation under a clear sky, conveying a sense of strength and discipline."
     },
     {
       icon: <BarChart3 className="h-12 w-12" />,
@@ -90,6 +101,7 @@ const translations = {
       href: "/projects",
       image: "https://placehold.co/1200x800.png",
       imageHint: "data charts",
+      prompt: "An abstract digital artwork representing data analysis. Glowing charts, graphs, and complex data visualizations on a dark, technological background, symbolizing information and strategy."
     },
     {
       icon: <Trophy className="h-12 w-12" />,
@@ -98,6 +110,7 @@ const translations = {
       href: "/about",
       image: "https://placehold.co/1200x800.png",
       imageHint: "celebration victory",
+      prompt: "A symbolic image of victory and honor. A brilliantly lit, ornate trophy standing on a pedestal, with confetti falling around it, representing success and celebration."
     },
     {
       icon: <MessageSquareQuote className="h-12 w-12" />,
@@ -106,6 +119,7 @@ const translations = {
       href: "/contact",
       image: "https://placehold.co/1200x800.png",
       imageHint: "question mark",
+      prompt: "Conceptual art representing inquiry and clarification. A large, luminous question mark composed of intricate digital patterns, surrounded by swirling streams of light, against a deep blue background."
     },
   ],
   he: [
@@ -116,6 +130,7 @@ const translations = {
       href: "/services",
       image: "https://placehold.co/1200x800.png",
       imageHint: "military parade",
+      prompt: "A photorealistic image of a powerful military parade. Focus on sleek, modern tanks and fighter jets in a precise formation under a clear sky, conveying a sense of strength and discipline."
     },
     {
       icon: <BarChart3 className="h-12 w-12" />,
@@ -124,6 +139,7 @@ const translations = {
       href: "/projects",
       image: "https://placehold.co/1200x800.png",
       imageHint: "data charts",
+      prompt: "An abstract digital artwork representing data analysis. Glowing charts, graphs, and complex data visualizations on a dark, technological background, symbolizing information and strategy."
     },
     {
       icon: <Trophy className="h-12 w-12" />,
@@ -132,6 +148,7 @@ const translations = {
       href: "/about",
       image: "https://placehold.co/1200x800.png",
       imageHint: "celebration victory",
+      prompt: "A symbolic image of victory and honor. A brilliantly lit, ornate trophy standing on a pedestal, with confetti falling around it, representing success and celebration."
     },
     {
       icon: <MessageSquareQuote className="h-12 w-12" />,
@@ -140,31 +157,83 @@ const translations = {
       href: "/contact",
       image: "https://placehold.co/1200x800.png",
       imageHint: "question mark",
+      prompt: "Conceptual art representing inquiry and clarification. A large, luminous question mark composed of intricate digital patterns, surrounded by swirling streams of light, against a deep blue background."
     },
   ],
 };
 
 type Language = keyof typeof translations;
+type BannerTranslation = (typeof translations.en)[0];
 
 export function InteractiveBanners({ lang = 'en' }: { lang: Language }) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const bannerData = translations[lang] || translations.en;
+  const [bannerData, setBannerData] = useState<(BannerTranslation & { isGenerating?: boolean })[]>(
+    (translations[lang] || translations.en).map(b => ({ ...b, isGenerating: true }))
+  );
   const isRtl = lang === 'fa' || lang === 'ar' || lang === 'he';
+
+  useEffect(() => {
+    const generateBannerImages = async () => {
+      const initialData = translations[lang] || translations.en;
+      setBannerData(initialData.map(b => ({ ...b, isGenerating: true })));
+
+      const updatedData = await Promise.all(
+        initialData.map(async (banner) => {
+          try {
+            const imageUrl = await generateImage(banner.prompt);
+            return { ...banner, image: imageUrl, isGenerating: false };
+          } catch (e) {
+            console.error("Image generation failed for:", banner.title, e);
+            // Fallback to placeholder if generation fails
+            return { ...banner, image: banner.image, isGenerating: false };
+          }
+        })
+      );
+      
+      setBannerData(updatedData);
+    };
+
+    generateBannerImages();
+  }, [lang]);
 
   return (
     <div
       className={cn("flex h-full w-full", isRtl && "flex-row-reverse")}
       onMouseLeave={() => setHoveredIndex(null)}
     >
-      {bannerData.map((banner, index) => (
-        <BannerPanel
-          key={banner.href}
-          {...banner}
-          isHovered={hoveredIndex === index}
-          isAnyHovered={hoveredIndex !== null}
-          onMouseEnter={() => setHoveredIndex(index)}
-        />
-      ))}
+      {bannerData.map((banner, index) => {
+        const isHovered = hoveredIndex === index;
+        const isAnyHovered = hoveredIndex !== null;
+
+        if (banner.isGenerating) {
+          return (
+            <div
+              key={`${banner.href}-loading`}
+              className={cn(
+                "group relative h-full overflow-hidden transition-all duration-700 ease-in-out",
+                {
+                  "basis-1/4": !isAnyHovered,
+                  "basis-[64%]": isHovered,
+                  "basis-[12%]": isAnyHovered && !isHovered,
+                }
+              )}
+              onMouseEnter={() => setHoveredIndex(index)}
+            >
+              <Skeleton className="h-full w-full" />
+            </div>
+          )
+        }
+        
+        return (
+          <BannerPanel
+            key={banner.href}
+            {...banner}
+            isHovered={isHovered}
+            isAnyHovered={isAnyHovered}
+            onMouseEnter={() => setHoveredIndex(index)}
+          />
+        )
+      })}
     </div>
   );
 }
