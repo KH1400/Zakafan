@@ -9,6 +9,10 @@ export default {
   ],
   theme: {
     extend: {
+      dropShadow: {
+        'glow-accent': '0 0 12px hsl(var(--accent) / 0.7)',
+        'glow-primary': '0 0 12px hsl(var(--primary) / 0.7)',
+      },
       fontFamily: {
         body: ['Inter', 'sans-serif'],
         headline: ['Inter', 'sans-serif'],

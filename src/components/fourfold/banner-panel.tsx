@@ -1,0 +1,75 @@
+import Link from "next/link";
+import Image from "next/image";
+import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
+
+type BannerPanelProps = {
+  icon: ReactNode;
+  title: string;
+  description: string;
+  href: string;
+  image: string;
+  imageHint: string;
+  isHovered: boolean;
+  isAnyHovered: boolean;
+  onMouseEnter: () => void;
+};
+
+export function BannerPanel({
+  icon,
+  title,
+  description,
+  href,
+  image,
+  imageHint,
+  isHovered,
+  isAnyHovered,
+  onMouseEnter,
+}: BannerPanelProps) {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "group relative h-full overflow-hidden transition-all duration-700 ease-in-out",
+        {
+          "basis-1/4": !isAnyHovered,
+          "basis-[64%]": isHovered,
+          "basis-[12%]": isAnyHovered && !isHovered,
+        }
+      )}
+      onMouseEnter={onMouseEnter}
+      aria-label={`Go to ${title} page`}
+    >
+      <Image
+        src={image}
+        alt={title}
+        width={1200}
+        height={800}
+        className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
+        data-ai-hint={imageHint}
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+      <div className="relative flex h-full flex-col justify-end p-4 md:p-8 text-white">
+        <div
+          className={cn(
+            "transition-all duration-500 ease-in-out text-accent drop-shadow-glow-accent",
+            isHovered ? "mb-4" : "mb-0"
+          )}
+        >
+          {icon}
+        </div>
+        <h2 className="text-2xl md:text-4xl font-bold font-headline transition-all duration-500 ease-in-out text-white drop-shadow-lg">
+          {title}
+        </h2>
+        <p
+          className={cn(
+            "mt-2 text-sm md:text-base max-w-md transition-all duration-500 ease-in-out",
+            isHovered ? "opacity-100 max-h-40" : "opacity-0 max-h-0"
+          )}
+        >
+          {description}
+        </p>
+      </div>
+    </Link>
+  );
+}
