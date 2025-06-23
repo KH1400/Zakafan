@@ -33,8 +33,8 @@ const translations = {
       description: "An overview of Iran's significant achievements and victories during the war.",
       href: "/about",
       image: "https://placehold.co/1200x800.png",
-      imageHint: "celebration victory",
-      prompt: "A symbolic image of victory and honor. A brilliantly lit, ornate trophy standing on a pedestal, with confetti falling around it, representing success and celebration."
+      imageHint: "military medal",
+      prompt: "A photorealistic image of a decorated military medal for valor, resting on a dark, textured surface. The lighting should be dramatic, highlighting the intricate details of the medal and ribbon, evoking a sense of honor, sacrifice, and significant achievement in a military context."
     },
     {
       icon: <MessageSquareQuote className="h-12 w-12" />,
@@ -71,8 +71,8 @@ const translations = {
       description: "مروری بر دستاوردها و پیروزی‌های مهم ایران در طول جنگ.",
       href: "/about",
       image: "https://placehold.co/1200x800.png",
-      imageHint: "celebration victory",
-      prompt: "A symbolic image of victory and honor. A brilliantly lit, ornate trophy standing on a pedestal, with confetti falling around it, representing success and celebration."
+      imageHint: "military medal",
+      prompt: "A photorealistic image of a decorated military medal for valor, resting on a dark, textured surface. The lighting should be dramatic, highlighting the intricate details of the medal and ribbon, evoking a sense of honor, sacrifice, and significant achievement in a military context."
     },
     {
       icon: <MessageSquareQuote className="h-12 w-12" />,
@@ -109,8 +109,8 @@ const translations = {
       description: "نظرة عامة على إنجازات وانتصارات إيران الهامة خلال الحرب.",
       href: "/about",
       image: "https://placehold.co/1200x800.png",
-      imageHint: "celebration victory",
-      prompt: "A symbolic image of victory and honor. A brilliantly lit, ornate trophy standing on a pedestal, with confetti falling around it, representing success and celebration."
+      imageHint: "military medal",
+      prompt: "A photorealistic image of a decorated military medal for valor, resting on a dark, textured surface. The lighting should be dramatic, highlighting the intricate details of the medal and ribbon, evoking a sense of honor, sacrifice, and significant achievement in a military context."
     },
     {
       icon: <MessageSquareQuote className="h-12 w-12" />,
@@ -147,8 +147,8 @@ const translations = {
       description: "סקירה כללית של ההישגים והניצחונות המשמעותיים של איראן במהלך המלחמה.",
       href: "/about",
       image: "https://placehold.co/1200x800.png",
-      imageHint: "celebration victory",
-      prompt: "A symbolic image of victory and honor. A brilliantly lit, ornate trophy standing on a pedestal, with confetti falling around it, representing success and celebration."
+      imageHint: "military medal",
+      prompt: "A photorealistic image of a decorated military medal for valor, resting on a dark, textured surface. The lighting should be dramatic, highlighting the intricate details of the medal and ribbon, evoking a sense of honor, sacrifice, and significant achievement in a military context."
     },
     {
       icon: <MessageSquareQuote className="h-12 w-12" />,
