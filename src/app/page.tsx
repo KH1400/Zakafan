@@ -31,7 +31,7 @@ export default function Home() {
       const getBackgroundImage = async () => {
         try {
           const imageUrl = await generateImage(
-            "A subtle, atmospheric, and high-resolution war-themed background. Silhouettes of soldiers walking on a distant ridge against a dramatic sunset. The style should be artistic and somber, suitable as a website background, but not busy or distracting."
+            "Generate an ultra-high resolution, 4K, photorealistic, and atmospheric war-themed background. It should feature silhouettes of soldiers on a distant ridge against a dramatic sunset. The style must be artistic, somber, and cinematic, suitable for a high-end website background. The image should be incredibly detailed but not busy or distracting."
           );
           setBackgroundImage(imageUrl);
         } catch (error) {
@@ -108,7 +108,7 @@ export default function Home() {
               <Button
                 key={key}
                 variant="outline"
-                className="p-8 text-2xl h-auto bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20"
+                className="p-8 text-2xl h-auto bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-accent/90 transition-colors duration-300"
                 onClick={() => setLanguage(key)}
               >
                 <span className="text-4xl me-4">{languageOptions[key].flag}</span>
