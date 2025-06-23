@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { generateImage } from "@/ai/flows/generate-image-flow";
 import { cn } from "@/lib/utils";
+import { Footer } from "@/components/fourfold/footer";
 
 type Language = 'fa' | 'en' | 'ar' | 'he';
 
@@ -94,41 +95,46 @@ export default async function AboutPage({ searchParams }: { searchParams?: { lan
   });
   
   return (
-    <div dir={langConfig.dir} className={cn("relative min-h-screen w-full bg-background overflow-hidden", langConfig.font)}>
-        <Image
-          src={bgImage}
-          alt="Abstract background"
-          fill
-          className="object-cover z-0"
-          data-ai-hint="digital warfare abstract"
-          priority
-        />
-        <div className="absolute inset-0 bg-black/70 z-10" />
-        
-        <div className="relative z-20 flex flex-col items-center justify-center min-h-screen text-center text-white p-4 sm:p-6 md:p-8">
-            <div className="w-full max-w-4xl">
-                <Logo className="h-20 w-auto mx-auto mb-4" />
-                
-                <h1 className={cn("text-3xl md:text-5xl font-bold font-headline mb-4 text-white drop-shadow-lg", langConfig.font)}>
-                  {translations.tagline[lang]}
-                </h1>
+    <div className="flex flex-col min-h-screen">
+      <main className="flex-grow">
+        <div dir={langConfig.dir} className={cn("relative h-full w-full bg-background overflow-hidden", langConfig.font)}>
+            <Image
+              src={bgImage}
+              alt="Abstract background"
+              fill
+              className="object-cover z-0"
+              data-ai-hint="digital warfare abstract"
+              priority
+            />
+            <div className="absolute inset-0 bg-black/70 z-10" />
+            
+            <div className="relative z-20 flex flex-col items-center justify-center h-full text-center text-white p-4 sm:p-6 md:p-8">
+                <div className="w-full max-w-4xl">
+                    <Logo className="h-20 w-auto mx-auto mb-4" />
+                    
+                    <h1 className={cn("text-3xl md:text-5xl font-bold font-headline mb-4 text-white drop-shadow-lg", langConfig.font)}>
+                      {translations.tagline[lang]}
+                    </h1>
 
-                <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-neutral-300">
-                  {translations.aboutTitle[lang]}
-                </h2>
+                    <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-neutral-300">
+                      {translations.aboutTitle[lang]}
+                    </h2>
 
-                <p className="max-w-3xl mx-auto text-base md:text-lg text-neutral-200 mb-12 text-justify">
-                  {translations.description[lang]}
-                </p>
+                    <p className="max-w-3xl mx-auto text-base md:text-lg text-neutral-200 mb-12 text-justify">
+                      {translations.description[lang]}
+                    </p>
 
-                <Button asChild variant="outline" className="bg-transparent text-white border-white hover:bg-white hover:text-black">
-                  <Link href={`/${lang === 'en' ? '' : `?lang=${lang}`}`}>
-                    <ArrowLeft />
-                    <span>{translations.goBack[lang]}</span>
-                  </Link>
-                </Button>
+                    <Button asChild variant="outline" className="bg-transparent text-white border-white hover:bg-white hover:text-black">
+                      <Link href={lang === 'en' ? '/' : `/?lang=${lang}`}>
+                        <ArrowLeft />
+                        <span>{translations.goBack[lang]}</span>
+                      </Link>
+                    </Button>
+                </div>
             </div>
         </div>
+      </main>
+      <Footer lang={lang} />
     </div>
   );
 }

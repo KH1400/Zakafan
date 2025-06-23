@@ -204,6 +204,7 @@ export function InteractiveBanners({ lang = 'en' }: { lang: Language }) {
       {bannerData.map((banner, index) => {
         const isHovered = hoveredIndex === index;
         const isAnyHovered = hoveredIndex !== null;
+        const finalHref = `${banner.href}${lang === 'en' ? '' : `?lang=${lang}`}`;
 
         if (banner.isGenerating) {
           return (
@@ -228,6 +229,7 @@ export function InteractiveBanners({ lang = 'en' }: { lang: Language }) {
           <BannerPanel
             key={banner.href}
             {...banner}
+            href={finalHref}
             isHovered={isHovered}
             isAnyHovered={isAnyHovered}
             onMouseEnter={() => setHoveredIndex(index)}
