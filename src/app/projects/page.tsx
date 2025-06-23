@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -21,36 +22,36 @@ const translations = {
     },
     panels: {
         en: [
-            { title: "Timeline", image: "https://placehold.co/400x800.png", imageHint: "abstract timeline spiral", gridArea: "1 / 1 / 5 / 2" },
-            { title: "Economic Impact", image: "https://placehold.co/800x400.png", imageHint: "financial charts graphs", gridArea: "1 / 2 / 3 / 4" },
-            { title: "Casualties", image: "https://placehold.co/400x400.png", imageHint: "memorial solemn", gridArea: "1 / 4 / 2 / 5" },
-            { title: "Key Battles", image: "https://placehold.co/400x400.png", imageHint: "strategy map battlefield", gridArea: "2 / 4 / 3 / 5" },
-            { title: "Equipment Losses", image: "https://placehold.co/800x400.png", imageHint: "wrecked tank desert", gridArea: "3 / 2 / 5 / 4" },
-            { title: "Refugees", image: "https://placehold.co/400x400.png", imageHint: "people walking road", gridArea: "3 / 4 / 5 / 5" },
+            { title: "Timeline", image: "https://placehold.co/800x800.png", imageHint: "abstract timeline spiral", gridArea: "1 / 1 / 3 / 3" },
+            { title: "Economic Impact", image: "https://placehold.co/400x400.png", imageHint: "financial charts graphs", gridArea: "1 / 3 / 2 / 4" },
+            { title: "Casualties", image: "https://placehold.co/400x400.png", imageHint: "memorial solemn", gridArea: "2 / 3 / 3 / 4" },
+            { title: "Key Battles", image: "https://placehold.co/400x400.png", imageHint: "strategy map battlefield", gridArea: "3 / 1 / 4 / 2" },
+            { title: "Equipment Losses", image: "https://placehold.co/400x400.png", imageHint: "wrecked tank desert", gridArea: "3 / 2 / 4 / 3" },
+            { title: "Refugees", image: "https://placehold.co/400x400.png", imageHint: "people walking road", gridArea: "3 / 3 / 4 / 4" },
         ],
         fa: [
-            { title: "گاه‌شمار", image: "https://placehold.co/400x800.png", imageHint: "abstract timeline spiral", gridArea: "1 / 1 / 5 / 2" },
-            { title: "تاثیر اقتصادی", image: "https://placehold.co/800x400.png", imageHint: "financial charts graphs", gridArea: "1 / 2 / 3 / 4" },
-            { title: "تلفات", image: "https://placehold.co/400x400.png", imageHint: "memorial solemn", gridArea: "1 / 4 / 2 / 5" },
-            { title: "نبردهای کلیدی", image: "https://placehold.co/400x400.png", imageHint: "strategy map battlefield", gridArea: "2 / 4 / 3 / 5" },
-            { title: "خسارات تجهیزات", image: "https://placehold.co/800x400.png", imageHint: "wrecked tank desert", gridArea: "3 / 2 / 5 / 4" },
-            { title: "پناهندگان", image: "https://placehold.co/400x400.png", imageHint: "people walking road", gridArea: "3 / 4 / 5 / 5" },
+            { title: "گاه‌شمار", image: "https://placehold.co/800x800.png", imageHint: "abstract timeline spiral", gridArea: "1 / 1 / 3 / 3" },
+            { title: "تاثیر اقتصادی", image: "https://placehold.co/400x400.png", imageHint: "financial charts graphs", gridArea: "1 / 3 / 2 / 4" },
+            { title: "تلفات", image: "https://placehold.co/400x400.png", imageHint: "memorial solemn", gridArea: "2 / 3 / 3 / 4" },
+            { title: "نبردهای کلیدی", image: "https://placehold.co/400x400.png", imageHint: "strategy map battlefield", gridArea: "3 / 1 / 4 / 2" },
+            { title: "خسارات تجهیزات", image: "https://placehold.co/400x400.png", imageHint: "wrecked tank desert", gridArea: "3 / 2 / 4 / 3" },
+            { title: "پناهندگان", image: "https://placehold.co/400x400.png", imageHint: "people walking road", gridArea: "3 / 3 / 4 / 4" },
         ],
         ar: [
-            { title: "الجدول الزمني", image: "https://placehold.co/400x800.png", imageHint: "abstract timeline spiral", gridArea: "1 / 1 / 5 / 2" },
-            { title: "التأثير الاقتصادي", image: "https://placehold.co/800x400.png", imageHint: "financial charts graphs", gridArea: "1 / 2 / 3 / 4" },
-            { title: "الخسائر", image: "https://placehold.co/400x400.png", imageHint: "memorial solemn", gridArea: "1 / 4 / 2 / 5" },
-            { title: "المعارك الرئيسية", image: "https://placehold.co/400x400.png", imageHint: "strategy map battlefield", gridArea: "2 / 4 / 3 / 5" },
-            { title: "خسائر المعدات", image: "https://placehold.co/800x400.png", imageHint: "wrecked tank desert", gridArea: "3 / 2 / 5 / 4" },
-            { title: "اللاجئين", image: "https://placehold.co/400x400.png", imageHint: "people walking road", gridArea: "3 / 4 / 5 / 5" },
+            { title: "الجدول الزمني", image: "https://placehold.co/800x800.png", imageHint: "abstract timeline spiral", gridArea: "1 / 1 / 3 / 3" },
+            { title: "التأثير الاقتصادي", image: "https://placehold.co/400x400.png", imageHint: "financial charts graphs", gridArea: "1 / 3 / 2 / 4" },
+            { title: "الخسائر", image: "https://placehold.co/400x400.png", imageHint: "memorial solemn", gridArea: "2 / 3 / 3 / 4" },
+            { title: "المعارك الرئيسية", image: "https://placehold.co/400x400.png", imageHint: "strategy map battlefield", gridArea: "3 / 1 / 4 / 2" },
+            { title: "خسائر المعدات", image: "https://placehold.co/400x400.png", imageHint: "wrecked tank desert", gridArea: "3 / 2 / 4 / 3" },
+            { title: "اللاجئين", image: "https://placehold.co/400x400.png", imageHint: "people walking road", gridArea: "3 / 3 / 4 / 4" },
         ],
         he: [
-            { title: "ציר זמן", image: "https://placehold.co/400x800.png", imageHint: "abstract timeline spiral", gridArea: "1 / 1 / 5 / 2" },
-            { title: "השפעה כלכלית", image: "https://placehold.co/800x400.png", imageHint: "financial charts graphs", gridArea: "1 / 2 / 3 / 4" },
-            { title: "נפגעים", image: "https://placehold.co/400x400.png", imageHint: "memorial solemn", gridArea: "1 / 4 / 2 / 5" },
-            { title: "קרבות מרכזיים", image: "https://placehold.co/400x400.png", imageHint: "strategy map battlefield", gridArea: "2 / 4 / 3 / 5" },
-            { title: "אבדות בציוד", image: "https://placehold.co/800x400.png", imageHint: "wrecked tank desert", gridArea: "3 / 2 / 5 / 4" },
-            { title: "פליטים", image: "https://placehold.co/400x400.png", imageHint: "people walking road", gridArea: "3 / 4 / 5 / 5" },
+            { title: "ציר זמן", image: "https://placehold.co/800x800.png", imageHint: "abstract timeline spiral", gridArea: "1 / 1 / 3 / 3" },
+            { title: "השפעה כלכלית", image: "https://placehold.co/400x400.png", imageHint: "financial charts graphs", gridArea: "1 / 3 / 2 / 4" },
+            { title: "נפגעים", image: "https://placehold.co/400x400.png", imageHint: "memorial solemn", gridArea: "2 / 3 / 3 / 4" },
+            { title: "קרבות מרכזיים", image: "https://placehold.co/400x400.png", imageHint: "strategy map battlefield", gridArea: "3 / 1 / 4 / 2" },
+            { title: "אבדות בציוד", image: "https://placehold.co/400x400.png", imageHint: "wrecked tank desert", gridArea: "3 / 2 / 4 / 3" },
+            { title: "פליטים", image: "https://placehold.co/400x400.png", imageHint: "people walking road", gridArea: "3 / 3 / 4 / 4" },
         ],
     }
 };

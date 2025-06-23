@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -21,36 +22,36 @@ const translations = {
     },
     panels: {
         en: [
-            { title: "Missile Program", image: "https://placehold.co/800x600.png", imageHint: "missile launch silo", gridArea: "1 / 1 / 3 / 3" },
-            { title: "Drone Fleet", image: "https://placehold.co/600x400.png", imageHint: "military drone sky", gridArea: "1 / 3 / 2 / 5" },
-            { title: "Naval Forces", image: "https://placehold.co/400x600.png", imageHint: "warship at sea", gridArea: "3 / 1 / 5 / 2" },
-            { title: "Cyber Warfare", image: "https://placehold.co/400x400.png", imageHint: "digital code matrix", gridArea: "2 / 3 / 4 / 4" },
-            { title: "Ground Troops", image: "https://placehold.co/400x400.png", imageHint: "soldiers marching desert", gridArea: "2 / 4 / 4 / 5" },
-            { title: "Air Defense", image: "https://placehold.co/600x400.png", imageHint: "radar system night", gridArea: "4 / 2 / 5 / 4" },
+            { title: "Missile Program", image: "https://placehold.co/800x800.png", imageHint: "missile launch silo", gridArea: "1 / 1 / 3 / 3" },
+            { title: "Drone Fleet", image: "https://placehold.co/400x400.png", imageHint: "military drone sky", gridArea: "1 / 3 / 2 / 4" },
+            { title: "Naval Forces", image: "https://placehold.co/400x400.png", imageHint: "warship at sea", gridArea: "2 / 3 / 3 / 4" },
+            { title: "Cyber Warfare", image: "https://placehold.co/400x400.png", imageHint: "digital code matrix", gridArea: "3 / 1 / 4 / 2" },
+            { title: "Ground Troops", image: "https://placehold.co/400x400.png", imageHint: "soldiers marching desert", gridArea: "3 / 2 / 4 / 3" },
+            { title: "Air Defense", image: "https://placehold.co/400x400.png", imageHint: "radar system night", gridArea: "3 / 3 / 4 / 4" },
         ],
         fa: [
-            { title: "برنامه موشکی", image: "https://placehold.co/800x600.png", imageHint: "missile launch silo", gridArea: "1 / 1 / 3 / 3" },
-            { title: "ناوگان پهپادی", image: "https://placehold.co/600x400.png", imageHint: "military drone sky", gridArea: "1 / 3 / 2 / 5" },
-            { title: "نیروی دریایی", image: "https://placehold.co/400x600.png", imageHint: "warship at sea", gridArea: "3 / 1 / 5 / 2" },
-            { title: "جنگ سایبری", image: "https://placehold.co/400x400.png", imageHint: "digital code matrix", gridArea: "2 / 3 / 4 / 4" },
-            { title: "نیروهای زمینی", image: "https://placehold.co/400x400.png", imageHint: "soldiers marching desert", gridArea: "2 / 4 / 4 / 5" },
-            { title: "پدافند هوایی", image: "https://placehold.co/600x400.png", imageHint: "radar system night", gridArea: "4 / 2 / 5 / 4" },
+            { title: "برنامه موشکی", image: "https://placehold.co/800x800.png", imageHint: "missile launch silo", gridArea: "1 / 1 / 3 / 3" },
+            { title: "ناوگان پهپادی", image: "https://placehold.co/400x400.png", imageHint: "military drone sky", gridArea: "1 / 3 / 2 / 4" },
+            { title: "نیروی دریایی", image: "https://placehold.co/400x400.png", imageHint: "warship at sea", gridArea: "2 / 3 / 3 / 4" },
+            { title: "جنگ سایبری", image: "https://placehold.co/400x400.png", imageHint: "digital code matrix", gridArea: "3 / 1 / 4 / 2" },
+            { title: "نیروهای زمینی", image: "https://placehold.co/400x400.png", imageHint: "soldiers marching desert", gridArea: "3 / 2 / 4 / 3" },
+            { title: "پدافند هوایی", image: "https://placehold.co/400x400.png", imageHint: "radar system night", gridArea: "3 / 3 / 4 / 4" },
         ],
         ar: [
-            { title: "برنامج الصواريخ", image: "https://placehold.co/800x600.png", imageHint: "missile launch silo", gridArea: "1 / 1 / 3 / 3" },
-            { title: "أسطول الطائرات بدون طيار", image: "https://placehold.co/600x400.png", imageHint: "military drone sky", gridArea: "1 / 3 / 2 / 5" },
-            { title: "القوات البحرية", image: "https://placehold.co/400x600.png", imageHint: "warship at sea", gridArea: "3 / 1 / 5 / 2" },
-            { title: "الحرب السيبرانية", image: "https://placehold.co/400x400.png", imageHint: "digital code matrix", gridArea: "2 / 3 / 4 / 4" },
-            { title: "القوات البرية", image: "https://placehold.co/400x400.png", imageHint: "soldiers marching desert", gridArea: "2 / 4 / 4 / 5" },
-            { title: "الدفاع الجوي", image: "https://placehold.co/600x400.png", imageHint: "radar system night", gridArea: "4 / 2 / 5 / 4" },
+            { title: "برنامج الصواريخ", image: "https://placehold.co/800x800.png", imageHint: "missile launch silo", gridArea: "1 / 1 / 3 / 3" },
+            { title: "أسطول الطائرات بدون طيار", image: "https://placehold.co/400x400.png", imageHint: "military drone sky", gridArea: "1 / 3 / 2 / 4" },
+            { title: "القوات البحرية", image: "https://placehold.co/400x400.png", imageHint: "warship at sea", gridArea: "2 / 3 / 3 / 4" },
+            { title: "الحرب السيبرانية", image: "https://placehold.co/400x400.png", imageHint: "digital code matrix", gridArea: "3 / 1 / 4 / 2" },
+            { title: "القوات البرية", image: "https://placehold.co/400x400.png", imageHint: "soldiers marching desert", gridArea: "3 / 2 / 4 / 3" },
+            { title: "الدفاع الجوي", image: "https://placehold.co/400x400.png", imageHint: "radar system night", gridArea: "3 / 3 / 4 / 4" },
         ],
         he: [
-            { title: "תוכנית טילים", image: "https://placehold.co/800x600.png", imageHint: "missile launch silo", gridArea: "1 / 1 / 3 / 3" },
-            { title: "צי כטב\"מים", image: "https://placehold.co/600x400.png", imageHint: "military drone sky", gridArea: "1 / 3 / 2 / 5" },
-            { title: "כוחות ימיים", image: "https://placehold.co/400x600.png", imageHint: "warship at sea", gridArea: "3 / 1 / 5 / 2" },
-            { title: "לוחמת סייבר", image: "https://placehold.co/400x400.png", imageHint: "digital code matrix", gridArea: "2 / 3 / 4 / 4" },
-            { title: "כוחות קרקע", image: "https://placehold.co/400x400.png", imageHint: "soldiers marching desert", gridArea: "2 / 4 / 4 / 5" },
-            { title: "הגנה אווירית", image: "https://placehold.co/600x400.png", imageHint: "radar system night", gridArea: "4 / 2 / 5 / 4" },
+            { title: "תוכנית טילים", image: "https://placehold.co/800x800.png", imageHint: "missile launch silo", gridArea: "1 / 1 / 3 / 3" },
+            { title: "צי כטב\"מים", image: "https://placehold.co/400x400.png", imageHint: "military drone sky", gridArea: "1 / 3 / 2 / 4" },
+            { title: "כוחות ימיים", image: "https://placehold.co/400x400.png", imageHint: "warship at sea", gridArea: "2 / 3 / 3 / 4" },
+            { title: "לוחמת סייבר", image: "https://placehold.co/400x400.png", imageHint: "digital code matrix", gridArea: "3 / 1 / 4 / 2" },
+            { title: "כוחות קרקע", image: "https://placehold.co/400x400.png", imageHint: "soldiers marching desert", gridArea: "3 / 2 / 4 / 3" },
+            { title: "הגנה אווירית", image: "https://placehold.co/400x400.png", imageHint: "radar system night", gridArea: "3 / 3 / 4 / 4" },
         ],
     }
 };

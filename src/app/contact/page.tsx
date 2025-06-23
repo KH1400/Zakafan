@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -21,36 +22,36 @@ const translations = {
     },
     panels: {
         en: [
-            { title: "Misconceptions", image: "https://placehold.co/800x400.png", imageHint: "shattered glass illusion", gridArea: "1 / 1 / 2 / 5" },
-            { title: "Expert Analysis", image: "https://placehold.co/400x800.png", imageHint: "scholar writing book", gridArea: "2 / 1 / 4 / 2" },
-            { title: "Fact vs. Fiction", image: "https://placehold.co/800x400.png", imageHint: "light dark balance", gridArea: "2 / 2 / 3 / 5" },
-            { title: "Historical Archives", image: "https://placehold.co/400x800.png", imageHint: "old documents library", gridArea: "3 / 4 / 5 / 5" },
-            { title: "FAQs", image: "https://placehold.co/400x400.png", imageHint: "question mark illuminated", gridArea: "4 / 1 / 5 / 2" },
-            { title: "Media Analysis", image: "https://placehold.co/400x400.png", imageHint: "newspapers television screens", gridArea: "3 / 2 / 4 / 3" },
+            { title: "Misconceptions", image: "https://placehold.co/800x800.png", imageHint: "shattered glass illusion", gridArea: "1 / 1 / 3 / 3" },
+            { title: "Expert Analysis", image: "https://placehold.co/400x400.png", imageHint: "scholar writing book", gridArea: "1 / 3 / 2 / 4" },
+            { title: "Fact vs. Fiction", image: "https://placehold.co/400x400.png", imageHint: "light dark balance", gridArea: "2 / 3 / 3 / 4" },
+            { title: "Historical Archives", image: "https://placehold.co/400x400.png", imageHint: "old documents library", gridArea: "3 / 1 / 4 / 2" },
+            { title: "FAQs", image: "https://placehold.co/400x400.png", imageHint: "question mark illuminated", gridArea: "3 / 2 / 4 / 3" },
+            { title: "Media Analysis", image: "https://placehold.co/400x400.png", imageHint: "newspapers television screens", gridArea: "3 / 3 / 4 / 4" },
         ],
         fa: [
-            { title: "تصورات غلط", image: "https://placehold.co/800x400.png", imageHint: "shattered glass illusion", gridArea: "1 / 1 / 2 / 5" },
-            { title: "تحلیل کارشناسان", image: "https://placehold.co/400x800.png", imageHint: "scholar writing book", gridArea: "2 / 1 / 4 / 2" },
-            { title: "واقعیت در برابر داستان", image: "https://placehold.co/800x400.png", imageHint: "light dark balance", gridArea: "2 / 2 / 3 / 5" },
-            { title: "آرشیوهای تاریخی", image: "https://placehold.co/400x800.png", imageHint: "old documents library", gridArea: "3 / 4 / 5 / 5" },
-            { title: "سوالات متداول", image: "https://placehold.co/400x400.png", imageHint: "question mark illuminated", gridArea: "4 / 1 / 5 / 2" },
-            { title: "تحلیل رسانه‌ها", image: "https://placehold.co/400x400.png", imageHint: "newspapers television screens", gridArea: "3 / 2 / 4 / 3" },
+            { title: "تصورات غلط", image: "https://placehold.co/800x800.png", imageHint: "shattered glass illusion", gridArea: "1 / 1 / 3 / 3" },
+            { title: "تحلیل کارشناسان", image: "https://placehold.co/400x400.png", imageHint: "scholar writing book", gridArea: "1 / 3 / 2 / 4" },
+            { title: "واقعیت در برابر داستان", image: "https://placehold.co/400x400.png", imageHint: "light dark balance", gridArea: "2 / 3 / 3 / 4" },
+            { title: "آرشیوهای تاریخی", image: "https://placehold.co/400x400.png", imageHint: "old documents library", gridArea: "3 / 1 / 4 / 2" },
+            { title: "سوالات متداول", image: "https://placehold.co/400x400.png", imageHint: "question mark illuminated", gridArea: "3 / 2 / 4 / 3" },
+            { title: "تحلیل رسانه‌ها", image: "https://placehold.co/400x400.png", imageHint: "newspapers television screens", gridArea: "3 / 3 / 4 / 4" },
         ],
         ar: [
-            { title: "مفاهيم خاطئة", image: "https://placehold.co/800x400.png", imageHint: "shattered glass illusion", gridArea: "1 / 1 / 2 / 5" },
-            { title: "تحليل الخبراء", image: "https://placehold.co/400x800.png", imageHint: "scholar writing book", gridArea: "2 / 1 / 4 / 2" },
-            { title: "حقيقة أم خيال", image: "https://placehold.co/800x400.png", imageHint: "light dark balance", gridArea: "2 / 2 / 3 / 5" },
-            { title: "الأرشيف التاريخي", image: "https://placehold.co/400x800.png", imageHint: "old documents library", gridArea: "3 / 4 / 5 / 5" },
-            { title: "أسئلة شائعة", image: "https://placehold.co/400x400.png", imageHint: "question mark illuminated", gridArea: "4 / 1 / 5 / 2" },
-            { title: "تحليل الإعلام", image: "https://placehold.co/400x400.png", imageHint: "newspapers television screens", gridArea: "3 / 2 / 4 / 3" },
+            { title: "مفاهيم خاطئة", image: "https://placehold.co/800x800.png", imageHint: "shattered glass illusion", gridArea: "1 / 1 / 3 / 3" },
+            { title: "تحليل الخبراء", image: "https://placehold.co/400x400.png", imageHint: "scholar writing book", gridArea: "1 / 3 / 2 / 4" },
+            { title: "حقيقة أم خيال", image: "https://placehold.co/400x400.png", imageHint: "light dark balance", gridArea: "2 / 3 / 3 / 4" },
+            { title: "الأرشيف التاريخي", image: "https://placehold.co/400x400.png", imageHint: "old documents library", gridArea: "3 / 1 / 4 / 2" },
+            { title: "أسئلة شائعة", image: "https://placehold.co/400x400.png", imageHint: "question mark illuminated", gridArea: "3 / 2 / 4 / 3" },
+            { title: "تحليل الإعلام", image: "https://placehold.co/400x400.png", imageHint: "newspapers television screens", gridArea: "3 / 3 / 4 / 4" },
         ],
         he: [
-            { title: "תפיסות שגויות", image: "https://placehold.co/800x400.png", imageHint: "shattered glass illusion", gridArea: "1 / 1 / 2 / 5" },
-            { title: "ניתוח מומחים", image: "https://placehold.co/400x800.png", imageHint: "scholar writing book", gridArea: "2 / 1 / 4 / 2" },
-            { title: "עובדה מול בדיה", image: "https://placehold.co/800x400.png", imageHint: "light dark balance", gridArea: "2 / 2 / 3 / 5" },
-            { title: "ארכיונים היסטוריים", image: "https://placehold.co/400x800.png", imageHint: "old documents library", gridArea: "3 / 4 / 5 / 5" },
-            { title: "שאלות נפוצות", image: "https://placehold.co/400x400.png", imageHint: "question mark illuminated", gridArea: "4 / 1 / 5 / 2" },
-            { title: "ניתוח מדיה", image: "https://placehold.co/400x400.png", imageHint: "newspapers television screens", gridArea: "3 / 2 / 4 / 3" },
+            { title: "תפיסות שגויות", image: "https://placehold.co/800x800.png", imageHint: "shattered glass illusion", gridArea: "1 / 1 / 3 / 3" },
+            { title: "ניתוח מומחים", image: "https://placehold.co/400x400.png", imageHint: "scholar writing book", gridArea: "1 / 3 / 2 / 4" },
+            { title: "עובדה מול בדיה", image: "https://placehold.co/400x400.png", imageHint: "light dark balance", gridArea: "2 / 3 / 3 / 4" },
+            { title: "ארכיונים היסטוריים", image: "https://placehold.co/400x400.png", imageHint: "old documents library", gridArea: "3 / 1 / 4 / 2" },
+            { title: "שאלות נפוצות", image: "https://placehold.co/400x400.png", imageHint: "question mark illuminated", gridArea: "3 / 2 / 4 / 3" },
+            { title: "ניתוח מדיה", image: "https://placehold.co/400x400.png", imageHint: "newspapers television screens", gridArea: "3 / 3 / 4 / 4" },
         ],
     }
 };
