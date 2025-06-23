@@ -96,8 +96,8 @@ export default async function AboutPage({ searchParams }: { searchParams?: { lan
   
   return (
     <div className="flex flex-col min-h-screen">
-      <main className="flex-grow">
-        <div dir={langConfig.dir} className={cn("relative h-full w-full bg-background overflow-hidden", langConfig.font)}>
+      <main className="flex-grow relative">
+        <div dir={langConfig.dir} className={cn("absolute inset-0 bg-background overflow-hidden", langConfig.font)}>
             <Image
               src={bgImage}
               alt="Abstract background"
