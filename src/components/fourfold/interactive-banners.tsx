@@ -165,32 +165,55 @@ const translations = {
 type Language = keyof typeof translations;
 type BannerTranslation = (typeof translations.en)[0];
 
+// Using a module-level cache to persist across re-renders and component instances.
+const imageCache: Record<string, string> = {};
+
 export function InteractiveBanners({ lang = 'en' }: { lang: Language }) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [bannerData, setBannerData] = useState<(BannerTranslation & { isGenerating?: boolean })[]>(
-    (translations[lang] || translations.en).map(b => ({ ...b, isGenerating: true }))
+    (translations[lang] || translations.en).map(b => ({ 
+        ...b, 
+        isGenerating: !imageCache[b.prompt],
+        image: imageCache[b.prompt] || b.image
+    }))
   );
   const isRtl = lang === 'fa' || lang === 'ar' || lang === 'he';
 
   useEffect(() => {
-    const generateBannerImages = async () => {
-      const initialData = translations[lang] || translations.en;
-      setBannerData(initialData.map(b => ({ ...b, isGenerating: true })));
+    const initialData = translations[lang] || translations.en;
+    
+    // Set banner data based on current language and cache to show skeletons immediately
+    setBannerData(initialData.map(b => ({ 
+        ...b, 
+        isGenerating: !imageCache[b.prompt],
+        image: imageCache[b.prompt] || b.image
+    })));
 
-      const updatedData = await Promise.all(
-        initialData.map(async (banner) => {
+    const generateBannerImages = async () => {
+      const bannersToGenerate = initialData.filter(banner => !imageCache[banner.prompt]);
+      
+      if (bannersToGenerate.length === 0) {
+        return;
+      }
+
+      await Promise.all(
+        bannersToGenerate.map(async (banner) => {
           try {
             const imageUrl = await generateImage(banner.prompt);
-            return { ...banner, image: imageUrl, isGenerating: false };
+            imageCache[banner.prompt] = imageUrl;
           } catch (e) {
-            console.error("Image generation failed for:", banner.title, e);
-            // Fallback to placeholder if generation fails
-            return { ...banner, image: banner.image, isGenerating: false };
+            console.warn(`Image generation failed for "${banner.title}". Falling back to placeholder.`);
+            // On failure, we'll just use the placeholder already in banner.image
           }
         })
       );
-      
-      setBannerData(updatedData);
+
+      // After all generations (or failures), update the state with the new images
+      setBannerData(initialData.map(b => ({
+        ...b,
+        image: imageCache[b.prompt] || b.image,
+        isGenerating: false // All generation attempts are complete
+      })));
     };
 
     generateBannerImages();

@@ -16,12 +16,6 @@ const languageOptions: Record<Language, { dir: 'rtl' | 'ltr'; font: string }> = 
 };
 
 const translations = {
-  tagline: {
-    en: 'Dynography Reference',
-    fa: 'مرجع داینوگرافی',
-    ar: 'مرجع داينوغرافي',
-    he: 'התייחסות לדיינוגרפיה',
-  },
   description: {
     en: "Dynographic is a creative and intelligent content format that helps you on the path to obtaining reliable and comprehensive information in an integrated and coherent way. This content is produced entirely by smart algorithms, using reliable international sources, and under the supervision of experts and specialists, and is constantly updated.",
     fa: "داینوگرافیک، یک قالب محتوایی خلاقانه و هوشمند است که شما را در مسیر کسب اطلاعات معتبر و جامع به شکلی یکپارچه و منسجم یاری می‌کند. این محتوا تماما توسط الگوریتم‌های هوشمند و با استفاده از منابع معتبر  بین المللی و با نظارت کارشناسان و متخصصان تولید می‌گردد و به شکل مداوم بروزرسانی می‌گردد.",
@@ -34,9 +28,17 @@ const translations = {
     ar: "العودة إلى الرئيسية",
     he: "חזור לדף הבית",
   },
+  tagline: {
+    en: 'Dynography Reference',
+    fa: 'مرجع داینوگرافی',
+    ar: 'مرجع داينوغرافي',
+    he: 'התייחסות לדיינוגרפיה',
+  },
 };
 
 const imagePrompt = "A visually stunning, abstract representation of digital information warfare. Use dark, sophisticated tones with highlights of electric blue and glowing orange, symbolizing data streams and conflict points. The image should be clean, minimalist, and suitable for a high-tech website background. 4K, ultra-high resolution.";
+
+let backgroundImageCache: string | null = null;
 
 const Logo = ({ className, tagline, taglineFont }: { className?: string; tagline: string; taglineFont: string; }) => (
     <svg
@@ -96,10 +98,17 @@ export default async function AboutPage({ searchParams }: { searchParams?: { lan
   const lang = (searchParams?.lang || 'en') as Language;
   const langConfig = languageOptions[lang] || languageOptions.en;
 
-  const bgImage = await generateImage(imagePrompt).catch(e => {
-    console.error("Background image generation failed:", e);
-    return "https://placehold.co/1920x1080.png";
-  });
+  let bgImage = backgroundImageCache;
+
+  if (!bgImage) {
+    try {
+      bgImage = await generateImage(imagePrompt);
+      backgroundImageCache = bgImage;
+    } catch (e) {
+      console.warn("Background image generation failed. Falling back to placeholder.");
+      bgImage = "https://placehold.co/1920x1080.png";
+    }
+  }
   
   return (
     <div className="flex flex-col min-h-screen">
