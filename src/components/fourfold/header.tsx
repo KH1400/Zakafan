@@ -15,11 +15,11 @@ import {
 
 type Language = 'fa' | 'en' | 'ar' | 'he';
 
-const languageOptions: Record<Language, { name: string; }> = {
-  fa: { name: 'فارسی' },
-  en: { name: 'English' },
-  ar: { name: 'العربية' },
-  he: { name: 'עברית' },
+const languageOptions: Record<Language, { name: string; font: string; }> = {
+  fa: { name: 'فارسی', font: 'font-persian' },
+  en: { name: 'English', font: 'font-body' },
+  ar: { name: 'العربية', font: 'font-arabic' },
+  he: { name: 'עברית', font: 'font-hebrew' },
 };
 
 const translations = {
@@ -35,6 +35,12 @@ const translations = {
     ar: 'معلومات عنا',
     he: 'עלינו',
   },
+  tagline: {
+    en: 'Dynography Reference',
+    fa: 'مرجع داینوگرافی',
+    ar: 'مرجع داينوغرافي',
+    he: 'התייחסות לדיינוגרפיה',
+  }
 }
 
 type HeaderProps = {
@@ -43,6 +49,8 @@ type HeaderProps = {
 };
 
 export function Header({ currentLang, onLanguageChange }: HeaderProps) {
+  const taglineFont = languageOptions[currentLang]?.font || 'font-body';
+
   return (
     <header className="flex h-20 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0">
       <Link href="/" className="flex items-center gap-3">
@@ -68,9 +76,9 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
             fontWeight="bold"
             fill="hsl(var(--foreground))"
             opacity="0.8"
-            className="font-persian"
+            className={taglineFont}
           >
-            مرجع داینوگرافی
+            {translations.tagline[currentLang]}
           </text>
           <g transform="translate(190, 0)">
             <rect width="60" height="60" rx="12" fill="hsl(var(--accent))" />
