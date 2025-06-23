@@ -1,12 +1,10 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Shield, BarChart3, Trophy, MessageSquareQuote } from "lucide-react";
 import { BannerPanel } from "@/components/fourfold/banner-panel";
 import { cn } from "@/lib/utils";
-import { generateImage } from "@/ai/flows/generate-image-flow";
-import { Skeleton } from "@/components/ui/skeleton";
 
 const translations = {
   en: [
@@ -164,57 +162,11 @@ const translations = {
 };
 
 type Language = keyof typeof translations;
-type BannerTranslation = (typeof translations.en)[0];
-
-const imageCache: Record<string, string> = {};
 
 export function InteractiveBanners({ lang = 'en' }: { lang: Language }) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [bannerData, setBannerData] = useState<(BannerTranslation & { isGenerating?: boolean })[]>(
-    () => (translations[lang] || translations.en).map(b => ({ 
-        ...b, 
-        isGenerating: !imageCache[b.prompt],
-        image: imageCache[b.prompt] || b.image
-    }))
-  );
   const isRtl = lang === 'fa' || lang === 'ar' || lang === 'he';
-
-  useEffect(() => {
-    const initialData = translations[lang] || translations.en;
-    
-    setBannerData(initialData.map(b => ({ 
-        ...b, 
-        isGenerating: !imageCache[b.prompt],
-        image: imageCache[b.prompt] || b.image
-    })));
-
-    const generateBannerImages = async () => {
-      const bannersToGenerate = initialData.filter(banner => !imageCache[banner.prompt]);
-      
-      if (bannersToGenerate.length === 0) {
-        return;
-      }
-
-      await Promise.all(
-        bannersToGenerate.map(async (banner) => {
-          try {
-            const imageUrl = await generateImage(banner.prompt);
-            imageCache[banner.prompt] = imageUrl;
-          } catch (e) {
-            console.warn(`Image generation failed for "${banner.title}". Falling back to placeholder.`, e);
-          }
-        })
-      );
-
-      setBannerData(initialData.map(b => ({
-        ...b,
-        image: imageCache[b.prompt] || b.image,
-        isGenerating: false
-      })));
-    };
-
-    generateBannerImages();
-  }, [lang]);
+  const bannerData = translations[lang] || translations.en;
 
   return (
     <div
@@ -225,25 +177,6 @@ export function InteractiveBanners({ lang = 'en' }: { lang: Language }) {
         const isHovered = hoveredIndex === index;
         const isAnyHovered = hoveredIndex !== null;
         const finalHref = `${banner.href}${lang === 'en' ? '' : `?lang=${lang}`}`;
-
-        if (banner.isGenerating) {
-          return (
-            <div
-              key={`${banner.href}-loading`}
-              className={cn(
-                "group relative h-full overflow-hidden transition-all duration-700 ease-in-out",
-                {
-                  "basis-1/4": !isAnyHovered,
-                  "basis-[64%]": isHovered,
-                  "basis-[12%]": isAnyHovered && !isHovered,
-                }
-              )}
-              onMouseEnter={() => setHoveredIndex(index)}
-            >
-              <Skeleton className="h-full w-full" />
-            </div>
-          )
-        }
         
         return (
           <BannerPanel

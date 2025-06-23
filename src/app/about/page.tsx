@@ -5,11 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { generateImage } from "@/ai/flows/generate-image-flow";
 import { cn } from "@/lib/utils";
 import { Footer } from "@/components/fourfold/footer";
-import { useEffect, useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 
 type Language = 'fa' | 'en' | 'ar' | 'he';
 
@@ -41,9 +38,7 @@ const translations = {
   },
 };
 
-const imagePrompt = "A visually stunning, abstract representation of digital information warfare. Use dark, sophisticated tones with highlights of electric blue and glowing orange, symbolizing data streams and conflict points. The image should be clean, minimalist, and suitable for a high-tech website background. 4K, ultra-high resolution.";
-
-let backgroundImageCache: string | null = null;
+const bgImage = "https://placehold.co/1920x1080.png";
 
 const Logo = ({ className, tagline, taglineFont }: { className?: string; tagline: string; taglineFont: string; }) => (
     <svg
@@ -102,51 +97,19 @@ const Logo = ({ className, tagline, taglineFont }: { className?: string; tagline
 export default function AboutPage({ searchParams }: { searchParams?: { lang?: string } }) {
   const lang = (searchParams?.lang || 'en') as Language;
   const langConfig = languageOptions[lang] || languageOptions.en;
-
-  const [bgImage, setBgImage] = useState<string | null>(backgroundImageCache);
-  const [isGenerating, setIsGenerating] = useState(!backgroundImageCache);
-
-  useEffect(() => {
-    if (backgroundImageCache) {
-      setBgImage(backgroundImageCache);
-      setIsGenerating(false);
-      return;
-    }
-
-    const generateBg = async () => {
-      setIsGenerating(true);
-      try {
-        const imageUrl = await generateImage(imagePrompt);
-        backgroundImageCache = imageUrl;
-        setBgImage(imageUrl);
-      } catch (e) {
-        console.warn("Background image generation failed. Falling back to placeholder.", e);
-        const fallbackImage = "https://placehold.co/1920x1080.png";
-        backgroundImageCache = fallbackImage;
-        setBgImage(fallbackImage);
-      } finally {
-        setIsGenerating(false);
-      }
-    };
-    
-    generateBg();
-  }, []);
   
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-grow relative">
         <div dir={langConfig.dir} className={cn("absolute inset-0 bg-background overflow-hidden", langConfig.font)}>
-            {isGenerating && <Skeleton className="absolute inset-0 z-0" />}
-            {bgImage && (
-              <Image
-                src={bgImage}
-                alt="Abstract background"
-                fill
-                className="object-cover z-0"
-                data-ai-hint="digital warfare abstract"
-                priority
-              />
-            )}
+            <Image
+              src={bgImage}
+              alt="Abstract background"
+              fill
+              className="object-cover z-0"
+              data-ai-hint="digital warfare abstract"
+              priority
+            />
             <div className="absolute inset-0 bg-black/70 z-10" />
             
             <div className="relative z-20 flex flex-col items-center justify-center h-full text-center text-white p-4 sm:p-6 md:p-8">
