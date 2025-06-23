@@ -108,10 +108,9 @@ export default function Home() {
               <Button
                 key={key}
                 variant="outline"
-                className="p-8 text-2xl h-auto bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-accent/90 transition-colors duration-300"
+                className="p-8 text-2xl h-auto w-64 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-accent hover:text-white transition-colors duration-300"
                 onClick={() => setLanguage(key)}
               >
-                <span className="text-4xl me-4">{languageOptions[key].flag}</span>
                 <span className={languageOptions[key].font}>{languageOptions[key].name}</span>
               </Button>
             ))}
