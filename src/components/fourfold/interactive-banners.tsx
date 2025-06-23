@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -165,13 +166,12 @@ const translations = {
 type Language = keyof typeof translations;
 type BannerTranslation = (typeof translations.en)[0];
 
-// Using a module-level cache to persist across re-renders and component instances.
 const imageCache: Record<string, string> = {};
 
 export function InteractiveBanners({ lang = 'en' }: { lang: Language }) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [bannerData, setBannerData] = useState<(BannerTranslation & { isGenerating?: boolean })[]>(
-    (translations[lang] || translations.en).map(b => ({ 
+    () => (translations[lang] || translations.en).map(b => ({ 
         ...b, 
         isGenerating: !imageCache[b.prompt],
         image: imageCache[b.prompt] || b.image
@@ -182,7 +182,6 @@ export function InteractiveBanners({ lang = 'en' }: { lang: Language }) {
   useEffect(() => {
     const initialData = translations[lang] || translations.en;
     
-    // Set banner data based on current language and cache to show skeletons immediately
     setBannerData(initialData.map(b => ({ 
         ...b, 
         isGenerating: !imageCache[b.prompt],
@@ -202,17 +201,15 @@ export function InteractiveBanners({ lang = 'en' }: { lang: Language }) {
             const imageUrl = await generateImage(banner.prompt);
             imageCache[banner.prompt] = imageUrl;
           } catch (e) {
-            console.warn(`Image generation failed for "${banner.title}". Falling back to placeholder.`);
-            // On failure, we'll just use the placeholder already in banner.image
+            console.warn(`Image generation failed for "${banner.title}". Falling back to placeholder.`, e);
           }
         })
       );
 
-      // After all generations (or failures), update the state with the new images
       setBannerData(initialData.map(b => ({
         ...b,
         image: imageCache[b.prompt] || b.image,
-        isGenerating: false // All generation attempts are complete
+        isGenerating: false
       })));
     };
 
