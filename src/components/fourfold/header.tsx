@@ -28,12 +28,13 @@ export function Header({ onLanguageChangeClick }: HeaderProps) {
           <text
             x="0"
             y="50"
-            fontSize="12"
+            fontSize="14"
+            fontWeight="bold"
             fill="hsl(var(--foreground))"
-            opacity="0.7"
-            className="font-body"
+            opacity="0.8"
+            className="font-persian"
           >
-            AI & Cognitive Tech Reference
+            مرجع داینوگرافی
           </text>
           <g transform="translate(190, 0)">
             <rect width="60" height="60" rx="12" fill="hsl(var(--accent))" />
