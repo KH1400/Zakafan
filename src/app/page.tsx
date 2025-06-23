@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { InteractiveBanners } from "@/components/fourfold/interactive-banners";
 import { Button } from "@/components/ui/button";
-import type { StaticImageData } from "next/image";
+import { Header } from "@/components/fourfold/header";
 
 type Language = 'fa' | 'en' | 'ar' | 'he';
 
@@ -44,11 +44,14 @@ export default function Home() {
   const selectedLang = languageOptions[language];
 
   return (
-    <main
+    <div
       dir={selectedLang.dir}
-      className={`${selectedLang.font} h-screen w-screen overflow-hidden bg-background`}
+      className={`${selectedLang.font} flex flex-col h-screen w-screen bg-background`}
     >
-      <InteractiveBanners lang={language} />
-    </main>
+      <Header onLanguageChangeClick={() => setLanguage(null)} />
+      <main className="flex-grow overflow-hidden">
+        <InteractiveBanners lang={language} />
+      </main>
+    </div>
   );
 }
