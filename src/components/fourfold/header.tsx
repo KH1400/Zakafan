@@ -1,11 +1,10 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Globe } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
@@ -23,12 +22,6 @@ const languageOptions: Record<Language, { name: string; font: string; }> = {
 };
 
 const translations = {
-  language: {
-    en: 'Language',
-    fa: 'زبان',
-    ar: 'لغة',
-    he: 'שפה',
-  },
   about: {
     en: 'About Us',
     fa: 'درباره ما',
@@ -106,11 +99,10 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon" aria-label="Open menu">
-            <Globe className="h-5 w-5" />
+            <Menu className="h-5 w-5" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>{translations.language[currentLang]}</DropdownMenuLabel>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>{languageOptions[currentLang].name}</DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
