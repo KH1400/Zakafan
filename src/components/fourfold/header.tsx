@@ -123,7 +123,7 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
           </DropdownMenuSub>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Link href="/about">{translations.about[currentLang]}</Link>
+            <Link href={`/about?lang=${currentLang}`}>{translations.about[currentLang]}</Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
