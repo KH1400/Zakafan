@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/fourfold/header";
 import { InteractiveBanners } from "@/components/fourfold/interactive-banners";
+import { generateImage } from "@/ai/flows/generate-image-flow";
 
 type Language = 'fa' | 'en' | 'ar' | 'he';
 
@@ -23,78 +24,104 @@ const descriptions = {
 
 export default function Home() {
   const [language, setLanguage] = useState<Language | null>(null);
+  const [backgroundImage, setBackgroundImage] = useState('');
+
+  useEffect(() => {
+    if (!language) {
+      const getBackgroundImage = async () => {
+        try {
+          const imageUrl = await generateImage(
+            "A subtle, atmospheric, and high-resolution war-themed background. Silhouettes of soldiers walking on a distant ridge against a dramatic sunset. The style should be artistic and somber, suitable as a website background, but not busy or distracting."
+          );
+          setBackgroundImage(imageUrl);
+        } catch (error) {
+          console.error("Failed to generate background image:", error);
+        }
+      };
+      getBackgroundImage();
+    }
+  }, [language]);
+
 
   if (!language) {
     return (
-      <main className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-6">
-        <div className="mb-12">
-           <svg
-              viewBox="0 0 250 60"
-              className="h-24 w-auto"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <text
-                x="0"
-                y="30"
-                fontSize="32"
-                fontWeight="bold"
-                fill="hsl(var(--primary))"
-                className="font-headline"
+      <main
+        className="relative flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-6 bg-cover bg-center transition-all duration-1000"
+        style={{
+          backgroundImage: backgroundImage ? `url(${backgroundImage})` : 'none',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/60 z-0" />
+        <div className="relative z-10 flex flex-col items-center text-center w-full max-w-4xl">
+          <div className="mb-12">
+             <svg
+                viewBox="0 0 250 60"
+                className="h-24 w-auto"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                Zakafan
-              </text>
-              <text
-                x="0"
-                y="50"
-                fontSize="14"
-                fontWeight="bold"
-                fill="hsl(var(--foreground))"
-                opacity="0.8"
-                className="font-persian"
-              >
-                مرجع داینوگرافی
-              </text>
-              <g transform="translate(190, 0)">
-                <rect width="60" height="60" rx="12" fill="hsl(var(--accent))" />
-                <g
-                  stroke="hsl(var(--primary))"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  fill="none"
+                <text
+                  x="0"
+                  y="30"
+                  fontSize="32"
+                  fontWeight="bold"
+                  fill="hsl(var(--primary))"
+                  className="font-headline drop-shadow-lg"
                 >
-                  <path d="M42,21 C42,26.5228475 37.5228475,31 32,31 L28,31 C22.4771525,31 18,26.5228475 18,21 C18,15.4771525 22.4771525,11 28,11 C33.5228475,11 37.8,15.4771525 37.8,21" />
-                  <path d="M28,31 L28,38 C28,39.1045695 27.1045695,40 26,40 L22,40" />
-                  <path d="M32,17 L38,17" />
-                  <circle cx="40" cy="17" r="2.5" />
-                  <path d="M35,24 L42,24" />
-                  <circle cx="44" cy="24" r="2.5" />
-                  <path d="M32,31 L36,31" />
-                  <circle cx="38" cy="31" r="2.5" />
-                  <path d="M28,11 L28,15" />
-                  <circle cx="28" cy="17" r="2.5" />
+                  Zakafan
+                </text>
+                <text
+                  x="0"
+                  y="50"
+                  fontSize="14"
+                  fontWeight="bold"
+                  fill="hsl(var(--primary-foreground))"
+                  opacity="0.9"
+                  className="font-persian drop-shadow-md"
+                >
+                  مرجع داینوگرافی
+                </text>
+                <g transform="translate(190, 0)">
+                  <rect width="60" height="60" rx="12" fill="hsl(var(--accent))" />
+                  <g
+                    stroke="hsl(var(--primary))"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    fill="none"
+                  >
+                    <path d="M42,21 C42,26.5228475 37.5228475,31 32,31 L28,31 C22.4771525,31 18,26.5228475 18,21 C18,15.4771525 22.4771525,11 28,11 C33.5228475,11 37.8,15.4771525 37.8,21" />
+                    <path d="M28,31 L28,38 C28,39.1045695 27.1045695,40 26,40 L22,40" />
+                    <path d="M32,17 L38,17" />
+                    <circle cx="40" cy="17" r="2.5" />
+                    <path d="M35,24 L42,24" />
+                    <circle cx="44" cy="24" r="2.5" />
+                    <path d="M32,31 L36,31" />
+                    <circle cx="38" cy="31" r="2.5" />
+                    <path d="M28,11 L28,15" />
+                    <circle cx="28" cy="17" r="2.5" />
+                  </g>
                 </g>
-              </g>
-            </svg>
-        </div>
-        <div className="flex flex-wrap justify-center gap-4">
-          {(Object.keys(languageOptions) as Language[]).map((key) => (
-            <Button
-              key={key}
-              variant="outline"
-              className="p-8 text-2xl h-auto"
-              onClick={() => setLanguage(key)}
-            >
-              <span className="text-4xl me-4">{languageOptions[key].flag}</span>
-              <span className={languageOptions[key].font}>{languageOptions[key].name}</span>
-            </Button>
-          ))}
-        </div>
-        <div className="text-center mt-12 max-w-3xl space-y-3">
-            <p className="text-sm text-muted-foreground font-persian" dir="rtl">{descriptions.fa}</p>
-            <p className="text-sm text-muted-foreground font-body">{descriptions.en}</p>
-            <p className="text-sm text-muted-foreground font-arabic" dir="rtl">{descriptions.ar}</p>
-            <p className="text-sm text-muted-foreground font-hebrew" dir="rtl">{descriptions.he}</p>
+              </svg>
+          </div>
+          <div className="flex flex-wrap justify-center gap-4">
+            {(Object.keys(languageOptions) as Language[]).map((key) => (
+              <Button
+                key={key}
+                variant="outline"
+                className="p-8 text-2xl h-auto bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20"
+                onClick={() => setLanguage(key)}
+              >
+                <span className="text-4xl me-4">{languageOptions[key].flag}</span>
+                <span className={languageOptions[key].font}>{languageOptions[key].name}</span>
+              </Button>
+            ))}
+          </div>
+          <div className="text-center mt-12 max-w-3xl space-y-3 bg-black/30 backdrop-blur-sm p-6 rounded-lg">
+              <p className="text-sm text-neutral-200 font-persian" dir="rtl">{descriptions.fa}</p>
+              <p className="text-sm text-neutral-200 font-body">{descriptions.en}</p>
+              <p className="text-sm text-neutral-200 font-arabic" dir="rtl">{descriptions.ar}</p>
+              <p className="text-sm text-neutral-200 font-hebrew" dir="rtl">{descriptions.he}</p>
+          </div>
         </div>
       </main>
     );
