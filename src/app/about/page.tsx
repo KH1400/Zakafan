@@ -40,11 +40,11 @@ export default function AboutPage({ searchParams }: { searchParams?: { lang?: st
   return (
     <div dir={langConfig.dir} className={`${langConfig.font} relative flex flex-col h-screen w-screen items-center justify-center text-white p-4`}>
       <Image
-        src="https://i.postimg.cc/XqBg0qC2/Gemini-Generated-Image-qlk5zkqlk5zkqlk5.png"
+        src="https://i.postimg.cc/GtCzCYkX/Gemini-Generated-Image-o1se3zo1se3zo1se.png"
         alt="Background"
         fill
         className="object-cover -z-10"
-        data-ai-hint="question mark neon"
+        data-ai-hint="holographic datasphere"
       />
       <div className="absolute inset-0 bg-black/70 -z-10" />
 
