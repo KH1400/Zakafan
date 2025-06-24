@@ -53,10 +53,9 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
       <Link href="/" className="flex items-center gap-3">
         {isRtlLanguage ? (
            <svg
-              viewBox="0 0 450 100"
+              viewBox="0 0 350 100"
               className="h-12 w-auto"
               xmlns="http://www.w3.org/2000/svg"
-              dir="rtl"
             >
               <g transform="translate(10, 20)">
                 <rect width="60" height="60" rx="12" fill="hsl(var(--accent))" />
@@ -79,27 +78,27 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
                   <circle cx="45" cy="15" r="2.5" />
                 </g>
               </g>
-              <g>
+              <g transform="translate(80, 0)">
                 <text
-                  x="440"
+                  x="0"
                   y="60"
                   fontSize="48"
                   fontWeight="bold"
                   fill="hsl(var(--primary))"
                   className="font-persian"
-                  textAnchor="end"
+                  textAnchor="start"
                 >
                   زکافن
                 </text>
                 <text
-                  x="440"
+                  x="0"
                   y="85"
                   fontSize="14"
                   fontWeight="bold"
                   fill="hsl(var(--foreground))"
                   opacity="0.8"
                   className={taglineFont}
-                  textAnchor="end"
+                  textAnchor="start"
                 >
                   {translations.tagline[currentLang]}
                 </text>

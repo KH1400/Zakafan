@@ -51,10 +51,9 @@ export default function AboutPage({ searchParams }: { searchParams?: { lang?: st
       <div className="flex flex-col items-center text-center max-w-3xl">
         {isRtl ? (
           <svg
-            viewBox="0 0 450 100"
+            viewBox="0 0 420 100"
             className="h-24 w-auto"
             xmlns="http://www.w3.org/2000/svg"
-            dir="rtl"
           >
             <g transform="translate(10, 20)">
               <rect width="60" height="60" rx="12" fill="hsl(var(--accent))" />
@@ -77,27 +76,27 @@ export default function AboutPage({ searchParams }: { searchParams?: { lang?: st
                 <circle cx="45" cy="15" r="2.5" />
               </g>
             </g>
-            <g>
+            <g transform="translate(80, 0)">
               <text
-                x="440"
+                x="0"
                 y="60"
                 fontSize="48"
                 fontWeight="bold"
                 fill="hsl(var(--accent))"
                 className="font-persian drop-shadow-glow-accent"
-                textAnchor="end"
+                textAnchor="start"
               >
                 زکافن
               </text>
               <text
-                x="440"
+                x="0"
                 y="85"
                 fontSize="14"
                 fontWeight="bold"
                 fill="white"
                 opacity="0.9"
                 className={langConfig.font}
-                textAnchor="end"
+                textAnchor="start"
               >
                 {aboutTranslations.tagline[lang]}
               </text>
