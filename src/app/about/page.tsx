@@ -1,9 +1,9 @@
 
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import { Footer } from "@/components/fourfold/footer";
-import { type Language } from "@/lib/content-data";
+import Image from 'next/image';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
+import { type Language } from '@/lib/content-data';
 
 const goBackTranslations = {
     en: "Go Back Home",
@@ -13,18 +13,18 @@ const goBackTranslations = {
 };
 
 const aboutTranslations = {
-    title: {
-        en: "About Us",
-        fa: "درباره ما",
-        ar: "معلومات عنا",
-        he: "עלינו",
-    },
     content: {
         en: "Zakafan is a reference for dynography, providing insights and analysis on various topics. Our mission is to deliver accurate and well-researched information to our audience. We believe in clarity, objectivity, and a deep understanding of the subjects we cover.",
         fa: "زکافن یک مرجع برای داینوگرافی است که بینش و تحلیل در موضوعات مختلف ارائه می‌دهد. مأموریت ما ارائه اطلاعات دقیق و تحقیق شده به مخاطبانمان است. ما به شفافیت، عینیت و درک عمیق از موضوعاتی که پوشش می‌دهیم، اعتقاد داریم.",
         ar: "زكافن هو مرجع للدينوغرافيا، يقدم رؤى وتحليلات حول مواضيع مختلفة. مهمتنا هي تقديم معلومات دقيقة ومدروسة جيدًا لجمهورنا. نحن نؤمن بالوضوح والموضوعية والفهم العميق للمواضيع التي نغطيها.",
         he: "זקפן הוא אתר עיון לדיינוגרפיה, המספק תובנות וניתוחים בנושאים שונים. המשימה שלנו היא לספק מידע מדויק ונחקר היטב לקהל שלנו. אנו מאמינים בבהירות, אובייקטיביות והבנה עמוקה של הנושאים שאנו מסקרים.",
-    }
+    },
+    tagline: {
+      en: 'Dynography Reference',
+      fa: 'مرجع داینوگرافی',
+      ar: 'مرجع داينوغرافي',
+      he: 'התייחסות לדיינוגרפיה',
+    },
 };
 
 export default function AboutPage({ searchParams }: { searchParams?: { lang?: string } }) {
@@ -38,23 +38,79 @@ export default function AboutPage({ searchParams }: { searchParams?: { lang?: st
   }[lang];
 
   return (
-    <div dir={langConfig.dir} className={`${langConfig.font} flex flex-col h-screen w-screen bg-background text-foreground overflow-hidden`}>
-        <header className="flex h-20 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0">
-          <h1 className="text-xl md:text-2xl font-bold font-headline">{aboutTranslations.title[lang]}</h1>
-          <Button asChild variant="outline">
-            <Link href={lang === 'en' ? '/' : `/?lang=${lang}`}>
-              <ArrowLeft className={isRtl ? "ml-2" : "mr-2"} /> {goBackTranslations[lang]}
-            </Link>
-          </Button>
-        </header>
-        <main className="flex-grow relative overflow-y-auto p-6 md:p-8">
-            <div className="max-w-4xl mx-auto">
-                <p className="text-lg leading-relaxed text-foreground/90">
-                    {aboutTranslations.content[lang]}
-                </p>
-            </div>
-        </main>
-        <Footer lang={lang} />
+    <div dir={langConfig.dir} className={`${langConfig.font} relative flex flex-col h-screen w-screen items-center justify-center text-white p-4`}>
+      <Image
+        src="https://i.postimg.cc/XqBg0qC2/Gemini-Generated-Image-qlk5zkqlk5zkqlk5.png"
+        alt="Background"
+        fill
+        className="object-cover -z-10"
+        data-ai-hint="question mark neon"
+      />
+      <div className="absolute inset-0 bg-black/70 -z-10" />
+
+      <div className="flex flex-col items-center text-center max-w-3xl">
+        <svg
+          viewBox="0 0 250 60"
+          className="h-24 w-auto"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g>
+            <text
+              x="0"
+              y="35"
+              fontSize="32"
+              fontWeight="bold"
+              fill="hsl(var(--accent))"
+              className="font-headline drop-shadow-glow-accent"
+            >
+              Zakafan
+            </text>
+            <text
+              x="0"
+              y="55"
+              fontSize="14"
+              fontWeight="bold"
+              fill="white"
+              opacity="0.9"
+              className={langConfig.font}
+            >
+              {aboutTranslations.tagline[lang]}
+            </text>
+          </g>
+          <g transform="translate(190, 0)">
+            <rect width="60" height="60" rx="12" fill="hsl(var(--accent))" />
+            <g
+              stroke="white"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+            >
+              <path d="M42,21 C42,26.5228475 37.5228475,31 32,31 L28,31 C22.4771525,31 18,26.5228475 18,21 C18,15.4771525 22.4771525,11 28,11 C33.5228475,11 37.8,15.4771525 37.8,21" />
+              <path d="M28,31 L28,38 C28,39.1045695 27.1045695,40 26,40 L22,40" />
+              <path d="M32,17 L38,17" />
+              <circle cx="40" cy="17" r="2.5" />
+              <path d="M35,24 L42,24" />
+              <circle cx="44" cy="24" r="2.5" />
+              <path d="M32,31 L36,31" />
+              <circle cx="38" cy="31" r="2.5" />
+              <path d="M28,11 L28,15" />
+              <circle cx="28" cy="17" r="2.5" />
+            </g>
+          </g>
+        </svg>
+
+        <p className="mt-8 text-lg md:text-xl leading-relaxed text-white/90">
+          {aboutTranslations.content[lang]}
+        </p>
+
+        <Button asChild variant="outline" className="mt-10 bg-transparent hover:bg-white/10 border-white/50 text-white hover:text-white">
+          <Link href={lang === 'en' ? '/' : `/?lang=${lang}`}>
+            <ArrowLeft className={isRtl ? "ml-2" : "mr-2"} />
+            {goBackTranslations[lang]}
+          </Link>
+        </Button>
+      </div>
     </div>
   );
 }
