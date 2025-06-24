@@ -10,7 +10,7 @@ const translations = {
   en: [
     {
       icon: <Shield className="h-12 w-12" />,
-      title: "Iran's Military Power",
+      title: "Military Power",
       description: "Information about Iran's military capabilities and equipment.",
       href: "/services",
       image: "https://i.postimg.cc/bw1xjb39/Gemini-Generated-Image-b3uzh6b3uzh6b3uz.png",
@@ -78,7 +78,7 @@ const translations = {
   ar: [
     {
       icon: <Shield className="h-12 w-12" />,
-      title: "القوة العسكرية الإيرانية",
+      title: "القوة العسكرية",
       description: "معلومات حول القدرات والمعدات العسكرية الإيرانية.",
       href: "/services",
       image: "https://i.postimg.cc/bw1xjb39/Gemini-Generated-Image-b3uzh6b3uzh6b3uz.png",
@@ -94,7 +94,7 @@ const translations = {
     },
     {
       icon: <Trophy className="h-12 w-12" />,
-      title: "إنجازات وانتصارات إيران خلال الحرب",
+      title: "الإنجازات والانتصارات",
       description: "نظرة عامة على إنجازات وانتصارات إيران الهامة خلال الحرب.",
       href: "/achievements",
       image: "https://i.postimg.cc/m2YkLwWk/Gemini-Generated-Image-a1tcj2a1tcj2a1tc.png",
@@ -112,7 +112,7 @@ const translations = {
   he: [
     {
       icon: <Shield className="h-12 w-12" />,
-      title: "הכוח הצבאי של איראן",
+      title: "הכוח הצבאי",
       description: "מידע על היכולות והציוד הצבאי של איראן.",
       href: "/services",
       image: "https://i.postimg.cc/bw1xjb39/Gemini-Generated-Image-b3uzh6b3uzh6b3uz.png",
@@ -128,7 +128,7 @@ const translations = {
     },
     {
       icon: <Trophy className="h-12 w-12" />,
-      title: "הישגיה וניצחונותיה של איראן במלחמה",
+      title: "הישגים וניצחונות",
       description: "סקירה כללית של ההישגים והניצחונות המשמעותיים של איראן במהלך המלחמה.",
       href: "/achievements",
       image: "https://i.postimg.cc/m2YkLwWk/Gemini-Generated-Image-a1tcj2a1tcj2a1tc.png",

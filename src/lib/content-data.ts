@@ -24,7 +24,7 @@ export type SectionInfo = {
 }
 
 export const sections: SectionInfo[] = [
-    { id: 'services', href: '/services', title: { en: "Iran's Military Power", fa: "قدرت نظامی", ar: "القوة العسكرية الإيرانية", he: "הכוח הצבאי של איראן" } },
+    { id: 'services', href: '/services', title: { en: "Military Power", fa: "قدرت نظامی", ar: "القوة العسكرية", he: "הכוח הצבאי" } },
     { id: 'projects', href: '/projects', title: { en: "War Statistics", fa: "امار و ارقام جنگ", ar: "إحصائيات الحرب", he: "סטטיסטיקות מלחמה" } },
     { id: 'achievements', href: '/achievements', title: { en: "Achievements & Victories", fa: "دستاوردها و افتخارات", ar: "الإنجازات والانتصارات", he: "הישגים וניצחונות" } },
     { id: 'contact', href: '/contact', title: { en: "Answering Questions", fa: "پاسخ به شبهات", ar: "الرد على الشبهات", he: "מענה לשאלות" } },
