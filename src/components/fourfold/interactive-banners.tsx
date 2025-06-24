@@ -37,8 +37,8 @@ const translations = {
       title: "Answering Questions",
       description: "Addressing common questions and dispelling misinformation.",
       href: "/contact",
-      image: "https://i.postimg.cc/bYMkDL5R/Gemini-Generated-Image-i9qwewi9qwewi9qw.png",
-      imageHint: "Bold, symbolic representation of dispelling misinformation. A glowing red neon question mark dissolving into light particles, with a bright white exclamation point materializing. Dark, serious cyberpunk background with digital noise, representing clarity emerging from confusion.",
+      image: "https://i.postimg.cc/XqBg0qC2/Gemini-Generated-Image-qlk5zkqlk5zkqlk5.png",
+      imageHint: "question mark neon",
     },
   ],
   fa: [
@@ -71,8 +71,8 @@ const translations = {
       title: "پاسخ به شبهات",
       description: "پاسخ به سوالات و شبهات رایج در مورد جنگ.",
       href: "/contact",
-      image: "https://i.postimg.cc/bYMkDL5R/Gemini-Generated-Image-i9qwewi9qwewi9qw.png",
-      imageHint: "misinformation question",
+      image: "https://i.postimg.cc/XqBg0qC2/Gemini-Generated-Image-qlk5zkqlk5zkqlk5.png",
+      imageHint: "question mark neon",
     },
   ],
   ar: [
@@ -105,8 +105,8 @@ const translations = {
       title: "الرد على الشبهات",
       description: "الرد على الأسئلة الشائعة وتوضيح المعلومات الخاطئة.",
       href: "/contact",
-      image: "https://i.postimg.cc/bYMkDL5R/Gemini-Generated-Image-i9qwewi9qwewi9qw.png",
-      imageHint: "misinformation question",
+      image: "https://i.postimg.cc/XqBg0qC2/Gemini-Generated-Image-qlk5zkqlk5zkqlk5.png",
+      imageHint: "question mark neon",
     },
   ],
   he: [
@@ -139,8 +139,8 @@ const translations = {
       title: "מענה לשאלות",
       description: "מענה לשאלות נפוצות והפרכת מידע מוטעה.",
       href: "/contact",
-      image: "https://i.postimg.cc/bYMkDL5R/Gemini-Generated-Image-i9qwewi9qwewi9qw.png",
-      imageHint: "misinformation question",
+      image: "https://i.postimg.cc/XqBg0qC2/Gemini-Generated-Image-qlk5zkqlk5zkqlk5.png",
+      imageHint: "question mark neon",
     },
   ],
 };
