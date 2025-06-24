@@ -29,7 +29,7 @@ const translations = {
       title: "Achievements & Victories",
       description: "An overview of Iran's significant achievements and victories during the war.",
       href: "/about",
-      image: "https://placehold.co/1200x800.png",
+      image: "/image-2.png",
       imageHint: "Minimalist, symbolic cyberpunk trophy, glowing with brilliant golden-yellow neon light. Trophy is surrounded by a holographic laurel wreath. Dark, serious background with subtle futuristic military patterns. Conveys achievement and honor. Bold and iconic.",
     },
     {
@@ -63,7 +63,7 @@ const translations = {
       title: "دستاوردها و پیروزی های ایران درحین جنگ",
       description: "مروری بر دستاوردها و پیروزی‌های مهم ایران در طول جنگ.",
       href: "/about",
-      image: "https://placehold.co/1200x800.png",
+      image: "/image-2.png",
       imageHint: "Minimalist, symbolic cyberpunk trophy, glowing with brilliant golden-yellow neon light. Trophy is surrounded by a holographic laurel wreath. Dark, serious background with subtle futuristic military patterns. Conveys achievement and honor. Bold and iconic.",
     },
     {
@@ -97,7 +97,7 @@ const translations = {
       title: "إنجازات وانتصارات إيران خلال الحرب",
       description: "نظرة عامة على إنجازات وانتصارات إيران الهامة خلال الحرب.",
       href: "/about",
-      image: "https://placehold.co/1200x800.png",
+      image: "/image-2.png",
       imageHint: "Minimalist, symbolic cyberpunk trophy, glowing with brilliant golden-yellow neon light. Trophy is surrounded by a holographic laurel wreath. Dark, serious background with subtle futuristic military patterns. Conveys achievement and honor. Bold and iconic.",
     },
     {
@@ -131,7 +131,7 @@ const translations = {
       title: "הישגיה וניצחונותיה של איראן במלחמה",
       description: "סקירה כללית של ההישגים והניצחונות המשמעותיים של איראן במהלך המלחמה.",
       href: "/about",
-      image: "https://placehold.co/1200x800.png",
+      image: "/image-2.png",
       imageHint: "Minimalist, symbolic cyberpunk trophy, glowing with brilliant golden-yellow neon light. Trophy is surrounded by a holographic laurel wreath. Dark, serious background with subtle futuristic military patterns. Conveys achievement and honor. Bold and iconic.",
     },
     {
