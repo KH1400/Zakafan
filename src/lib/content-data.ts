@@ -119,7 +119,7 @@ const projectsPanels = {
     ],
 };
 
-const aboutPanels = {
+const achievementsPanels = {
     en: [
         { title: "Liberation of Khorramshahr", image: "https://placehold.co/800x800.png", imageHint: "victory flag city", gridArea: "1 / 1 / 3 / 3" },
         { title: "Operation Fath-ol-Mobin", image: "https://placehold.co/400x400.png", imageHint: "military strategy map", gridArea: "1 / 3 / 2 / 4" },
@@ -193,6 +193,6 @@ const contactPanels = {
 export const allContentItems: ContentItem[] = [
     ...processPanels('services', servicesPanels),
     ...processPanels('projects', projectsPanels),
-    ...processPanels('achievements', aboutPanels),
+    ...processPanels('achievements', achievementsPanels),
     ...processPanels('contact', contactPanels),
 ];
