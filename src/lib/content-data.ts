@@ -9,7 +9,7 @@ export type MosaicPanel = {
 };
 
 export type ContentItem = {
-    sectionId: 'services' | 'projects' | 'about' | 'contact';
+    sectionId: 'services' | 'projects' | 'achievements' | 'contact';
     slug: string;
     title: Record<Language, string>;
     image: string;
@@ -18,7 +18,7 @@ export type ContentItem = {
 }
 
 export type SectionInfo = {
-    id: 'services' | 'projects' | 'about' | 'contact';
+    id: 'services' | 'projects' | 'achievements' | 'contact';
     title: Record<Language, string>;
     href: string;
 }
@@ -26,7 +26,7 @@ export type SectionInfo = {
 export const sections: SectionInfo[] = [
     { id: 'services', href: '/services', title: { en: "Iran's Military Power", fa: "قدرت نظامی ایران", ar: "القوة العسكرية الإيرانية", he: "הכוח הצבאי של איראן" } },
     { id: 'projects', href: '/projects', title: { en: "War Statistics", fa: "آمار و ارقام مرتبط با جنگ", ar: "إحصائيات الحرب", he: "סטטיסטיקות מלחמה" } },
-    { id: 'about', href: '/about', title: { en: "Achievements & Victories", fa: "دستاوردها و پیروزی ها", ar: "الإنجازات والانتصارات", he: "הישגים וניצחונות" } },
+    { id: 'achievements', href: '/achievements', title: { en: "Achievements & Victories", fa: "دستاوردها و پیروزی ها", ar: "الإنجازات والانتصارات", he: "הישגים וניצחונות" } },
     { id: 'contact', href: '/contact', title: { en: "Answering Questions", fa: "پاسخ به شبهات", ar: "الرد على الشبهات", he: "מענה לשאלות" } },
 ];
 
@@ -193,6 +193,6 @@ const contactPanels = {
 export const allContentItems: ContentItem[] = [
     ...processPanels('services', servicesPanels),
     ...processPanels('projects', projectsPanels),
-    ...processPanels('about', aboutPanels),
+    ...processPanels('achievements', aboutPanels),
     ...processPanels('contact', contactPanels),
 ];
