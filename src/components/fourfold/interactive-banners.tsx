@@ -13,7 +13,7 @@ const translations = {
       title: "Iran's Military Power",
       description: "Information about Iran's military capabilities and equipment.",
       href: "/services",
-      image: "https://drive.google.com/uc?export=view&id=1KU-RgQKRH8E6fLTjKQVZzFyZnJW4Wy0e",
+      image: "https://lh3.googleusercontent.com/d/1KU-RgQKRH8E6fLTjKQVZzFyZnJW4Wy0e",
       imageHint: "Symbolic holographic military shield, glowing with dominant blue neon light. Intricate cyberpunk circuitry patterns. Background of faint, glowing outlines of futuristic tanks and jets in a dark, high-tech command center. Minimalist, bold, powerful, serious military feel.",
     },
     {
@@ -21,7 +21,7 @@ const translations = {
       title: "War Statistics",
       description: "A look at key statistics and figures throughout the war.",
       href: "/projects",
-      image: "https://drive.google.com/uc?export=view&id=1xUAWeeoA1nwGOsPWNkXyrvZGOSCJ4csW",
+      image: "https://lh3.googleusercontent.com/d/1xUAWeeoA1nwGOsPWNkXyrvZGOSCJ4csW",
       imageHint: "Abstract 3D data visualization of war statistics. Glowing green neon bar charts and graphs floating in a dark, cyberpunk command room. Symbolic and minimalist, with a serious, analytical tone. Digital grid lines on floor and walls.",
     },
     {
@@ -29,7 +29,7 @@ const translations = {
       title: "Achievements & Victories",
       description: "An overview of Iran's significant achievements and victories during the war.",
       href: "/about",
-      image: "https://drive.google.com/uc?export=view&id=1r63D6ZdAZV0DVpGZiUcnHFlPfv7i4Iao",
+      image: "https://lh3.googleusercontent.com/d/1r63D6ZdAZV0DVpGZiUcnHFlPfv7i4Iao",
       imageHint: "Minimalist, symbolic cyberpunk trophy, glowing with brilliant golden-yellow neon light. Trophy is surrounded by a holographic laurel wreath. Dark, serious background with subtle futuristic military patterns. Conveys achievement and honor. Bold and iconic.",
     },
     {
@@ -37,7 +37,7 @@ const translations = {
       title: "Answering Questions",
       description: "Addressing common questions and dispelling misinformation.",
       href: "/contact",
-      image: "https://drive.google.com/uc?export=view&id=1Tg5MecdUYZl7G7XBYxPIzZerDu8tIqBc",
+      image: "https://lh3.googleusercontent.com/d/1Tg5MecdUYZl7G7XBYxPIzZerDu8tIqBc",
       imageHint: "Bold, symbolic representation of dispelling misinformation. A glowing red neon question mark dissolving into light particles, with a bright white exclamation point materializing. Dark, serious cyberpunk background with digital noise, representing clarity emerging from confusion.",
     },
   ],
@@ -47,7 +47,7 @@ const translations = {
       title: "قدرت نظامی ایران",
       description: "اطلاعاتی درباره توانایی‌ها و تجهیزات نظامی ایران.",
       href: "/services",
-      image: "https://drive.google.com/uc?export=view&id=1KU-RgQKRH8E6fLTjKQVZzFyZnJW4Wy0e",
+      image: "https://lh3.googleusercontent.com/d/1KU-RgQKRH8E6fLTjKQVZzFyZnJW4Wy0e",
       imageHint: "holographic missile",
     },
     {
@@ -55,7 +55,7 @@ const translations = {
       title: "آمار و ارقام مرتبط با جنگ",
       description: "نگاهی به آمار و ارقام کلیدی در طول جنگ.",
       href: "/projects",
-      image: "https://drive.google.com/uc?export=view&id=1xUAWeeoA1nwGOsPWNkXyrvZGOSCJ4csW",
+      image: "https://lh3.googleusercontent.com/d/1xUAWeeoA1nwGOsPWNkXyrvZGOSCJ4csW",
       imageHint: "war statistics",
     },
     {
@@ -63,7 +63,7 @@ const translations = {
       title: "دستاوردها و پیروزی های ایران درحین جنگ",
       description: "مروری بر دستاوردها و پیروزی‌های مهم ایران در طول جنگ.",
       href: "/about",
-      image: "https://drive.google.com/uc?export=view&id=1r63D6ZdAZV0DVpGZiUcnHFlPfv7i4Iao",
+      image: "https://lh3.googleusercontent.com/d/1r63D6ZdAZV0DVpGZiUcnHFlPfv7i4Iao",
       imageHint: "cyberpunk trophy",
     },
     {
@@ -71,7 +71,7 @@ const translations = {
       title: "پاسخ به شبهات",
       description: "پاسخ به سوالات و شبهات رایج در مورد جنگ.",
       href: "/contact",
-      image: "https://drive.google.com/uc?export=view&id=1Tg5MecdUYZl7G7XBYxPIzZerDu8tIqBc",
+      image: "https://lh3.googleusercontent.com/d/1Tg5MecdUYZl7G7XBYxPIzZerDu8tIqBc",
       imageHint: "misinformation question",
     },
   ],
@@ -81,7 +81,7 @@ const translations = {
       title: "القوة العسكرية الإيرانية",
       description: "معلومات حول القدرات والمعدات العسكرية الإيرانية.",
       href: "/services",
-      image: "https://drive.google.com/uc?export=view&id=1KU-RgQKRH8E6fLTjKQVZzFyZnJW4Wy0e",
+      image: "https://lh3.googleusercontent.com/d/1KU-RgQKRH8E6fLTjKQVZzFyZnJW4Wy0e",
       imageHint: "holographic missile",
     },
     {
@@ -89,7 +89,7 @@ const translations = {
       title: "إحصائيات الحرب",
       description: "نظرة على الإحصائيات والأرقام الرئيسية خلال الحرب.",
       href: "/projects",
-      image: "https://drive.google.com/uc?export=view&id=1xUAWeeoA1nwGOsPWNkXyrvZGOSCJ4csW",
+      image: "https://lh3.googleusercontent.com/d/1xUAWeeoA1nwGOsPWNkXyrvZGOSCJ4csW",
       imageHint: "war statistics",
     },
     {
@@ -97,7 +97,7 @@ const translations = {
       title: "إنجازات وانتصارات إيران خلال الحرب",
       description: "نظرة عامة على إنجازات وانتصارات إيران الهامة خلال الحرب.",
       href: "/about",
-      image: "https://drive.google.com/uc?export=view&id=1r63D6ZdAZV0DVpGZiUcnHFlPfv7i4Iao",
+      image: "https://lh3.googleusercontent.com/d/1r63D6ZdAZV0DVpGZiUcnHFlPfv7i4Iao",
       imageHint: "cyberpunk trophy",
     },
     {
@@ -105,7 +105,7 @@ const translations = {
       title: "الرد على الشبهات",
       description: "الرد على الأسئلة الشائعة وتوضيح المعلومات الخاطئة.",
       href: "/contact",
-      image: "https://drive.google.com/uc?export=view&id=1Tg5MecdUYZl7G7XBYxPIzZerDu8tIqBc",
+      image: "https://lh3.googleusercontent.com/d/1Tg5MecdUYZl7G7XBYxPIzZerDu8tIqBc",
       imageHint: "misinformation question",
     },
   ],
@@ -115,7 +115,7 @@ const translations = {
       title: "הכוח הצבאי של איראן",
       description: "מידע על היכולות והציוד הצבאי של איראן.",
       href: "/services",
-      image: "https://drive.google.com/uc?export=view&id=1KU-RgQKRH8E6fLTjKQVZzFyZnJW4Wy0e",
+      image: "https://lh3.googleusercontent.com/d/1KU-RgQKRH8E6fLTjKQVZzFyZnJW4Wy0e",
       imageHint: "holographic missile",
     },
     {
@@ -123,7 +123,7 @@ const translations = {
       title: "סטטיסטיקות מלחמה",
       description: "מבט על נתונים וסטטיסטיקות מרכזיים לאורך המלחמה.",
       href: "/projects",
-      image: "https://drive.google.com/uc?export=view&id=1xUAWeeoA1nwGOsPWNkXyrvZGOSCJ4csW",
+      image: "https://lh3.googleusercontent.com/d/1xUAWeeoA1nwGOsPWNkXyrvZGOSCJ4csW",
       imageHint: "war statistics",
     },
     {
@@ -131,7 +131,7 @@ const translations = {
       title: "הישגיה וניצחונותיה של איראן במלחמה",
       description: "סקירה כללית של ההישגים והניצחונות המשמעותיים של איראן במהלך המלחמה.",
       href: "/about",
-      image: "https://drive.google.com/uc?export=view&id=1r63D6ZdAZV0DVpGZiUcnHFlPfv7i4Iao",
+      image: "https://lh3.googleusercontent.com/d/1r63D6ZdAZV0DVpGZiUcnHFlPfv7i4Iao",
       imageHint: "cyberpunk trophy",
     },
     {
@@ -139,7 +139,7 @@ const translations = {
       title: "מענה לשאלות",
       description: "מענה לשאלות נפוצות והפרכת מידע מוטעה.",
       href: "/contact",
-      image: "https://drive.google.com/uc?export=view&id=1Tg5MecdUYZl7G7XBYxPIzZerDu8tIqBc",
+      image: "https://lh3.googleusercontent.com/d/1Tg5MecdUYZl7G7XBYxPIzZerDu8tIqBc",
       imageHint: "misinformation question",
     },
   ],
