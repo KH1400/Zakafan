@@ -44,7 +44,7 @@ const translations = {
   fa: [
     {
       icon: <Shield className="h-12 w-12" />,
-      title: "قدرت نظامی ایران",
+      title: "قدرت نظامی",
       description: "اطلاعاتی درباره توانایی‌ها و تجهیزات نظامی ایران.",
       href: "/services",
       image: "https://i.postimg.cc/bw1xjb39/Gemini-Generated-Image-b3uzh6b3uzh6b3uz.png",
