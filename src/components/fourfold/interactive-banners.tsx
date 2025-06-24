@@ -21,7 +21,7 @@ const translations = {
       title: "War Statistics",
       description: "A look at key statistics and figures throughout the war.",
       href: "/projects",
-      image: "https://placehold.co/1200x800.png",
+      image: "/image-1.png",
       imageHint: "Abstract 3D data visualization of war statistics. Glowing green neon bar charts and graphs floating in a dark, cyberpunk command room. Symbolic and minimalist, with a serious, analytical tone. Digital grid lines on floor and walls.",
     },
     {
@@ -55,7 +55,7 @@ const translations = {
       title: "آمار و ارقام مرتبط با جنگ",
       description: "نگاهی به آمار و ارقام کلیدی در طول جنگ.",
       href: "/projects",
-      image: "https://placehold.co/1200x800.png",
+      image: "/image-1.png",
       imageHint: "Abstract 3D data visualization of war statistics. Glowing green neon bar charts and graphs floating in a dark, cyberpunk command room. Symbolic and minimalist, with a serious, analytical tone. Digital grid lines on floor and walls.",
     },
     {
@@ -89,7 +89,7 @@ const translations = {
       title: "إحصائيات الحرب",
       description: "نظرة على الإحصائيات والأرقام الرئيسية خلال الحرب.",
       href: "/projects",
-      image: "https://placehold.co/1200x800.png",
+      image: "/image-1.png",
       imageHint: "Abstract 3D data visualization of war statistics. Glowing green neon bar charts and graphs floating in a dark, cyberpunk command room. Symbolic and minimalist, with a serious, analytical tone. Digital grid lines on floor and walls.",
     },
     {
@@ -123,7 +123,7 @@ const translations = {
       title: "סטטיסטיקות מלחמה",
       description: "מבט על נתונים וסטטיסטיקות מרכזיים לאורך המלחמה.",
       href: "/projects",
-      image: "https://placehold.co/1200x800.png",
+      image: "/image-1.png",
       imageHint: "Abstract 3D data visualization of war statistics. Glowing green neon bar charts and graphs floating in a dark, cyberpunk command room. Symbolic and minimalist, with a serious, analytical tone. Digital grid lines on floor and walls.",
     },
     {
