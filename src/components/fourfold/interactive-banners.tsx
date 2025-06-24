@@ -21,8 +21,8 @@ const translations = {
       title: "War Statistics",
       description: "A look at key statistics and figures throughout the war.",
       href: "/projects",
-      image: "https://i.postimg.cc/PJBwgrD7/Gemini-Generated-Image-xz8e4kxz8e4kxz8e.png",
-      imageHint: "Abstract 3D data visualization of war statistics. Glowing green neon bar charts and graphs floating in a dark, cyberpunk command room. Symbolic and minimalist, with a serious, analytical tone. Digital grid lines on floor and walls.",
+      image: "https://i.postimg.cc/sfBdTRXx/Gemini-Generated-Image-l1uliil1uliil1ul.png",
+      imageHint: "holographic chart",
     },
     {
       icon: <Trophy className="h-12 w-12" />,
@@ -55,8 +55,8 @@ const translations = {
       title: "امار و ارقام جنگ",
       description: "نگاهی به آمار و ارقام کلیدی در طول جنگ.",
       href: "/projects",
-      image: "https://i.postimg.cc/PJBwgrD7/Gemini-Generated-Image-xz8e4kxz8e4kxz8e.png",
-      imageHint: "war statistics",
+      image: "https://i.postimg.cc/sfBdTRXx/Gemini-Generated-Image-l1uliil1uliil1ul.png",
+      imageHint: "holographic chart",
     },
     {
       icon: <Trophy className="h-12 w-12" />,
@@ -89,8 +89,8 @@ const translations = {
       title: "إحصائيات الحرب",
       description: "نظرة على الإحصائيات والأرقام الرئيسية خلال الحرب.",
       href: "/projects",
-      image: "https://i.postimg.cc/PJBwgrD7/Gemini-Generated-Image-xz8e4kxz8e4kxz8e.png",
-      imageHint: "war statistics",
+      image: "https://i.postimg.cc/sfBdTRXx/Gemini-Generated-Image-l1uliil1uliil1ul.png",
+      imageHint: "holographic chart",
     },
     {
       icon: <Trophy className="h-12 w-12" />,
@@ -123,8 +123,8 @@ const translations = {
       title: "סטטיסטיקות מלחמה",
       description: "מבט על נתונים וסטטיסטיקות מרכזיים לאורך המלחמה.",
       href: "/projects",
-      image: "https://i.postimg.cc/PJBwgrD7/Gemini-Generated-Image-xz8e4kxz8e4kxz8e.png",
-      imageHint: "war statistics",
+      image: "https://i.postimg.cc/sfBdTRXx/Gemini-Generated-Image-l1uliil1uliil1ul.png",
+      imageHint: "holographic chart",
     },
     {
       icon: <Trophy className="h-12 w-12" />,
