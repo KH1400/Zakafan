@@ -32,7 +32,7 @@ const translations = {
     he: 'עלינו',
   },
   tagline: {
-    en: 'Diynographic Reference',
+    en: 'Dynography Reference',
     fa: 'مرجع داینوگرافی',
     ar: 'مرجع داينوغرافي',
     he: 'התייחסות לדיינוגרפיה',
