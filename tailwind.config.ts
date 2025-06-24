@@ -16,7 +16,7 @@ export default {
       fontFamily: {
         body: ['Inter', 'sans-serif'],
         headline: ['Inter', 'sans-serif'],
-        persian: ['Vazirmatn', 'sans-serif'],
+        persian: ['Noto Sans Arabic', 'sans-serif'],
         arabic: ['Noto Sans Arabic', 'sans-serif'],
         hebrew: ['Noto Sans Hebrew', 'sans-serif'],
         code: ['monospace'],
