@@ -18,10 +18,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'lh3.googleusercontent.com',
+        hostname: 'i.postimg.cc',
         port: '',
         pathname: '/**',
-      },
+      }
     ],
   },
 };
