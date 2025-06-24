@@ -69,43 +69,45 @@ export default function AboutPage({ searchParams }: { searchParams?: { lang?: st
           <svg width="250" height="60" viewBox="0 0 250 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-24 w-auto">
             <g transform="translate(5, 5)">
               <rect width="50" height="50" rx="8" fill="#FFDA63"/>
-              <g transform="translate(10,8)" stroke="hsl(var(--primary))" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M25,23.5 C25,29.85 19.85,35 13.5,35 C7.15,35 2,29.85 2,23.5 C2,17.15 7.15,12 13.5,12 C15.5,12 17.5,12.5 19,13.5" />
-                  <path d="M19,13.5 L22,10.5" />
-                  <circle cx="23" cy="9.5" r="1.5" strokeWidth="0" className="fill-primary"/>
-                  <path d="M13.5,12 V5" />
-                  <circle cx="13.5" cy="4" r="1.5" strokeWidth="0" className="fill-primary"/>
-                  <path d="M13.5,18 L8,18" />
-                  <circle cx="7" cy="18" r="1.5" strokeWidth="0" className="fill-primary"/>
-                  <path d="M13.5,25 L8,25" />
-                  <circle cx="7" cy="25" r="1.5" strokeWidth="0" className="fill-primary"/>
-                  <path d="M18,30 L21,27" />
-                  <circle cx="22" cy="26" r="1.5" strokeWidth="0" className="fill-primary"/>
+              <g transform="translate(10,8)" stroke="hsl(var(--chart-1))" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M35.6 38.2c-1.3-0.5-2.7-0.8-4.2-0.8 -5.8 0-10.5-4.7-10.5-10.5V22.5c0-5.8 4.7-10.5 10.5-10.5 3.9 0 7.3 2.1 9.1 5.2" />
+                <path d="M28.3 35.5L32.6 35.5" />
+                <path d="M26.4 20.2L30.2 20.2" />
+                <circle cx="25" cy="20.2" r="1.5" strokeWidth="0" fill="hsl(var(--chart-1))"/>
+                <path d="M30.2 20.2L30.2 16" />
+                <circle cx="30.2" cy="14.5" r="1.5" strokeWidth="0" fill="hsl(var(--chart-1))"/>
+                <path d="M30.2 20.2L34.5 24.5" />
+                <circle cx="35.5" cy="25.5" r="1.5" strokeWidth="0" fill="hsl(var(--chart-1))"/>
+                <path d="M30.2 20.2L30.2 26" />
+                <circle cx="30.2" cy="27.5" r="1.5" strokeWidth="0" fill="hsl(var(--chart-1))"/>
+                <path d="M30.2 26L26.5 29" />
+                <circle cx="25.5" cy="29.5" r="1.5" strokeWidth="0" fill="hsl(var(--chart-1))"/>
               </g>
             </g>
-            <text x="245" y="28" direction="rtl" textAnchor="end" fontFamily={fontFamilies[lang]} fontSize="22" fontWeight="bold" className="fill-white">{logoBrandNames[lang]}</text>
+            <text x="245" y="28" direction="rtl" textAnchor="end" fontFamily={fontFamilies[lang]} fontSize="22" fontWeight="bold" fill="hsl(var(--chart-1))">{logoBrandNames[lang]}</text>
             <text x="245" y="48" direction="rtl" textAnchor="end" fontFamily={fontFamilies[lang]} fontSize="12" className="fill-white/80">{logoTaglines[lang]}</text>
           </svg>
         ) : (
           <svg width="250" height="60" viewBox="0 0 250 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-24 w-auto">
-             <g transform="translate(190, 5)">
+            <text x="5" y="28" fontFamily={fontFamilies[lang]} fontSize="22" fontWeight="bold" fill="hsl(var(--chart-1))">{logoBrandNames.en}</text>
+            <text x="5" y="48" fontFamily={fontFamilies[lang]} fontSize="12" className="fill-white/80">{logoTaglines.en}</text>
+            <g transform="translate(190, 5)">
               <rect width="50" height="50" rx="8" fill="#FFDA63"/>
-               <g transform="translate(10,8)" stroke="hsl(var(--primary))" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M25,23.5 C25,29.85 19.85,35 13.5,35 C7.15,35 2,29.85 2,23.5 C2,17.15 7.15,12 13.5,12 C15.5,12 17.5,12.5 19,13.5" />
-                  <path d="M19,13.5 L22,10.5" />
-                  <circle cx="23" cy="9.5" r="1.5" strokeWidth="0" className="fill-primary"/>
-                  <path d="M13.5,12 V5" />
-                  <circle cx="13.5" cy="4" r="1.5" strokeWidth="0" className="fill-primary"/>
-                  <path d="M13.5,18 L8,18" />
-                  <circle cx="7" cy="18" r="1.5" strokeWidth="0" className="fill-primary"/>
-                  <path d="M13.5,25 L8,25" />
-                  <circle cx="7" cy="25" r="1.5" strokeWidth="0" className="fill-primary"/>
-                  <path d="M18,30 L21,27" />
-                  <circle cx="22" cy="26" r="1.5" strokeWidth="0" className="fill-primary"/>
+              <g transform="translate(10,8)" stroke="hsl(var(--chart-1))" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M35.6 38.2c-1.3-0.5-2.7-0.8-4.2-0.8 -5.8 0-10.5-4.7-10.5-10.5V22.5c0-5.8 4.7-10.5 10.5-10.5 3.9 0 7.3 2.1 9.1 5.2" />
+                <path d="M28.3 35.5L32.6 35.5" />
+                <path d="M26.4 20.2L30.2 20.2" />
+                <circle cx="25" cy="20.2" r="1.5" strokeWidth="0" fill="hsl(var(--chart-1))"/>
+                <path d="M30.2 20.2L30.2 16" />
+                <circle cx="30.2" cy="14.5" r="1.5" strokeWidth="0" fill="hsl(var(--chart-1))"/>
+                <path d="M30.2 20.2L34.5 24.5" />
+                <circle cx="35.5" cy="25.5" r="1.5" strokeWidth="0" fill="hsl(var(--chart-1))"/>
+                <path d="M30.2 20.2L30.2 26" />
+                <circle cx="30.2" cy="27.5" r="1.5" strokeWidth="0" fill="hsl(var(--chart-1))"/>
+                <path d="M30.2 26L26.5 29" />
+                <circle cx="25.5" cy="29.5" r="1.5" strokeWidth="0" fill="hsl(var(--chart-1))"/>
               </g>
             </g>
-            <text x="5" y="28" fontFamily={fontFamilies[lang]} fontSize="22" fontWeight="bold" className="fill-white">{logoBrandNames.en}</text>
-            <text x="5" y="48" fontFamily={fontFamilies[lang]} fontSize="12" className="fill-white/80">{logoTaglines.en}</text>
           </svg>
         )}
 
