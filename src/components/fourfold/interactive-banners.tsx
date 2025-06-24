@@ -13,8 +13,8 @@ const translations = {
       title: "Iran's Military Power",
       description: "Information about Iran's military capabilities and equipment.",
       href: "/services",
-      image: "https://placehold.co/1200x800.png",
-      imageHint: "Symbolic holographic military shield, glowing with dominant blue neon light. Intricate cyberpunk circuitry patterns. Background of faint, glowing outlines of futuristic tanks and jets in a dark, high-tech command center. Minimalist, bold, powerful, serious military feel.",
+      image: "/image.png",
+      imageHint: "holographic missile",
     },
     {
       icon: <BarChart3 className="h-12 w-12" />,
@@ -47,8 +47,8 @@ const translations = {
       title: "قدرت نظامی ایران",
       description: "اطلاعاتی درباره توانایی‌ها و تجهیزات نظامی ایران.",
       href: "/services",
-      image: "https://placehold.co/1200x800.png",
-      imageHint: "Symbolic holographic military shield, glowing with dominant blue neon light. Intricate cyberpunk circuitry patterns. Background of faint, glowing outlines of futuristic tanks and jets in a dark, high-tech command center. Minimalist, bold, powerful, serious military feel.",
+      image: "/image.png",
+      imageHint: "holographic missile",
     },
     {
       icon: <BarChart3 className="h-12 w-12" />,
@@ -81,8 +81,8 @@ const translations = {
       title: "القوة العسكرية الإيرانية",
       description: "معلومات حول القدرات والمعدات العسكرية الإيرانية.",
       href: "/services",
-      image: "https://placehold.co/1200x800.png",
-      imageHint: "Symbolic holographic military shield, glowing with dominant blue neon light. Intricate cyberpunk circuitry patterns. Background of faint, glowing outlines of futuristic tanks and jets in a dark, high-tech command center. Minimalist, bold, powerful, serious military feel.",
+      image: "/image.png",
+      imageHint: "holographic missile",
     },
     {
       icon: <BarChart3 className="h-12 w-12" />,
@@ -115,8 +115,8 @@ const translations = {
       title: "הכוח הצבאי של איראן",
       description: "מידע על היכולות והציוד הצבאי של איראן.",
       href: "/services",
-      image: "https://placehold.co/1200x800.png",
-      imageHint: "Symbolic holographic military shield, glowing with dominant blue neon light. Intricate cyberpunk circuitry patterns. Background of faint, glowing outlines of futuristic tanks and jets in a dark, high-tech command center. Minimalist, bold, powerful, serious military feel.",
+      image: "/image.png",
+      imageHint: "holographic missile",
     },
     {
       icon: <BarChart3 className="h-12 w-12" />,
