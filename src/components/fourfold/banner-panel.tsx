@@ -48,6 +48,10 @@ export function BannerPanel({
         data-ai-hint={imageHint}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+      
+      {/* Shadow on the right edge for visual separation */}
+      <div className="absolute inset-y-0 right-0 w-4 bg-gradient-to-l from-black/30 to-transparent pointer-events-none" />
+
       <div className="relative flex h-full flex-col justify-end p-4 md:p-8 text-white">
         <div
           className={cn(
