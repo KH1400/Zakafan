@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Menu, Search } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,9 +13,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
+import { SearchComponent } from './search-component';
 
 type Language = 'fa' | 'en' | 'ar' | 'he';
 
@@ -39,12 +37,6 @@ const translations = {
     ar: 'مرجع داينوغرافي',
     he: 'התייחסות לדיינוגרפיה',
   },
-  searchPlaceholder: {
-    en: 'Search...',
-    fa: 'جستجو...',
-    ar: 'بحث...',
-    he: 'חיפוש...',
-  }
 }
 
 type HeaderProps = {
@@ -54,7 +46,6 @@ type HeaderProps = {
 
 export function Header({ currentLang, onLanguageChange }: HeaderProps) {
   const taglineFont = languageOptions[currentLang]?.font || 'font-body';
-  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
   return (
     <header className="flex h-20 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0">
@@ -112,25 +103,7 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
       </Link>
 
       <div className="flex items-center gap-2">
-        <div 
-          className="flex items-center"
-          onMouseEnter={() => setIsSearchExpanded(true)}
-          onMouseLeave={() => setIsSearchExpanded(false)}
-        >
-          <Input 
-            type="search"
-            placeholder={translations.searchPlaceholder[currentLang]}
-            className={cn(
-              "h-9 transition-all duration-300 ease-in-out",
-              "focus-visible:ring-offset-0 focus-visible:ring-1",
-              isSearchExpanded ? "w-36 md:w-48 px-3 opacity-100" : "w-0 p-0 opacity-0 border-none"
-            )}
-            onFocus={() => setIsSearchExpanded(true)}
-          />
-          <Button variant="ghost" size="icon" aria-label="Search" className="h-9 w-9 flex-shrink-0">
-             <Search className="h-5 w-5" />
-          </Button>
-        </div>
+        <SearchComponent lang={currentLang} />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

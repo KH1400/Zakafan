@@ -3,71 +3,37 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Footer } from "@/components/fourfold/footer";
-import { MosaicLayout, type MosaicPanelData } from "@/components/fourfold/mosaic-layout";
+import { MosaicLayout } from "@/components/fourfold/mosaic-layout";
+import { allContentItems, sections, type Language } from "@/lib/content-data";
 
-type Language = 'fa' | 'en' | 'ar' | 'he';
+const sectionInfo = sections.find(s => s.id === 'projects')!;
+const sectionContent = allContentItems.filter(item => item.sectionId === 'projects');
 
-const translations = {
-    title: {
-        en: "War Statistics",
-        fa: "آمار و ارقام مرتبط با جنگ",
-        ar: "إحصائيات الحرب",
-        he: "סטטיסטיקות מלחמה",
-    },
-    goBack: {
-        en: "Go Back Home",
-        fa: "بازگشت به خانه",
-        ar: "العودة إلى الرئيسية",
-        he: "חזור לדף הבית",
-    },
-    panels: {
-        en: [
-            { title: "Timeline", image: "https://placehold.co/800x800.png", imageHint: "abstract timeline spiral", gridArea: "1 / 1 / 3 / 3" },
-            { title: "Economic Impact", image: "https://placehold.co/400x400.png", imageHint: "financial charts graphs", gridArea: "1 / 3 / 2 / 4" },
-            { title: "Casualties", image: "https://placehold.co/400x400.png", imageHint: "memorial solemn", gridArea: "2 / 3 / 3 / 4" },
-            { title: "Key Battles", image: "https://placehold.co/400x400.png", imageHint: "strategy map battlefield", gridArea: "3 / 1 / 4 / 2" },
-            { title: "Equipment Losses", image: "https://placehold.co/400x400.png", imageHint: "wrecked tank desert", gridArea: "3 / 2 / 4 / 3" },
-            { title: "Refugees", image: "https://placehold.co/400x400.png", imageHint: "people walking road", gridArea: "3 / 3 / 4 / 4" },
-        ],
-        fa: [
-            { title: "گاه‌شمار", image: "https://placehold.co/800x800.png", imageHint: "abstract timeline spiral", gridArea: "1 / 1 / 3 / 3" },
-            { title: "تاثیر اقتصادی", image: "https://placehold.co/400x400.png", imageHint: "financial charts graphs", gridArea: "1 / 3 / 2 / 4" },
-            { title: "تلفات", image: "https://placehold.co/400x400.png", imageHint: "memorial solemn", gridArea: "2 / 3 / 3 / 4" },
-            { title: "نبردهای کلیدی", image: "https://placehold.co/400x400.png", imageHint: "strategy map battlefield", gridArea: "3 / 1 / 4 / 2" },
-            { title: "خسارات تجهیزات", image: "https://placehold.co/400x400.png", imageHint: "wrecked tank desert", gridArea: "3 / 2 / 4 / 3" },
-            { title: "پناهندگان", image: "https://placehold.co/400x400.png", imageHint: "people walking road", gridArea: "3 / 3 / 4 / 4" },
-        ],
-        ar: [
-            { title: "الجدول الزمني", image: "https://placehold.co/800x800.png", imageHint: "abstract timeline spiral", gridArea: "1 / 1 / 3 / 3" },
-            { title: "التأثير الاقتصادي", image: "https://placehold.co/400x400.png", imageHint: "financial charts graphs", gridArea: "1 / 3 / 2 / 4" },
-            { title: "الخسائر", image: "https://placehold.co/400x400.png", imageHint: "memorial solemn", gridArea: "2 / 3 / 3 / 4" },
-            { title: "المعارك الرئيسية", image: "https://placehold.co/400x400.png", imageHint: "strategy map battlefield", gridArea: "3 / 1 / 4 / 2" },
-            { title: "خسائر المعدات", image: "https://placehold.co/400x400.png", imageHint: "wrecked tank desert", gridArea: "3 / 2 / 4 / 3" },
-            { title: "اللاجئين", image: "https://placehold.co/400x400.png", imageHint: "people walking road", gridArea: "3 / 3 / 4 / 4" },
-        ],
-        he: [
-            { title: "ציר זמן", image: "https://placehold.co/800x800.png", imageHint: "abstract timeline spiral", gridArea: "1 / 1 / 3 / 3" },
-            { title: "השפעה כלכלית", image: "https://placehold.co/400x400.png", imageHint: "financial charts graphs", gridArea: "1 / 3 / 2 / 4" },
-            { title: "נפגעים", image: "https://placehold.co/400x400.png", imageHint: "memorial solemn", gridArea: "2 / 3 / 3 / 4" },
-            { title: "קרבות מרכזיים", image: "https://placehold.co/400x400.png", imageHint: "strategy map battlefield", gridArea: "3 / 1 / 4 / 2" },
-            { title: "אבדות בציוד", image: "https://placehold.co/400x400.png", imageHint: "wrecked tank desert", gridArea: "3 / 2 / 4 / 3" },
-            { title: "פליטים", image: "https://placehold.co/400x400.png", imageHint: "people walking road", gridArea: "3 / 3 / 4 / 4" },
-        ],
-    }
+const goBackTranslations = {
+    en: "Go Back Home",
+    fa: "بازگشت به خانه",
+    ar: "العودة إلى الرئيسية",
+    he: "חזור לדף הבית",
 };
 
 export default function ProjectsPage({ searchParams }: { searchParams?: { lang?: string } }) {
     const lang = (searchParams?.lang || 'en') as Language;
-    const panelData = translations.panels[lang] || translations.panels.en;
     const isRtl = lang === 'fa' || lang === 'ar' || lang === 'he';
+
+    const panelData = sectionContent.map(item => ({
+      title: item.title[lang],
+      image: item.image,
+      imageHint: item.imageHint,
+      gridArea: item.gridArea,
+  }));
 
   return (
     <div className="flex flex-col h-screen w-screen bg-background text-foreground overflow-hidden">
         <header className="flex h-20 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0">
-          <h1 className="text-xl md:text-2xl font-bold font-headline">{translations.title[lang]}</h1>
+          <h1 className="text-xl md:text-2xl font-bold font-headline">{sectionInfo.title[lang]}</h1>
           <Button asChild variant="outline">
             <Link href={lang === 'en' ? '/' : `/?lang=${lang}`}>
-              <ArrowLeft className={isRtl ? "ml-2" : "mr-2"} /> {translations.goBack[lang]}
+              <ArrowLeft className={isRtl ? "ml-2" : "mr-2"} /> {goBackTranslations[lang]}
             </Link>
           </Button>
         </header>
