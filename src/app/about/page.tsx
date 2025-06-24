@@ -66,34 +66,46 @@ export default function AboutPage({ searchParams }: { searchParams?: { lang?: st
 
       <div className="flex flex-col items-center text-center max-w-3xl">
         {isRtl ? (
-          <svg width="240" height="60" viewBox="0 0 240 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-24 w-auto">
-            <defs>
-              <linearGradient id="logo-gradient-rtl-about" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" style={{ stopColor: 'hsl(var(--primary))' }} />
-                <stop offset="100%" style={{ stopColor: 'hsl(var(--accent))' }} />
-              </linearGradient>
-            </defs>
-            <g transform="translate(180, 5)">
-                <path d="M 15,10 C 8,10 5,15 5,20 V 40 C 5,45 8,50 15,50 H 30 C 20,40 20,20 30,10 H 15 Z" fill="url(#logo-gradient-rtl-about)" />
-                <path d="M 30,10 C 40,20 40,40 30,50 H 45 C 52,50 55,45 55,40 V 20 C 55,15 52,10 45,10 H 30 Z" fill="#FFDA63" />
+          <svg width="250" height="60" viewBox="0 0 250 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-24 w-auto">
+            <g transform="translate(5, 5)">
+              <rect width="50" height="50" rx="8" fill="#FFDA63"/>
+              <g transform="translate(10,8)" stroke="hsl(var(--primary))" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M25,23.5 C25,29.85 19.85,35 13.5,35 C7.15,35 2,29.85 2,23.5 C2,17.15 7.15,12 13.5,12 C15.5,12 17.5,12.5 19,13.5" />
+                  <path d="M19,13.5 L22,10.5" />
+                  <circle cx="23" cy="9.5" r="1.5" strokeWidth="0" className="fill-primary"/>
+                  <path d="M13.5,12 V5" />
+                  <circle cx="13.5" cy="4" r="1.5" strokeWidth="0" className="fill-primary"/>
+                  <path d="M13.5,18 L8,18" />
+                  <circle cx="7" cy="18" r="1.5" strokeWidth="0" className="fill-primary"/>
+                  <path d="M13.5,25 L8,25" />
+                  <circle cx="7" cy="25" r="1.5" strokeWidth="0" className="fill-primary"/>
+                  <path d="M18,30 L21,27" />
+                  <circle cx="22" cy="26" r="1.5" strokeWidth="0" className="fill-primary"/>
+              </g>
             </g>
-            <text x="170" y="28" direction="rtl" textAnchor="end" fontFamily={fontFamilies[lang]} fontSize="22" fontWeight="bold" className="fill-white">{logoBrandNames[lang]}</text>
-            <text x="170" y="48" direction="rtl" textAnchor="end" fontFamily={fontFamilies[lang]} fontSize="12" className="fill-white/80">{logoTaglines[lang]}</text>
+            <text x="245" y="28" direction="rtl" textAnchor="end" fontFamily={fontFamilies[lang]} fontSize="22" fontWeight="bold" className="fill-white">{logoBrandNames[lang]}</text>
+            <text x="245" y="48" direction="rtl" textAnchor="end" fontFamily={fontFamilies[lang]} fontSize="12" className="fill-white/80">{logoTaglines[lang]}</text>
           </svg>
         ) : (
-          <svg width="240" height="60" viewBox="0 0 240 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-24 w-auto">
-            <defs>
-              <linearGradient id="logo-gradient-ltr-about" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" style={{ stopColor: 'hsl(var(--primary))' }} />
-                <stop offset="100%" style={{ stopColor: 'hsl(var(--accent))' }} />
-              </linearGradient>
-            </defs>
-            <g transform="translate(0, 5)">
-              <path d="M 15,10 C 8,10 5,15 5,20 V 40 C 5,45 8,50 15,50 H 30 C 20,40 20,20 30,10 H 15 Z" fill="url(#logo-gradient-ltr-about)" />
-              <path d="M 30,10 C 40,20 40,40 30,50 H 45 C 52,50 55,45 55,40 V 20 C 55,15 52,10 45,10 H 30 Z" fill="#FFDA63" />
+          <svg width="250" height="60" viewBox="0 0 250 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-24 w-auto">
+             <g transform="translate(190, 5)">
+              <rect width="50" height="50" rx="8" fill="#FFDA63"/>
+               <g transform="translate(10,8)" stroke="hsl(var(--primary))" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M25,23.5 C25,29.85 19.85,35 13.5,35 C7.15,35 2,29.85 2,23.5 C2,17.15 7.15,12 13.5,12 C15.5,12 17.5,12.5 19,13.5" />
+                  <path d="M19,13.5 L22,10.5" />
+                  <circle cx="23" cy="9.5" r="1.5" strokeWidth="0" className="fill-primary"/>
+                  <path d="M13.5,12 V5" />
+                  <circle cx="13.5" cy="4" r="1.5" strokeWidth="0" className="fill-primary"/>
+                  <path d="M13.5,18 L8,18" />
+                  <circle cx="7" cy="18" r="1.5" strokeWidth="0" className="fill-primary"/>
+                  <path d="M13.5,25 L8,25" />
+                  <circle cx="7" cy="25" r="1.5" strokeWidth="0" className="fill-primary"/>
+                  <path d="M18,30 L21,27" />
+                  <circle cx="22" cy="26" r="1.5" strokeWidth="0" className="fill-primary"/>
+              </g>
             </g>
-            <text x="70" y="28" fontFamily={fontFamilies[lang]} fontSize="22" fontWeight="bold" className="fill-white">Zakafan</text>
-            <text x="70" y="48" fontFamily={fontFamilies[lang]} fontSize="12" className="fill-white/80">{logoTaglines.en}</text>
+            <text x="5" y="28" fontFamily={fontFamilies[lang]} fontSize="22" fontWeight="bold" className="fill-white">{logoBrandNames.en}</text>
+            <text x="5" y="48" fontFamily={fontFamilies[lang]} fontSize="12" className="fill-white/80">{logoTaglines.en}</text>
           </svg>
         )}
 
