@@ -52,7 +52,7 @@ const translations = {
     },
     {
       icon: <BarChart3 className="h-12 w-12" />,
-      title: "آمار و ارقام مرتبط با جنگ",
+      title: "امار و ارقام جنگ",
       description: "نگاهی به آمار و ارقام کلیدی در طول جنگ.",
       href: "/projects",
       image: "https://i.postimg.cc/PJBwgrD7/Gemini-Generated-Image-xz8e4kxz8e4kxz8e.png",
@@ -60,7 +60,7 @@ const translations = {
     },
     {
       icon: <Trophy className="h-12 w-12" />,
-      title: "دستاوردها و پیروزی های ایران درحین جنگ",
+      title: "دستاوردها و افتخارات",
       description: "مروری بر دستاوردها و پیروزی‌های مهم ایران در طول جنگ.",
       href: "/achievements",
       image: "https://i.postimg.cc/m2YkLwWk/Gemini-Generated-Image-a1tcj2a1tcj2a1tc.png",
