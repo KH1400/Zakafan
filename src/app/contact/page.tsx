@@ -28,7 +28,7 @@ export default function ContactPage({ searchParams }: { searchParams?: { lang?: 
   }));
 
   return (
-    <div className="flex flex-col h-screen w-screen bg-background text-foreground overflow-hidden">
+    <div className="flex flex-col h-screen w-full bg-background text-foreground overflow-hidden">
         <header className="flex h-20 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0">
           <h1 className="text-xl md:text-2xl font-bold font-headline">{sectionInfo.title[lang]}</h1>
           <Button asChild variant="outline">

@@ -62,7 +62,7 @@ export default function AboutPage({ searchParams }: { searchParams?: { lang?: st
   const textAnchor = isRtl ? "end" : "start";
 
   return (
-    <div dir={langConfig.dir} className={`${langConfig.font} relative flex flex-col h-screen w-screen items-center justify-center text-white p-4`}>
+    <div dir={langConfig.dir} className={`${langConfig.font} relative flex flex-col h-screen w-full items-center justify-center text-white p-4`}>
       <Image
         src="https://i.postimg.cc/GtCzCYkX/Gemini-Generated-Image-o1se3zo1se3zo1se.png"
         alt="Background"
