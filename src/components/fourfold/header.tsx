@@ -18,17 +18,17 @@ import { SearchComponent } from './search-component';
 type Language = 'fa' | 'en' | 'ar' | 'he';
 
 const languageOptions: Record<Language, { name: string; font: string; brandName: string; }> = {
-  fa: { name: 'فارسی', font: 'font-persian', brandName: 'زکافن' },
-  en: { name: 'English', font: 'font-body', brandName: 'Zakafan' },
-  ar: { name: 'العربية', font: 'font-arabic', brandName: 'زكافن' },
-  he: { name: 'עברית', font: 'font-hebrew', brandName: 'זקפן' },
+  fa: { name: 'فارسی', font: 'font-persian', brandName: 'داینوگراف جنگ' },
+  en: { name: 'English', font: 'font-body', brandName: 'War Dynograph' },
+  ar: { name: 'العربية', font: 'font-arabic', brandName: 'داينوغراف الحرب' },
+  he: { name: 'עברית', font: 'font-hebrew', brandName: 'דיינוגרף מלחמה' },
 };
 
 const logoTaglines = {
-    en: "The Dynography Reference",
-    fa: "مرجع داینوگرافی",
-    ar: "مرجع للدينوغرافيا",
-    he: "אתר עיון לדיינוגרפיה"
+    en: "The Modern Warfare Reference",
+    fa: "مرجع جنگ مدرن",
+    ar: "مرجع الحرب الحديثة",
+    he: "העיון למלחמה מודרנית",
 };
 
 const translations = {
@@ -48,6 +48,7 @@ type HeaderProps = {
 export function Header({ currentLang, onLanguageChange }: HeaderProps) {
   const currentFont = languageOptions[currentLang].font;
   const isRtl = currentLang === 'fa' || currentLang === 'ar' || currentLang === 'he';
+  const fontFamily = isRtl ? "Noto Sans Arabic, sans-serif" : "Inter, sans-serif";
 
   return (
     <header className="flex h-20 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0">
@@ -55,20 +56,20 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
         <svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-10 w-auto">
             <text 
                 x={isRtl ? "195" : "5"} 
-                y="28" 
-                fontFamily={currentFont} 
+                y="30" 
+                fontFamily={fontFamily} 
                 fontSize="22" 
                 fontWeight="bold" 
-                className="fill-primary"
+                className="fill-primary drop-shadow-glow-primary"
                 textAnchor={isRtl ? "end" : "start"}
             >
                 {languageOptions[currentLang].brandName}
             </text>
             <text 
                 x={isRtl ? "195" : "5"} 
-                y="48" 
-                fontFamily={currentFont} 
-                fontSize="12" 
+                y="50" 
+                fontFamily={fontFamily} 
+                fontSize="10" 
                 className="fill-muted-foreground"
                 textAnchor={isRtl ? "end" : "start"}
             >

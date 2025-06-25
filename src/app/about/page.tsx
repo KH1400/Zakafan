@@ -14,25 +14,25 @@ const goBackTranslations = {
 
 const aboutTranslations = {
     content: {
-        en: "Zakafan is a reference for Dynography, providing insights and analysis on various topics. Our mission is to deliver accurate and well-researched information to our audience. We believe in clarity, objectivity, and a deep understanding of the subjects we cover.",
-        fa: "زکافن یک مرجع برای داینوگرافی است که بینش و تحلیل در موضوعات مختلف ارائه می‌دهد. مأموریت ما ارائه اطلاعات دقیق و تحقیق شده به مخاطبانمان است. ما به شفافیت، عینیت و درک عمیق از موضوعاتی که پوشش می‌دهیم، اعتقاد داریم.",
-        ar: "زكافن هو مرجع للدينوغرافيا، يقدم رؤى وتحليلات حول مواضيع مختلفة. مهمتنا هي تقديم معلومات دقيقة ومدروسة جيدًا لجمهورنا. نحن نؤمن بالوضوح والموضوعية والفهم العميق للمواضيع التي نغطيها.",
-        he: "זקפן הוא אתר עיון לדיינוגרפיה, המספק תובנות וניתוחים בנושאים שונים. המשימה שלנו היא לספק מידע מדויק ונחקר היטב לקהל שלנו. אנו מאמינים בבהירות, אובייקטיביות והבנה עמוקה של הנושאים שאנו מסקרים.",
+        en: "War Dynograph is a premier reference for modern conflict analysis, providing data-driven insights on military and geopolitical topics. Our mission is to deliver accurate, objective, and deeply-researched information to our audience, fostering a clear understanding of the complexities of warfare.",
+        fa: "«داینوگراف جنگ» یک مرجع تخصصی برای تحلیل نبردهای مدرن است که بینش‌های داده‌محور در موضوعات نظامی و ژئوپلیتیکی ارائه می‌دهد. مأموریت ما ارائه اطلاعات دقیق، عینی و کاملاً تحقیق‌شده به مخاطبانمان است تا درک روشنی از پیچیدگی‌های جنگ فراهم آوریم.",
+        ar: "«داينوغراف الحرب» هو مرجع رائد لتحليل الصراعات الحديثة، حيث يقدم رؤى قائمة على البيانات حول الموضوعات العسكرية والجيوسياسية. مهمتنا هي تقديم معلومات دقيقة وموضوعية ومدروسة بعمق لجمهورنا، مما يعزز فهمًا واضحًا لتعقيدات الحرب.",
+        he: "«דיינוגרף מלחמה» הוא מקור עיון מוביל לניתוח סכסוכים מודרניים, המספק תובנות מבוססות-נתונים בנושאים צבאיים וגיאופוליטיים. משימתנו היא לספק מידע מדויק, אובייקטיבי ומבוסס-מחקר לקהל שלנו, במטרה לטפח הבנה ברורה של מורכבויות המלחמה.",
     },
 };
 
 const logoBrandNames = {
-    en: "Zakafan",
-    fa: "زکافن",
-    ar: "زكافن",
-    he: "זקפן"
+    en: "War Dynograph",
+    fa: "داینوگراف جنگ",
+    ar: "داينوغراف الحرب",
+    he: "דיינוגרף מלחמה"
 };
 
 const logoTaglines = {
-    en: "The Dynography Reference",
-    fa: "مرجع داینوگرافی",
-    ar: "مرجع للدينوغرافيا",
-    he: "אתר עיון לדיינוגרפיה"
+    en: "The Modern Warfare Reference",
+    fa: "مرجع جنگ مدرن",
+    ar: "مرجع الحرب الحديثة",
+    he: "העיון למלחמה מודרנית"
 };
 
 const fontFamilies: Record<Language, string> = {
@@ -65,23 +65,23 @@ export default function AboutPage({ searchParams }: { searchParams?: { lang?: st
       <div className="absolute inset-0 bg-black/70 -z-10" />
 
       <div className="flex flex-col items-center text-center max-w-3xl">
-        <svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-24 w-auto">
+        <svg width="280" height="80" viewBox="0 0 280 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-24 w-auto">
           <text 
-            x={isRtl ? "195" : "5"}
-            y="28" 
+            x={isRtl ? "275" : "5"}
+            y="40" 
             fontFamily={fontFamilies[lang]} 
-            fontSize="22" 
+            fontSize="28" 
             fontWeight="bold" 
-            fill="hsl(var(--chart-1))"
+            className="fill-accent drop-shadow-glow-accent"
             textAnchor={isRtl ? "end" : "start"}
           >
             {logoBrandNames[lang]}
           </text>
           <text 
-            x={isRtl ? "195" : "5"}
-            y="48" 
+            x={isRtl ? "275" : "5"}
+            y="65" 
             fontFamily={fontFamilies[lang]} 
-            fontSize="12" 
+            fontSize="14" 
             className="fill-white/80"
             textAnchor={isRtl ? "end" : "start"}
           >

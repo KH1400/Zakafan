@@ -5,10 +5,10 @@ type Language = 'fa' | 'en' | 'ar' | 'he';
 
 const translations = {
   copyright: {
-    en: "All rights reserved for Zakafan",
-    fa: "کلیه حقوق برای Zakafan محفوظ است",
-    ar: "جميع الحقوق محفوظة لـ Zakafan",
-    he: "כל הזכויות שמורות לזכפן",
+    en: "© War Dynograph. All rights reserved.",
+    fa: "© داینوگراف جنگ. تمام حقوق محفوظ است.",
+    ar: "© داينوغراف الحرب. كل الحقوق محفوظة.",
+    he: "© דיינוגרף מלחמה. כל הזכויות שמורות.",
   },
 };
 

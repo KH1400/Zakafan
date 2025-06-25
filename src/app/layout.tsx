@@ -3,8 +3,8 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'Fourfold Portal',
-  description: 'An interactive portal with four distinct sections.',
+  title: 'War Dynograph',
+  description: 'An interactive portal for modern conflict analysis.',
 };
 
 export default function RootLayout({
