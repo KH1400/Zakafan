@@ -132,7 +132,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
                   checked={selectedSections.has(section.id)}
                   onCheckedChange={() => handleSectionToggle(section.id)}
                 />
-                <Label htmlFor={`filter-inline-${section.id}`} className="text-[9px] font-normal cursor-pointer leading-none">
+                <Label htmlFor={`filter-inline-${section.id}`} className="text-xs font-normal cursor-pointer">
                   {section.title[lang]}
                 </Label>
               </div>
