@@ -1,15 +1,7 @@
-
 "use client";
-
 import Link from "next/link";
 import Image from "next/image";
-
-export type MosaicPanelData = {
-  title: string;
-  image: string;
-  imageHint: string;
-  gridArea: string; // "row-start / col-start / row-end / col-end"
-};
+import { MosaicPanelData } from "../../lib/content-data";
 
 type MosaicLayoutProps = {
   panels: MosaicPanelData[];
@@ -21,12 +13,11 @@ function MosaicPanel({ panel, baseHref, lang }: { panel: MosaicPanelData, baseHr
   const slug = panel.title.toLowerCase().trim().replace(/[\s\W-]+/g, '-');
   const langQuery = lang === 'en' ? '' : `?lang=${lang}`;
   const href = `${baseHref}/${slug}${langQuery}`;
-  
+     
   return (
     <Link
       href={href}
-      className="group relative block overflow-hidden transition-transform duration-300 ease-in-out hover:scale-[1.02] hover:z-10 h-60 md:h-auto"
-      style={{ gridArea: panel.gridArea }}
+      className={`group relative block overflow-hidden transition-transform duration-300 ease-in-out hover:scale-[1.02] hover:z-10 h-60 md:h-auto ${panel.size === 2 ? 'col-span-2 row-span-2' : 'col-span-1 row-span-1'}`}
       aria-label={panel.title}
     >
       <Image
@@ -47,25 +38,25 @@ function MosaicPanel({ panel, baseHref, lang }: { panel: MosaicPanelData, baseHr
 }
 
 export function MosaicLayout({ panels, baseHref, lang }: MosaicLayoutProps) {
-  const isRtl = lang === 'fa' || lang === 'ar' || lang === 'he';
-
-  const processedPanels = isRtl ? panels.map(panel => {
-    const [rowStart, colStart, rowEnd, colEnd] = panel.gridArea.split(' / ').map(Number);
-    // The grid has 3 columns, defined by 4 vertical lines (1, 2, 3, 4).
-    // To mirror, a line at position `x` becomes `5 - x`.
-    // A span from `colStart` to `colEnd` becomes a span from `5 - colEnd` to `5 - colStart`.
-    const newColStart = 5 - colEnd;
-    const newColEnd = 5 - colStart;
-    return {
-      ...panel,
-      gridArea: `${rowStart} / ${newColStart} / ${rowEnd} / ${newColEnd}`
-    };
-  }) : panels;
-
+//   const isRtl = lang === 'fa' || lang === 'ar' || lang === 'he';
+ 
+//   const processedPanels = isRtl ? panels.map(panel => {
+//     const [rowStart, colStart, rowEnd, colEnd] = panel.size.split(' / ').map(Number);
+//     // The grid has 3 columns, defined by 4 vertical lines (1, 2, 3, 4).
+//     // To mirror, a line at position `x` becomes `5 - x`.
+//     // A span from `colStart` to `colEnd` becomes a span from `5 - colEnd` to `5 - colStart`.
+//     const newColStart = 5 - colEnd;
+//     const newColEnd = 5 - colStart;
+//     return {
+//       ...panel,
+//       gridArea: `${rowStart} / ${newColStart} / ${rowEnd} / ${newColEnd}`
+//     };
+//   }) : panels;
+ 
   return (
-    <div className="w-full">
-      <div className="grid w-full grid-cols-1 md:grid-cols-3 md:auto-rows-[15rem] gap-2 overflow-y-auto">
-        {processedPanels.map((panel) => (
+    <div className="w-full h-full">
+      <div className="grid w-full h-full grid-cols-1 md:grid-cols-3 md:auto-rows-[15rem] gap-2 overflow-y-auto overflow-x-hidden">
+        {panels.map((panel) => (
           <MosaicPanel key={panel.title} panel={panel} baseHref={baseHref} lang={lang} />
         ))}
       </div>
