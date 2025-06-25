@@ -81,7 +81,6 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
   }, [isExpanded, onExpandedChange]);
   
   const showResults = isExpanded && query.trim().length > 0;
-  const showFilters = isExpanded;
 
   return (
     <div
@@ -94,46 +93,48 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
 
       <div
         className={cn(
-          "absolute right-0 top-full mt-2 flex flex-col gap-2.5 rounded-md border bg-background p-3 shadow-lg origin-top-right transition-all duration-300 ease-in-out",
-          isExpanded ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none",
-          showResults ? "rounded-b-none" : ""
+          "absolute right-0 top-full mt-2 w-[550px] origin-top-right z-20",
+          "transition-all duration-300 ease-in-out",
+          isExpanded ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"
         )}
-        style={{ width: '550px' }}
       >
-        <div className="relative w-full">
-          <Input
-            ref={inputRef}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={translations.searchPlaceholder[lang]}
-            className="h-9 pr-8"
-          />
-          {query && (
-            <Button variant="ghost" size="icon" className="absolute right-0 top-0 h-9 w-9" onClick={() => setQuery('')}>
-              <X className="h-4 w-4" />
-            </Button>
+        <div
+          className={cn(
+            "flex flex-col gap-2.5 rounded-md border bg-background p-3 shadow-lg",
+            showResults ? "rounded-b-none" : ""
           )}
+        >
+          <div className="relative w-full">
+            <Input
+              ref={inputRef}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={translations.searchPlaceholder[lang]}
+              className="h-9 pr-8"
+            />
+            {query && (
+              <Button variant="ghost" size="icon" className="absolute right-0 top-0 h-9 w-9" onClick={() => setQuery('')}>
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            {sections.map(section => (
+              <div key={section.id} className="flex items-center space-x-1.5">
+                <Checkbox
+                  id={`filter-inline-${section.id}`}
+                  checked={selectedSections.has(section.id)}
+                  onCheckedChange={() => handleSectionToggle(section.id)}
+                />
+                <Label htmlFor={`filter-inline-${section.id}`} className="text-[11px] font-normal cursor-pointer">
+                  {section.title[lang]}
+                </Label>
+              </div>
+            ))}
+          </div>
         </div>
-        {showFilters && (
-           <div className="flex items-center justify-between shrink-0">
-             {sections.map(section => (
-               <div key={section.id} className="flex items-center space-x-2">
-                 <Checkbox
-                   id={`filter-inline-${section.id}`}
-                   checked={selectedSections.has(section.id)}
-                   onCheckedChange={() => handleSectionToggle(section.id)}
-                 />
-                 <Label htmlFor={`filter-inline-${section.id}`} className="text-[10px] font-normal cursor-pointer">
-                   {section.title[lang]}
-                 </Label>
-               </div>
-             ))}
-           </div>
-        )}
-      </div>
 
-      {showResults && (
-        <div className="absolute top-[calc(100%+5.5rem)] w-[550px] right-0 z-20">
+        {showResults && (
           <div className="rounded-md rounded-t-none border-t-0 border bg-popover text-popover-foreground shadow-lg">
             {filteredContent.length === 0 ? (
               <p className="p-4 text-center text-sm">{translations.noResults[lang]}</p>
@@ -161,8 +162,8 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
               </ul>
             )}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
