@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Search, X } from "lucide-react";
+import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -98,6 +98,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
             "h-full bg-transparent pe-10 text-base transition-all duration-300 ease-in-out focus-visible:ring-0 focus-visible:ring-offset-0 md:text-sm",
             isExpanded ? "w-full opacity-100" : "w-0 opacity-0"
           )}
+          onFocus={() => onExpandedChange(true)}
         />
         <Button
           variant="ghost"
