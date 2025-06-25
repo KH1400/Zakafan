@@ -60,13 +60,12 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
 
   React.useLayoutEffect(() => {
     if (contentRef.current) {
-      // p-3 is 0.75rem. 2 * 0.75rem = 1.5rem. Assuming 1rem = 16px, padding is 24px.
-      const width = contentRef.current.scrollWidth + 24;
-      // Set a max width to prevent it from becoming too large on desktop
-      const maxWidth = 384; // w-96
+      const padding = 24; 
+      const width = contentRef.current.scrollWidth + padding;
+      const maxWidth = 450;
       setDynamicWidth(`${Math.min(width, maxWidth)}px`);
     }
-  }, [lang]);
+  }, [lang, isExpanded]);
   
   const handleSectionToggle = (sectionId: SectionInfo['id']) => {
     const newSelection = new Set(selectedSections);
@@ -97,7 +96,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
   const showDropdown = isExpanded;
 
   return (
-    <div ref={containerRef} className="relative">
+    <div ref={containerRef} className="relative h-10 flex items-center">
        <div
         className="relative flex h-10 items-center justify-end rounded-md border transition-all duration-300 ease-in-out"
         style={{
@@ -113,7 +112,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
           placeholder={translations.searchPlaceholder[lang]}
           className={cn(
             "h-full bg-transparent pe-10 text-base ring-offset-background transition-all duration-300 ease-in-out focus-visible:ring-0 focus-visible:ring-offset-0 md:text-sm",
-            isExpanded ? "w-full opacity-100" : "w-0 opacity-0"
+            isExpanded ? "w-full opacity-100 pl-3" : "w-0 opacity-0 p-0"
           )}
           onFocus={() => onExpandedChange(true)}
         />
