@@ -1,6 +1,9 @@
 
 "use client";
 
+import * as React from "react";
+import { format } from "date-fns";
+import { DateRange } from "react-day-picker";
 import {
   Card,
   CardContent,
@@ -23,7 +26,7 @@ import {
   ChartLegend,
   ChartLegendContent,
 } from "@/components/ui/chart";
-import { BarChart, Line, LineChart, XAxis, YAxis, CartesianGrid } from "recharts";
+import { Line, LineChart, XAxis, YAxis, CartesianGrid } from "recharts";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -63,6 +66,11 @@ const recentActivities = [
 ];
 
 export default function AdminDashboardPage() {
+  const [date, setDate] = React.useState<DateRange | undefined>({
+    from: new Date(),
+    to: new Date(new Date().setDate(new Date().getDate() + 7)),
+  });
+
   return (
     <div className="flex flex-col min-h-full p-4 md:p-6 bg-muted/40 font-persian" dir="rtl">
       <div className="flex items-center justify-between mb-6">
@@ -71,12 +79,29 @@ export default function AdminDashboardPage() {
           <PopoverTrigger asChild>
             <Button variant="outline">
               <CalendarIcon className="ml-2 h-4 w-4" />
-              <span>محدوده زمانی</span>
+              <span>
+                {date?.from ? (
+                  date.to ? (
+                    <>
+                      {format(date.from, "dd LLL, y")} -{" "}
+                      {format(date.to, "dd LLL, y")}
+                    </>
+                  ) : (
+                    format(date.from, "dd LLL, y")
+                  )
+                ) : (
+                  <span>محدوده زمانی</span>
+                )}
+              </span>
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="end">
             <Calendar
+              initialFocus
               mode="range"
+              defaultMonth={date?.from}
+              selected={date}
+              onSelect={setDate}
               numberOfMonths={2}
             />
           </PopoverContent>
