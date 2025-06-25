@@ -74,7 +74,7 @@ export default function AboutPage({ searchParams }: { searchParams?: { lang?: st
       <div className="absolute inset-0 bg-black/70 -z-10" />
 
       <div className="flex flex-col items-center text-center max-w-3xl">
-        <svg width="500" height="100" viewBox="0 0 500 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-24 w-auto">
+        <svg width="500" height="100" viewBox="0 0 500 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-16 w-auto">
             <g transform={`translate(${iconX}, 50)`} stroke="hsl(var(--accent))" strokeWidth="3" fill="none" className="drop-shadow-glow-accent">
                 <path d="M-20 0 L0 -20 L20 0 L0 20 Z" />
                 <path d="M-10 0 L0 -10 L10 0 L0 10 Z" fill="hsl(var(--accent))" />

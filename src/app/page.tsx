@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <div
       dir={selectedLang.dir}
-      className={`${selectedLang.font} flex flex-col h-screen w-screen bg-background`}
+      className={`${selectedLang.font} flex flex-col h-screen w-full bg-background`}
     >
       <Header currentLang={language} onLanguageChange={setLanguage} />
       <main className="flex-grow overflow-hidden">
