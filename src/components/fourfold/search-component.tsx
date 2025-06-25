@@ -38,6 +38,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
   const [selectedSections, setSelectedSections] = React.useState<Set<SectionInfo['id']>>(new Set());
   const containerRef = React.useRef<HTMLDivElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const contentRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -48,12 +49,12 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
 
     if (isExpanded) {
       document.addEventListener("mousedown", handleClickOutside);
-      const timer = setTimeout(() => inputRef.current?.focus(), 150);
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-        clearTimeout(timer);
-      };
+      inputRef.current?.focus();
     }
+    
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, [isExpanded, onExpandedChange]);
 
   const filteredContent = React.useMemo(() => {
@@ -89,12 +90,12 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
         ref={containerRef} 
         className="relative h-10 flex flex-1 items-center justify-end"
         onMouseEnter={() => onExpandedChange(true)}
-        onMouseLeave={() => onExpandedChange(false)}
+        onMouseLeave={() => !query.trim() && onExpandedChange(false)}
     >
        <div
         className={cn(
             "relative flex h-10 items-center justify-end rounded-md border transition-all duration-300 ease-in-out",
-            isExpanded ? "w-full border-input bg-background" : "w-10 border-transparent bg-transparent"
+            isExpanded ? "w-full max-w-full border-input bg-background" : "w-10 border-transparent bg-transparent"
         )}
       >
         <Input
@@ -114,13 +115,14 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
           type="button"
           aria-label="Toggle Search"
           className="absolute right-0 top-0 h-10 w-10 shrink-0"
-          onClick={() => onExpandedChange(true)}
+          onClick={() => onExpandedChange(!isExpanded)}
         >
           <Search className="h-5 w-5" />
         </Button>
       </div>
 
       <div
+        style={{ width: containerRef.current?.offsetWidth }}
         className={cn(
           "absolute right-0 top-full mt-2 w-full origin-top-right z-20",
           "transition-all duration-300 ease-in-out",
@@ -128,12 +130,13 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
         )}
       >
         <div
+          ref={contentRef}
           className={cn(
             "flex flex-col gap-2.5 rounded-md border bg-background p-3 shadow-lg",
             showResults ? "rounded-b-none" : ""
           )}
         >
-          <div className="flex w-full items-center flex-nowrap gap-4 overflow-x-auto pb-2 md:justify-between md:gap-0 md:overflow-visible md:pb-0">
+          <div className="flex w-full items-center flex-wrap justify-start gap-x-4 gap-y-2 pb-2 md:flex-nowrap md:justify-between md:gap-0 md:pb-0">
             {sections.map(section => (
               <div key={section.id} className="flex items-center gap-1.5 whitespace-nowrap">
                 <Checkbox
