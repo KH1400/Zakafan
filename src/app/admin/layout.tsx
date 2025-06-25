@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -53,85 +52,83 @@ export default function AdminLayout({
   const pathname = usePathname();
 
   return (
-    <SidebarProvider>
-      <div dir="rtl">
-        <Sidebar side="right" collapsible="icon">
-          <SidebarHeader>
-            <h2 className="text-xl font-semibold p-2 group-data-[collapsible=icon]:hidden">
-              پنل مدیریت
-            </h2>
-          </SidebarHeader>
-          <SidebarContent>
-            <SidebarMenu>
-                <SidebarMenuItem>
-                    <SidebarMenuButton
-                        asChild
-                        tooltip={{ children: "مشاهده سایت", side: "left" }}
-                    >
-                        <Link href="/" target="_blank" rel="noopener noreferrer">
-                            <ExternalLink />
-                            <span>مشاهده سایت</span>
-                        </Link>
-                    </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarSeparator className="my-1" />
-                {menuItems.map((item) => {
-                    const Icon = item.icon;
-                    // The dashboard link is active only on exact match.
-                    // Other links are active if the path starts with their href.
-                    const isActive = item.href === '/admin' 
-                        ? pathname === item.href 
-                        : pathname.startsWith(item.href);
+    <SidebarProvider dir="rtl">
+      <Sidebar side="right" collapsible="icon">
+        <SidebarHeader>
+          <h2 className="text-xl font-semibold p-2 group-data-[collapsible=icon]:hidden">
+            پنل مدیریت
+          </h2>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarMenu>
+              <SidebarMenuItem>
+                  <SidebarMenuButton
+                      asChild
+                      tooltip={{ children: "مشاهده سایت", side: "left" }}
+                  >
+                      <Link href="/" target="_blank" rel="noopener noreferrer">
+                          <ExternalLink />
+                          <span>مشاهده سایت</span>
+                      </Link>
+                  </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarSeparator className="my-1" />
+              {menuItems.map((item) => {
+                  const Icon = item.icon;
+                  // The dashboard link is active only on exact match.
+                  // Other links are active if the path starts with their href.
+                  const isActive = item.href === '/admin' 
+                      ? pathname === item.href 
+                      : pathname.startsWith(item.href);
 
-                    return (
-                        <SidebarMenuItem key={item.href}>
-                            <SidebarMenuButton
-                                asChild
-                                isActive={isActive}
-                                tooltip={{ children: item.label, side: "left" }}
-                            >
-                                <Link href={item.href}>
-                                    <Icon />
-                                    <span>{item.label}</span>
-                                </Link>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                    );
-                })}
-            </SidebarMenu>
-          </SidebarContent>
-          <SidebarFooter>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start gap-2 p-2 group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center"
-                >
-                  <Avatar className="size-6">
-                    <AvatarImage
-                      src="https://placehold.co/40x40.png"
-                      alt="Admin User"
-                      data-ai-hint="user avatar"
-                    />
-                    <AvatarFallback>AU</AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col items-start group-data-[collapsible=icon]:hidden">
-                    <span className="text-sm font-medium">کاربر ادمین</span>
-                  </div>
-                  <ChevronDown className="mr-auto size-4 group-data-[collapsible=icon]:hidden" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent side="top" align="start" className="w-56">
-                <DropdownMenuLabel>حساب کاربری من</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>پروفایل</DropdownMenuItem>
-                <DropdownMenuItem>خروج</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarFooter>
-        </Sidebar>
-        <SidebarInset>{children}</SidebarInset>
-      </div>
+                  return (
+                      <SidebarMenuItem key={item.href}>
+                          <SidebarMenuButton
+                              asChild
+                              isActive={isActive}
+                              tooltip={{ children: item.label, side: "left" }}
+                          >
+                              <Link href={item.href}>
+                                  <Icon />
+                                  <span>{item.label}</span>
+                              </Link>
+                          </SidebarMenuButton>
+                      </SidebarMenuItem>
+                  );
+              })}
+          </SidebarMenu>
+        </SidebarContent>
+        <SidebarFooter>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="w-full justify-start gap-2 p-2 group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center"
+              >
+                <Avatar className="size-6">
+                  <AvatarImage
+                    src="https://placehold.co/40x40.png"
+                    alt="Admin User"
+                    data-ai-hint="user avatar"
+                  />
+                  <AvatarFallback>AU</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col items-start group-data-[collapsible=icon]:hidden">
+                  <span className="text-sm font-medium">کاربر ادمین</span>
+                </div>
+                <ChevronDown className="mr-auto size-4 group-data-[collapsible=icon]:hidden" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent side="top" align="start" className="w-56">
+              <DropdownMenuLabel>حساب کاربری من</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>پروفایل</DropdownMenuItem>
+              <DropdownMenuItem>خروج</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </SidebarFooter>
+      </Sidebar>
+      <SidebarInset>{children}</SidebarInset>
     </SidebarProvider>
   );
 }
