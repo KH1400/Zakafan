@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -29,10 +28,11 @@ const translations = {
 
 type SearchComponentProps = {
   lang: Language;
+  isExpanded: boolean;
+  onExpandedChange: (isExpanded: boolean) => void;
 };
 
-export function SearchComponent({ lang }: SearchComponentProps) {
-  const [isExpanded, setExpanded] = React.useState(false);
+export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchComponentProps) {
   const [query, setQuery] = React.useState("");
   const [selectedSections, setSelectedSections] = React.useState<Set<SectionInfo['id']>>(new Set());
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -76,8 +76,8 @@ export function SearchComponent({ lang }: SearchComponentProps) {
     <div
       ref={containerRef}
       className="relative flex items-center"
-      onMouseEnter={() => setExpanded(true)}
-      onMouseLeave={() => setExpanded(false)}
+      onMouseEnter={() => onExpandedChange(true)}
+      onMouseLeave={() => onExpandedChange(false)}
     >
       <Button variant="ghost" size="icon" aria-label="Search" className="h-9 w-9">
         <Search className="h-5 w-5" />
@@ -122,7 +122,7 @@ export function SearchComponent({ lang }: SearchComponentProps) {
       </div>
 
       {showResults && (
-        <div className="absolute top-[calc(50%+3rem)] w-[550px] right-0 z-20">
+        <div className="absolute top-[calc(50%+3.7rem)] w-[550px] right-0 z-20">
           <div className="rounded-md rounded-t-none border-t-0 border bg-popover text-popover-foreground shadow-lg">
             {filteredContent.length === 0 ? (
               <p className="p-4 text-center text-sm">{translations.noResults[lang]}</p>
@@ -135,7 +135,7 @@ export function SearchComponent({ lang }: SearchComponentProps) {
                       className="block w-full p-2 rounded-sm transition-colors hover:bg-accent hover:text-accent-foreground"
                       onClick={() => {
                         setQuery("");
-                        setExpanded(false);
+                        onExpandedChange(false);
                       }}
                     >
                       <div className="flex flex-col">

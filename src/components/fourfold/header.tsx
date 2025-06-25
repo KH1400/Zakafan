@@ -1,6 +1,6 @@
-
 "use client";
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { SearchComponent } from './search-component';
 import type { Language } from '@/lib/content-data';
+import { cn } from '@/lib/utils';
 
 const languageOrder: Language[] = ['fa', 'ar', 'he', 'en'];
 
@@ -55,6 +56,7 @@ type HeaderProps = {
 };
 
 export function Header({ currentLang, onLanguageChange }: HeaderProps) {
+  const [isSearchExpanded, setSearchExpanded] = useState(false);
   const isRtl = currentLang === 'fa' || currentLang === 'ar' || currentLang === 'he';
   const brandName = languageOptions[currentLang].brandName;
   const tagline = logoTaglines[currentLang];
@@ -69,7 +71,13 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
     <header 
       className="flex h-20 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0"
     >
-      <Link href={currentLang === 'en' ? '/' : `/?lang=${currentLang}`} className="flex items-center gap-3">
+      <Link 
+        href={currentLang === 'en' ? '/' : `/?lang=${currentLang}`} 
+        className={cn(
+            "flex items-center gap-3 transition-opacity duration-300",
+            isSearchExpanded && "opacity-0 md:opacity-100"
+        )}
+      >
         <svg width="500" height="100" viewBox="0 0 500 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-24 w-auto">
             <g transform={`translate(${iconX}, 50)`} stroke="hsl(var(--accent))" strokeWidth="3" fill="none" className="drop-shadow-glow-accent">
                 <path d="M-20 0 L0 -20 L20 0 L0 20 Z" />
@@ -105,7 +113,11 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
       </Link>
 
       <div className="flex items-center gap-2">
-        <SearchComponent lang={currentLang} />
+        <SearchComponent 
+            lang={currentLang} 
+            isExpanded={isSearchExpanded}
+            onExpandedChange={setSearchExpanded}
+        />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
