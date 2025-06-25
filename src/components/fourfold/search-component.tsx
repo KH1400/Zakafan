@@ -105,7 +105,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
             </Button>
           )}
         </div>
-        <div className="flex items-center justify-center gap-4 shrink-0">
+        <div className="flex items-center justify-between shrink-0">
           {sections.map(section => (
             <div key={section.id} className="flex items-center space-x-1.5">
               <Checkbox
