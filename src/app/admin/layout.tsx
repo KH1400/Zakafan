@@ -11,6 +11,7 @@ import {
   BarChart3,
   Settings,
   ChevronDown,
+  ExternalLink,
 } from "lucide-react";
 
 import {
@@ -23,6 +24,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarInset,
+  SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -61,6 +63,18 @@ export default function AdminLayout({
           </SidebarHeader>
           <SidebarContent>
             <SidebarMenu>
+                <SidebarMenuItem>
+                    <SidebarMenuButton
+                        asChild
+                        tooltip={{ children: "مشاهده سایت", side: "left" }}
+                    >
+                        <Link href="/" target="_blank" rel="noopener noreferrer">
+                            <ExternalLink />
+                            <span>مشاهده سایت</span>
+                        </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarSeparator className="my-1" />
                 {menuItems.map((item) => {
                     const Icon = item.icon;
                     // The dashboard link is active only on exact match.
