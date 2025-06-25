@@ -14,10 +14,10 @@ const goBackTranslations = {
 
 const aboutTranslations = {
     content: {
-        en: "War Dynograph is a premier reference for modern conflict analysis, providing data-driven insights on military and geopolitical topics. Our mission is to deliver accurate, objective, and deeply-researched information to our audience, fostering a clear understanding of the complexities of warfare.",
-        fa: "«داینوگراف جنگ» یک مرجع تخصصی برای تحلیل نبردهای مدرن است که بینش‌های داده‌محور در موضوعات نظامی و ژئوپلیتیکی ارائه می‌دهد. مأموریت ما ارائه اطلاعات دقیق، عینی و کاملاً تحقیق‌شده به مخاطبانمان است تا درک روشنی از پیچیدگی‌های جنگ فراهم آوریم.",
-        ar: "«داينوغراف الحرب» هو مرجع رائد لتحليل الصراعات الحديثة، حيث يقدم رؤى قائمة على البيانات حول الموضوعات العسكرية والجيوسياسية. مهمتنا هي تقديم معلومات دقيقة وموضوعية ومدروسة بعمق لجمهورنا، مما يعزز فهمًا واضحًا لتعقيدات الحرب.",
-        he: "«דיינוגרף מלחמה» הוא מקור עיון מוביל לניתוח סכסוכים מודרניים, המספק תובנות מבוססות-נתונים בנושאים צבאיים וגיאופוליטיים. משימתנו היא לספק מידע מדויק, אובייקטיבי ומבוסס-מחקר לקהל שלנו, במטרה לטפח הבנה ברורה של מורכבויות המלחמה.",
+        en: "War Dynograph is a premier reference for modern conflict analysis. It's built upon 'Dynography,' an intelligent, modern format we designed. This dynamic framework combines AI algorithms with expert supervision to generate smart, dashboard-driven content and analytical tools from credible sources. Our mission is to deliver accurate, objective, and deeply-researched information to foster a clear understanding of the complexities of warfare.",
+        fa: "«داینوگراف جنگ» یک مرجع تخصصی برای تحلیل نبردهای مدرن است. این پلتفرم بر پایه‌ی «داینوگرافی»، یک قالب محتوایی مدرن و هوشمند، ساخته شده است. داینوگرافی با ترکیب الگوریتم‌های هوش مصنوعی و نظارت کارشناسان خبره، محتوای پویا و داشبورد-محور را از منابع معتبر استخراج و ارائه می‌کند. مأموریت ما ارائه اطلاعات دقیق، عینی و عمیقاً تحقیق‌شده برای درک پیچیدگی‌های جنگ است.",
+        ar: "«داينوغراف الحرب» هو مرجع رائد لتحليل الصراعات الحديثة. تم بناؤه على أساس «الداينوغرافيا»، وهو شكل حديث وذكي قمنا بتصميمه. يجمع هذا الإطار الديناميكي بين خوارزميات الذكاء الاصطناعي وإشراف الخبراء لإنشاء محتوى ذكي قائم على لوحات المعلومات وأدوات تحليلية من مصادر موثوقة. مهمتنا هي تقديم معلومات دقيقة وموضوعية ومدروسة بعمق لتعزيز فهم واضح لتعقيدات الحرب.",
+        he: "«דיינוגרף מלחמה» הוא מקור עיון מוביל לניתוח סכסוכים מודרניים. הוא בנוי על «דיינוגרפיה», פורמט מודרני וחכם שעיצבנו. מסגרת דינמית זו משלבת אלגוריתמים של בינה מלאכותית עם פיקוח מומחים כדי ליצור תוכן חכם מבוסס-דשבורדים וכלים אנליטיים ממקורות אמינים. משימתנו היא לספק מידע מדויק, אובייקטיבי ומבוסס-מחקר במטרה לטפח הבנה ברורה של מורכבויות המלחמה.",
     },
 };
 
@@ -62,7 +62,7 @@ export default function AboutPage({ searchParams }: { searchParams?: { lang?: st
   const textAnchor = isRtl ? "end" : "start";
 
   return (
-    <div dir={langConfig.dir} className={`${langConfig.font} relative flex flex-col h-screen w-full items-center justify-center text-white p-4`}>
+    <div dir={langConfig.dir} className={`${langConfig.font} relative flex flex-col min-h-screen w-full items-center justify-center text-white p-4`}>
       <Image
         src="https://i.postimg.cc/GtCzCYkX/Gemini-Generated-Image-o1se3zo1se3zo1se.png"
         alt="Background"
