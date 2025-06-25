@@ -6,8 +6,8 @@ import { Footer } from "@/components/fourfold/footer";
 import { MosaicLayout } from "@/components/fourfold/mosaic-layout";
 import { allContentItems, sections, type Language } from "@/lib/content-data";
 
-const sectionInfo = sections.find(s => s.id === 'contact')!;
-const sectionContent = allContentItems.filter(item => item.sectionId === 'contact');
+const sectionInfo = sections.find(s => s.id === 'achievements')!;
+const sectionContent = allContentItems.filter(item => item.sectionId === 'achievements');
 
 const goBackTranslations = {
     en: "Go Back Home",
@@ -16,7 +16,7 @@ const goBackTranslations = {
     he: "חזור לדף הבית",
 };
 
-export default function ContactPage({ searchParams }: { searchParams?: { lang?: string } }) {
+export default function AchievementsPage({ searchParams }: { searchParams?: { lang?: string } }) {
   const lang = (searchParams?.lang || 'en') as Language;
   const isRtl = lang === 'fa' || lang === 'ar' || lang === 'he';
 
@@ -26,7 +26,7 @@ export default function ContactPage({ searchParams }: { searchParams?: { lang?: 
       imageHint: item.imageHint,
       gridArea: item.gridArea,
   }));
-
+  
   return (
     <div dir={isRtl ? 'rtl' : 'ltr'} className="flex flex-col min-h-screen w-full bg-background text-foreground">
         <header className="flex h-20 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0 sticky top-0 z-20">
@@ -39,7 +39,7 @@ export default function ContactPage({ searchParams }: { searchParams?: { lang?: 
         </header>
         <main className="flex-grow p-2">
             <div className="w-full">
-                <MosaicLayout panels={panelData} baseHref="/contact" lang={lang} />
+                <MosaicLayout panels={panelData} baseHref="/achievements" lang={lang} />
             </div>
         </main>
         <Footer lang={lang} />

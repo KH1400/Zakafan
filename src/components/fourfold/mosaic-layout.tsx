@@ -25,7 +25,7 @@ function MosaicPanel({ panel, baseHref, lang }: { panel: MosaicPanelData, baseHr
   return (
     <Link
       href={href}
-      className="group relative block overflow-hidden transition-transform duration-300 ease-in-out hover:scale-[1.02] hover:z-10"
+      className="group relative block overflow-hidden transition-transform duration-300 ease-in-out hover:scale-[1.02] hover:z-10 h-60 md:h-auto"
       style={{ gridArea: panel.gridArea }}
       aria-label={panel.title}
     >
@@ -63,8 +63,8 @@ export function MosaicLayout({ panels, baseHref, lang }: MosaicLayoutProps) {
   }) : panels;
 
   return (
-    <div className="h-full w-full p-2">
-      <div className="grid h-full w-full grid-cols-3 grid-rows-3 gap-2">
+    <div className="w-full">
+      <div className="grid w-full grid-cols-1 md:grid-cols-3 md:auto-rows-[15rem] gap-2">
         {processedPanels.map((panel) => (
           <MosaicPanel key={panel.title} panel={panel} baseHref={baseHref} lang={lang} />
         ))}

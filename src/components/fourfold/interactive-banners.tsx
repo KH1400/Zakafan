@@ -1,156 +1,90 @@
-
 "use client";
 
 import { useState } from "react";
 import { Shield, BarChart3, Trophy, MessageSquareQuote } from "lucide-react";
 import { BannerPanel } from "@/components/fourfold/banner-panel";
 import { cn } from "@/lib/utils";
+import type { Language } from "@/lib/content-data";
 
-const translations = {
-  en: [
-    {
-      icon: <Shield className="h-12 w-12" />,
-      title: "Iran's Military Power",
-      description: "Information about Iran's military capabilities and equipment.",
-      href: "/services",
-      image: "https://placehold.co/1200x800.png",
-      imageHint: "military parade",
+const bannerData = [
+  {
+    icon: <Shield className="h-12 w-12" />,
+    title: {
+      en: "Military Power",
+      fa: "قدرت نظامی",
+      ar: "القوة العسكرية",
+      he: "הכוח הצבאי",
     },
-    {
-      icon: <BarChart3 className="h-12 w-12" />,
-      title: "War Statistics",
-      description: "A look at key statistics and figures throughout the war.",
-      href: "/projects",
-      image: "https://placehold.co/1200x800.png",
-      imageHint: "data charts",
+    description: {
+      en: "Information about Iran's military capabilities and equipment.",
+      fa: "اطلاعاتی درباره توانایی‌ها و تجهیزات نظامی ایران.",
+      ar: "معلومات حول القدرات والمعدات العسكرية الإيرانية.",
+      he: "מידע על היכולות והציוד הצבאי של איראן.",
     },
-    {
-      icon: <Trophy className="h-12 w-12" />,
-      title: "Achievements & Victories",
-      description: "An overview of Iran's significant achievements and victories during the war.",
-      href: "/about",
-      image: "https://placehold.co/1200x800.png",
-      imageHint: "military medal",
+    href: "/services",
+    image: "https://i.postimg.cc/bw1xjb39/Gemini-Generated-Image-b3uzh6b3uzh6b3uz.png",
+    imageHint:
+      "Symbolic holographic military shield, glowing with dominant blue neon light. Intricate cyberpunk circuitry patterns. Background of faint, glowing outlines of futuristic tanks and jets in a dark, high-tech command center. Minimalist, bold, powerful, serious military feel.",
+  },
+  {
+    icon: <BarChart3 className="h-12 w-12" />,
+    title: {
+      en: "War Statistics",
+      fa: "امار و ارقام جنگ",
+      ar: "إحصائيات الحرب",
+      he: "סטטיסטיקות מלחמה",
     },
-    {
-      icon: <MessageSquareQuote className="h-12 w-12" />,
-      title: "Answering Questions",
-      description: "Addressing common questions and dispelling misinformation.",
-      href: "/contact",
-      image: "https://placehold.co/1200x800.png",
-      imageHint: "question mark",
+    description: {
+      en: "A look at key statistics and figures throughout the war.",
+      fa: "نگاهی به آمار و ارقام کلیدی در طول جنگ.",
+      ar: "نظرة على الإحصائيات والأرقام الرئيسية خلال الحرب.",
+      he: "מבט על נתונים וסטטיסטיקות מרכזיים לאורך המלחמה.",
     },
-  ],
-  fa: [
-    {
-      icon: <Shield className="h-12 w-12" />,
-      title: "قدرت نظامی ایران",
-      description: "اطلاعاتی درباره توانایی‌ها و تجهیزات نظامی ایران.",
-      href: "/services",
-      image: "https://placehold.co/1200x800.png",
-      imageHint: "military parade",
+    href: "/projects",
+    image: "https://i.postimg.cc/sfBdTRXx/Gemini-Generated-Image-l1uliil1uliil1ul.png",
+    imageHint: "holographic chart",
+  },
+  {
+    icon: <Trophy className="h-12 w-12" />,
+    title: {
+      en: "Achievements & Victories",
+      fa: "دستاوردها و افتخارات",
+      ar: "الإنجازات والانتصارات",
+      he: "הישגים וניצחונות",
     },
-    {
-      icon: <BarChart3 className="h-12 w-12" />,
-      title: "آمار و ارقام مرتبط با جنگ",
-      description: "نگاهی به آمار و ارقام کلیدی در طول جنگ.",
-      href: "/projects",
-      image: "https://placehold.co/1200x800.png",
-      imageHint: "data charts",
+    description: {
+      en: "An overview of Iran's significant achievements and victories during the war.",
+      fa: "مروری بر دستاوردها و پیروزی‌های مهم ایران در طول جنگ.",
+      ar: "نظرة عامة على إنجازات وانتصارات إيران الهامة خلال الحرب.",
+      he: "סקירה כללית של ההישגים והניצחונות המשמעותיים של איראן במהלך המלחמה.",
     },
-    {
-      icon: <Trophy className="h-12 w-12" />,
-      title: "دستاوردها و پیروزی های ایران درحین جنگ",
-      description: "مروری بر دستاوردها و پیروزی‌های مهم ایران در طول جنگ.",
-      href: "/about",
-      image: "https://placehold.co/1200x800.png",
-      imageHint: "military medal",
+    href: "/achievements",
+    image: "https://i.postimg.cc/9f1bdv2B/Gemini-Generated-Image-a1tcj2a1tcj2a1tc.png",
+    imageHint: "missile silo",
+  },
+  {
+    icon: <MessageSquareQuote className="h-12 w-12" />,
+    title: {
+      en: "Answering Questions",
+      fa: "پاسخ به شبهات",
+      ar: "الرد على الشبهات",
+      he: "מענה לשאלות",
     },
-    {
-      icon: <MessageSquareQuote className="h-12 w-12" />,
-      title: "پاسخ به شبهات",
-      description: "پاسخ به سوالات و شبهات رایج در مورد جنگ.",
-      href: "/contact",
-      image: "https://placehold.co/1200x800.png",
-      imageHint: "question mark",
+    description: {
+      en: "Addressing common questions and dispelling misinformation.",
+      fa: "پاسخ به سوالات و شبهات رایج در مورد جنگ.",
+      ar: "الرد على الأسئلة الشائعة وتوضيح المعلومات الخاطئة.",
+      he: "מענה לשאלות נפוצות והפרכת מידע מוטעה.",
     },
-  ],
-  ar: [
-    {
-      icon: <Shield className="h-12 w-12" />,
-      title: "القوة العسكرية الإيرانية",
-      description: "معلومات حول القدرات والمعدات العسكرية الإيرانية.",
-      href: "/services",
-      image: "https://placehold.co/1200x800.png",
-      imageHint: "military parade",
-    },
-    {
-      icon: <BarChart3 className="h-12 w-12" />,
-      title: "إحصائيات الحرب",
-      description: "نظرة على الإحصائيات والأرقام الرئيسية خلال الحرب.",
-      href: "/projects",
-      image: "https://placehold.co/1200x800.png",
-      imageHint: "data charts",
-    },
-    {
-      icon: <Trophy className="h-12 w-12" />,
-      title: "إنجازات وانتصارات إيران خلال الحرب",
-      description: "نظرة عامة على إنجازات وانتصارات إيران الهامة خلال الحرب.",
-      href: "/about",
-      image: "https://placehold.co/1200x800.png",
-      imageHint: "military medal",
-    },
-    {
-      icon: <MessageSquareQuote className="h-12 w-12" />,
-      title: "الرد على الشبهات",
-      description: "الرد على الأسئلة الشائعة وتوضيح المعلومات الخاطئة.",
-      href: "/contact",
-      image: "https://placehold.co/1200x800.png",
-      imageHint: "question mark",
-    },
-  ],
-  he: [
-    {
-      icon: <Shield className="h-12 w-12" />,
-      title: "הכוח הצבאי של איראן",
-      description: "מידע על היכולות והציוד הצבאי של איראן.",
-      href: "/services",
-      image: "https://placehold.co/1200x800.png",
-      imageHint: "military parade",
-    },
-    {
-      icon: <BarChart3 className="h-12 w-12" />,
-      title: "סטטיסטיקות מלחמה",
-      description: "מבט על נתונים וסטטיסטיקות מרכזיים לאורך המלחמה.",
-      href: "/projects",
-      image: "https://placehold.co/1200x800.png",
-      imageHint: "data charts",
-    },
-    {
-      icon: <Trophy className="h-12 w-12" />,
-      title: "הישגיה וניצחונותיה של איראן במלחמה",
-      description: "סקירה כללית של ההישגים והניצחונות המשמעותיים של איראן במהלך המלחמה.",
-      href: "/about",
-      image: "https://placehold.co/1200x800.png",
-      imageHint: "military medal",
-    },
-    {
-      icon: <MessageSquareQuote className="h-12 w-12" />,
-      title: "מענה לשאלות",
-      description: "מענה לשאלות נפוצות והפרכת מידע מוטעה.",
-      href: "/contact",
-      image: "https://placehold.co/1200x800.png",
-      imageHint: "question mark",
-    },
-  ],
-};
-
-type Language = keyof typeof translations;
+    href: "/contact",
+    image: "https://i.postimg.cc/XqBg0qC2/Gemini-Generated-Image-qlk5zkqlk5zkqlk5.png",
+    imageHint: "question mark neon",
+  },
+];
 
 export function InteractiveBanners({ lang = 'en' }: { lang: Language }) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const isRtl = lang === 'fa' || lang === 'ar' || lang === 'he';
-  const bannerData = translations[lang] || translations.en;
 
   return (
     <div
@@ -165,11 +99,16 @@ export function InteractiveBanners({ lang = 'en' }: { lang: Language }) {
         return (
           <BannerPanel
             key={banner.href}
-            {...banner}
+            icon={banner.icon}
+            title={banner.title[lang]}
+            description={banner.description[lang]}
             href={finalHref}
+            image={banner.image}
+            imageHint={banner.imageHint}
             isHovered={isHovered}
             isAnyHovered={isAnyHovered}
             onMouseEnter={() => setHoveredIndex(index)}
+            isLast={index === bannerData.length - 1}
           />
         )
       })}

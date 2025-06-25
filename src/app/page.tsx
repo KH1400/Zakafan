@@ -5,8 +5,7 @@ import { useState } from "react";
 import { Header } from "@/components/fourfold/header";
 import { InteractiveBanners } from "@/components/fourfold/interactive-banners";
 import { Footer } from "@/components/fourfold/footer";
-
-type Language = 'fa' | 'en' | 'ar' | 'he';
+import type { Language } from '@/lib/content-data';
 
 const languageOptions: Record<Language, { dir: 'rtl' | 'ltr'; font: string }> = {
   fa: { dir: 'rtl', font: 'font-persian' },
@@ -23,11 +22,13 @@ export default function Home() {
 
   return (
     <div
-      dir={selectedLang.dir}
-      className={`${selectedLang.font} flex flex-col h-screen w-screen bg-background`}
+      className="flex flex-col h-screen w-full bg-background overflow-hidden"
     >
       <Header currentLang={language} onLanguageChange={setLanguage} />
-      <main className="flex-grow overflow-hidden">
+      <main 
+        dir={selectedLang.dir}
+        className={`${selectedLang.font} flex-grow overflow-hidden`}
+      >
         <InteractiveBanners lang={language} />
       </main>
       <Footer lang={language} />

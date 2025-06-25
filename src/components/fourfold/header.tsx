@@ -1,8 +1,10 @@
+
 "use client";
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Menu, Search } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,19 +15,21 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useState } from 'react';
-import { Input } from '@/components/ui/input';
+import { SearchComponent } from './search-component';
+import type { Language } from '@/lib/content-data';
 import { cn } from '@/lib/utils';
 
-type Language = 'fa' | 'en' | 'ar' | 'he';
+const languageOrder: Language[] = ['fa', 'ar', 'he', 'en'];
 
-const languageOptions: Record<Language, { name: string; font: string; }> = {
-  fa: { name: 'فارسی', font: 'font-persian' },
-  en: { name: 'English', font: 'font-body' },
-  ar: { name: 'العربية', font: 'font-arabic' },
-  he: { name: 'עברית', font: 'font-hebrew' },
+// Only keep language names, as brand name is now static
+const languageOptions: Record<Language, { name: string; }> = {
+  fa: { name: 'فارسی' },
+  en: { name: 'English' },
+  ar: { name: 'العربية' },
+  he: { name: 'עברית' },
 };
 
+// Translations for menu items
 const translations = {
   about: {
     en: 'About Us',
@@ -33,19 +37,18 @@ const translations = {
     ar: 'معلومات عنا',
     he: 'עלינו',
   },
-  tagline: {
-    en: 'Dynography Reference',
-    fa: 'مرجع داینوگرافی',
-    ar: 'مرجع داينوغرافي',
-    he: 'התייחסות לדיינוגרפיה',
+  adminPanel: {
+    en: 'Admin Panel',
+    fa: 'پنل مدیریت',
+    ar: 'لوحة الإدارة',
+    he: 'פאנל ניהול',
   },
-  searchPlaceholder: {
-    en: 'Search...',
-    fa: 'جستجو...',
-    ar: 'بحث...',
-    he: 'חיפוש...',
-  }
 }
+
+// Static English branding
+const brandName = "War Dynograph";
+const tagline = "The Dynographic Reference for the Iran-Israel War";
+const fontFamily = "Inter, sans-serif";
 
 type HeaderProps = {
   currentLang: Language;
@@ -53,84 +56,67 @@ type HeaderProps = {
 };
 
 export function Header({ currentLang, onLanguageChange }: HeaderProps) {
-  const taglineFont = languageOptions[currentLang]?.font || 'font-body';
-  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
-
+  const [isSearchExpanded, setSearchExpanded] = useState(false);
+  
+  // Fixed LTR layout values
+  const brandTextLength = "370";
+  const forcedTextLength = "370";
+  const iconX = 30;
+  const textX = 60;
+  const textAnchor = "start";
+  
   return (
-    <header className="flex h-20 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0">
-      <Link href="/" className="flex items-center gap-3">
-        <svg
-          viewBox="0 0 250 60"
-          className="h-10 w-auto"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g>
-            <text
-              x="0"
-              y="35"
-              fontSize="32"
-              fontWeight="bold"
-              fill="hsl(var(--primary))"
-              className="font-headline"
-            >
-              Zakafan
-            </text>
-            <text
-              x="0"
-              y="55"
-              fontSize="14"
-              fontWeight="bold"
-              fill="hsl(var(--foreground))"
-              opacity="0.8"
-              className={taglineFont}
-            >
-              {translations.tagline[currentLang]}
-            </text>
-          </g>
-          <g transform="translate(190, 0)">
-            <rect width="60" height="60" rx="12" fill="hsl(var(--accent))" />
-            <g
-              stroke="hsl(var(--primary))"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              fill="none"
-            >
-              <path d="M42,21 C42,26.5228475 37.5228475,31 32,31 L28,31 C22.4771525,31 18,26.5228475 18,21 C18,15.4771525 22.4771525,11 28,11 C33.5228475,11 37.8,15.4771525 37.8,21" />
-              <path d="M28,31 L28,38 C28,39.1045695 27.1045695,40 26,40 L22,40" />
-              <path d="M32,17 L38,17" />
-              <circle cx="40" cy="17" r="2.5" />
-              <path d="M35,24 L42,24" />
-              <circle cx="44" cy="24" r="2.5" />
-              <path d="M32,31 L36,31" />
-              <circle cx="38" cy="31" r="2.5" />
-              <path d="M28,11 L28,15" />
-              <circle cx="28" cy="17" r="2.5" />
+    <header 
+      dir="ltr" // Force LTR for header layout
+      className="flex h-20 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0"
+    >
+      <Link 
+        href={currentLang === 'en' ? '/' : `/?lang=${currentLang}`} 
+        className={cn(
+            "flex items-center gap-3 transition-opacity duration-300",
+            isSearchExpanded && "opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto"
+        )}
+      >
+        <svg width="500" height="100" viewBox="0 0 500 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-20 w-auto">
+            <g transform={`translate(${iconX}, 50)`} stroke="hsl(var(--accent))" strokeWidth="3" fill="none" className="drop-shadow-glow-accent">
+                <path d="M-20 0 L0 -20 L20 0 L0 20 Z" />
+                <path d="M-10 0 L0 -10 L10 0 L0 10 Z" fill="hsl(var(--accent))" />
             </g>
-          </g>
+            <text 
+                x={textX}
+                y="50" 
+                fontFamily={fontFamily} 
+                fontSize="34" 
+                fontWeight="bold" 
+                className="fill-accent drop-shadow-glow-accent"
+                textAnchor={textAnchor}
+                dominantBaseline="middle"
+                textLength={brandTextLength}
+                lengthAdjust="spacingAndGlyphs"
+            >
+                {brandName}
+            </text>
+            <text 
+                x={textX}
+                y="80" 
+                fontFamily={fontFamily}
+                fontSize="16" 
+                className="fill-white/80"
+                textAnchor={textAnchor}
+                textLength={forcedTextLength}
+                lengthAdjust="spacingAndGlyphs"
+            >
+                {tagline}
+            </text>
         </svg>
       </Link>
 
-      <div className="flex items-center gap-2">
-        <div 
-          className="flex items-center"
-          onMouseEnter={() => setIsSearchExpanded(true)}
-          onMouseLeave={() => setIsSearchExpanded(false)}
-        >
-          <Input 
-            type="search"
-            placeholder={translations.searchPlaceholder[currentLang]}
-            className={cn(
-              "h-9 transition-all duration-300 ease-in-out",
-              "focus-visible:ring-offset-0 focus-visible:ring-1",
-              isSearchExpanded ? "w-36 md:w-48 px-3 opacity-100" : "w-0 p-0 opacity-0 border-none"
-            )}
-            onFocus={() => setIsSearchExpanded(true)}
-          />
-          <Button variant="ghost" size="icon" aria-label="Search" className="h-9 w-9 flex-shrink-0">
-             <Search className="h-5 w-5" />
-          </Button>
-        </div>
+      <div className="flex flex-1 items-center justify-end gap-2 min-w-0">
+        <SearchComponent 
+            lang={currentLang} 
+            isExpanded={isSearchExpanded}
+            onExpandedChange={setSearchExpanded}
+        />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -142,8 +128,8 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
             <DropdownMenuSub>
               <DropdownMenuSubTrigger>{languageOptions[currentLang].name}</DropdownMenuSubTrigger>
               <DropdownMenuSubContent>
-                {(Object.keys(languageOptions) as Language[]).map((key) => (
-                  <DropdownMenuItem key={key} onSelect={() => onLanguageChange(key)}>
+                {languageOrder.map((key) => (
+                  <DropdownMenuItem key={key} onSelect={() => onLanguageChange(key as Language)}>
                     {languageOptions[key].name}
                   </DropdownMenuItem>
                 ))}
@@ -152,6 +138,10 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link href={`/about?lang=${currentLang}`}>{translations.about[currentLang]}</Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href="/admin">{translations.adminPanel[currentLang]}</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
