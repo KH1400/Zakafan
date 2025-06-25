@@ -82,6 +82,10 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .active-thumb {
+            border-color: #00FFFF !important;
+            box-shadow: 0 0 10px #00FFFF;
+        }
     </style>
 </head>
 <body class="bg-[#0D1B2A]">
@@ -222,292 +226,489 @@
                 </button>
                 <div id="futureThreatsInsight" class="mt-4 p-4 bg-gray-800 rounded-lg border border-[#00FFFF]/50 text-gray-300 hidden"></div>
             </section>
+            
+            <!-- NEW SECTIONS START HERE -->
+
+            <!-- Image Gallery Section -->
+            <section id="visual-intel" class="card rounded-lg p-8 border border-[#FFA500]/30">
+                <h2 class="text-3xl font-bold mb-8 text-center orbitron text-[#FFA500] text-glow">Visual Intelligence: Image Gallery</h2>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="relative w-full aspect-video rounded-lg overflow-hidden border-2 border-[#00FFFF]/50">
+                        <img id="main-gallery-image" src="https://placehold.co/1280x720.png" data-ai-hint="missile launch night" alt="Main gallery view" class="w-full h-full object-cover">
+                        <a id="download-image-link" href="https://placehold.co/1280x720.png" download="missile_launch.png" class="absolute bottom-4 right-4 bg-[#2B3B7A] hover:bg-[#415A77] text-white font-bold py-2 px-4 rounded-lg transition duration-300 flex items-center gap-2">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                    </div>
+                    <div id="image-thumbnails" class="flex gap-4 overflow-x-auto p-2">
+                        <!-- Thumbnails will be populated by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Video Gallery Section -->
+            <section id="mission-debrief" class="card rounded-lg p-8 border border-[#2B3B7A]/30">
+                <h2 class="text-3xl font-bold mb-8 text-center orbitron text-[#FFA500] text-glow">Mission Debrief: Video Archive</h2>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="relative w-full aspect-video rounded-lg overflow-hidden bg-black">
+                        <video id="main-gallery-video" src="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4" poster="https://placehold.co/1280x720.png" data-ai-hint="missile footage" controls class="w-full h-full object-contain"></video>
+                    </div>
+                    <div id="video-thumbnails" class="flex gap-4 overflow-x-auto p-2">
+                        <!-- Video Thumbnails will be populated by JS -->
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Full Infographic Image Section -->
+            <section id="full-battle-plan" class="card rounded-lg p-8 border border-[#6A0DAD]/30">
+                <h2 class="text-3xl font-bold mb-8 text-center orbitron text-[#FFA500] text-glow">Full Battle Plan: Infographic Overview</h2>
+                <div class="w-full rounded-lg overflow-hidden border-2 border-[#00FFFF]/50">
+                    <a href="https://placehold.co/1200x1800.png" target="_blank" title="View full infographic">
+                        <img src="https://placehold.co/1200x1800.png" data-ai-hint="infographic military" alt="Full infographic overview" class="w-full h-auto object-contain">
+                    </a>
+                </div>
+            </section>
+
+            <!-- Related Tweets Section -->
+            <section id="social-intel" class="card rounded-lg p-8 border border-[#00FFFF]/30">
+                <h2 class="text-3xl font-bold mb-4 text-center orbitron text-[#FFA500] text-glow">Real-time Intel: Social Feed</h2>
+                <p class="text-center max-w-4xl mx-auto text-[#d1d5db]/90 mb-8">
+                    Generate AI-powered analysis of social media chatter related to the operation.
+                </p>
+                <button id="generate-tweets" class="mb-6 w-full bg-[#00FFFF] hover:bg-[#00e0e0] text-[#0f0c29] font-bold py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center text-lg">
+                    Generate Intelligence Feed ✨
+                    <span class="loading-spinner hidden" id="loading-tweets"></span>
+                </button>
+                <div id="tweets-container" class="space-y-4">
+                    <!-- AI-generated tweets will appear here -->
+                </div>
+            </section>
 
         </main>
     </div>
 
     <script>
-        const vibrantPalette = {
-            logoOrange: '#FFA500',
-            logoDarkBlue: '#2B3B7A',
-            vibrantCyan: '#00FFFF',
-            accentPurple: '#6A0DAD',
-            errorRed: '#FF3366',
-            successGreen: '#00FF99',
-            darkBackground: '#0f0c29',
-            mediumBackground: '#302b63',
-            lightBackground: '#24243e',
-            textColor: '#d1d5db'
-        };
+        document.addEventListener('DOMContentLoaded', function() {
+            const vibrantPalette = {
+                logoOrange: '#FFA500',
+                logoDarkBlue: '#2B3B7A',
+                vibrantCyan: '#00FFFF',
+                accentPurple: '#6A0DAD',
+                errorRed: '#FF3366',
+                successGreen: '#00FF99',
+                darkBackground: '#0f0c29',
+                mediumBackground: '#302b63',
+                lightBackground: '#24243e',
+                textColor: '#d1d5db'
+            };
 
-        const globalChartOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: vibrantPalette.textColor,
-                        font: { family: "'Roboto', sans-serif", size: 12 }
+            const globalChartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: vibrantPalette.textColor,
+                            font: { family: "'Roboto', sans-serif", size: 12 }
+                        }
+                    },
+                    tooltip: {
+                        titleFont: { family: "'Roboto', sans-serif", weight: 'bold' },
+                        bodyFont: { family: "'Roboto', sans-serif" },
+                        backgroundColor: 'rgba(27, 38, 59, 0.9)',
+                        borderColor: vibrantPalette.logoDarkBlue,
+                        borderWidth: 1,
+                        padding: 10,
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                    return label.join(' ');
+                                }
+                                return label;
+                            }
+                        }
+                    },
+                    datalabels: {
+                        color: '#ffffff',
+                        font: { family: "'Orbitron', sans-serif", weight: 'bold', size: 16 },
                     }
                 },
-                tooltip: {
-                    titleFont: { family: "'Roboto', sans-serif", weight: 'bold' },
-                    bodyFont: { family: "'Roboto', sans-serif" },
-                    backgroundColor: 'rgba(27, 38, 59, 0.9)',
-                    borderColor: vibrantPalette.logoDarkBlue,
-                    borderWidth: 1,
-                    padding: 10,
-                    callbacks: {
-                        title: function(tooltipItems) {
-                            const item = tooltipItems[0];
-                            let label = item.chart.data.labels[item.dataIndex];
-                            if (Array.isArray(label)) {
-                                return label.join(' ');
-                            }
-                            return label;
+            };
+
+            Chart.register(ChartDataLabels);
+
+            const ballisticCtx = document.getElementById('ballisticComparisonChart').getContext('2d');
+            new Chart(ballisticCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Range', 'Speed', 'Evasion', 'Precision', 'Payload'],
+                    datasets: [{
+                        label: 'Qassem Basir',
+                        data: [8, 11, 9, 10, 8],
+                        borderColor: vibrantPalette.vibrantCyan,
+                        backgroundColor: 'rgba(0, 255, 255, 0.2)',
+                        pointBackgroundColor: vibrantPalette.vibrantCyan,
+                    }, {
+                        label: 'Haj Qassem',
+                        data: [9, 12, 7, 7, 8],
+                        backgroundColor: 'rgba(255, 165, 0, 0.2)',
+                        borderColor: vibrantPalette.logoOrange,
+                        pointBackgroundColor: vibrantPalette.logoOrange,
+                    }, {
+                        label: 'Kheibar Shekan',
+                        data: [9.5, 9, 8, 8, 9],
+                        borderColor: vibrantPalette.accentPurple,
+                        backgroundColor: 'rgba(106, 13, 173, 0.2)',
+                        pointBackgroundColor: vibrantPalette.accentPurple,
+                    }]
+                },
+                options: {
+                    ...globalChartOptions,
+                    plugins: { ...globalChartOptions.plugins, datalabels: { display: false } },
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(224, 225, 221, 0.2)' },
+                            grid: { color: 'rgba(224, 225, 221, 0.2)' },
+                            pointLabels: { color: vibrantPalette.textColor, font: { size: 14, family: "'Orbitron', sans-serif" } },
+                            ticks: {
+                                backdropColor: 'rgba(0,0,0,0.5)',
+                                color: vibrantPalette.textColor,
+                                stepSize: 2,
+                                font: { size: 14, family: "'Orbitron', sans-serif" }
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 12,
                         }
                     }
+                 }
+            });
+
+            const droneCtx = document.getElementById('droneEffectivenessChart').getContext('2d');
+            new Chart(droneCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Shahed-238 Drones (June 2025)'],
+                    datasets: [{
+                        label: 'Penetrated',
+                        data: [38],
+                        backgroundColor: vibrantPalette.errorRed,
+                        borderColor: vibrantPalette.logoDarkBlue,
+                        borderWidth: 2
+                    }, {
+                        label: 'Intercepted',
+                        data: [62],
+                        backgroundColor: vibrantPalette.vibrantCyan,
+                        borderColor: vibrantPalette.logoDarkBlue,
+                        borderWidth: 2
+                    }]
                 },
-                datalabels: {
-                    color: '#ffffff',
-                    font: { family: "'Orbitron', sans-serif", weight: 'bold', size: 16 },
-                }
-            },
-        };
-
-        Chart.register(ChartDataLabels);
-
-        const ballisticCtx = document.getElementById('ballisticComparisonChart').getContext('2d');
-        new Chart(ballisticCtx, {
-            type: 'radar',
-            data: {
-                labels: ['Range', 'Speed', 'Evasion', 'Precision', 'Payload'],
-                datasets: [{
-                    label: 'Qassem Basir',
-                    data: [8, 11, 9, 10, 8],
-                    borderColor: vibrantPalette.vibrantCyan,
-                    backgroundColor: 'rgba(0, 255, 255, 0.2)',
-                    pointBackgroundColor: vibrantPalette.vibrantCyan,
-                }, {
-                    label: 'Haj Qassem',
-                    data: [9, 12, 7, 7, 8],
-                    backgroundColor: 'rgba(255, 165, 0, 0.2)',
-                    borderColor: vibrantPalette.logoOrange,
-                    pointBackgroundColor: vibrantPalette.logoOrange,
-                }, {
-                    label: 'Kheibar Shekan',
-                    data: [9.5, 9, 8, 8, 9],
-                    borderColor: vibrantPalette.accentPurple,
-                    backgroundColor: 'rgba(106, 13, 173, 0.2)',
-                    pointBackgroundColor: vibrantPalette.accentPurple,
-                }]
-            },
-            options: {
-                ...globalChartOptions,
-                plugins: { ...globalChartOptions.plugins, datalabels: { display: false } },
-                scales: {
-                    r: {
-                        angleLines: { color: 'rgba(224, 225, 221, 0.2)' },
-                        grid: { color: 'rgba(224, 225, 221, 0.2)' },
-                        pointLabels: { color: vibrantPalette.textColor, font: { size: 14, family: "'Orbitron', sans-serif" } },
-                        ticks: {
-                            backdropColor: 'rgba(0,0,0,0.5)',
-                            color: vibrantPalette.textColor,
-                            stepSize: 2,
-                            font: { size: 14, family: "'Orbitron', sans-serif" }
-                        },
-                        suggestedMin: 0,
-                        suggestedMax: 12,
-                    }
-                }
-             }
-        });
-
-        const droneCtx = document.getElementById('droneEffectivenessChart').getContext('2d');
-        new Chart(droneCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Shahed-238 Drones (June 2025)'],
-                datasets: [{
-                    label: 'Penetrated',
-                    data: [38],
-                    backgroundColor: vibrantPalette.errorRed,
-                    borderColor: vibrantPalette.logoDarkBlue,
-                    borderWidth: 2
-                }, {
-                    label: 'Intercepted',
-                    data: [62],
-                    backgroundColor: vibrantPalette.vibrantCyan,
-                    borderColor: vibrantPalette.logoDarkBlue,
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                ...globalChartOptions,
-                scales: {
-                    x: {
-                        stacked: true,
-                        ticks: {
-                            callback: value => value + '%',
-                            color: vibrantPalette.textColor,
-                            font: { size: 16, family: "'Orbitron', sans-serif" }
-                        },
-                        grid: { color: 'rgba(0, 255, 255, 0.1)' }
-                    },
-                    y: {
-                        stacked: true,
-                        grid: { display: false },
-                        ticks: { color: vibrantPalette.textColor, font: { size: 16, family: "'Orbitron', sans-serif" } }
-                    }
-                },
-                plugins: {
-                    ...globalChartOptions.plugins,
-                    datalabels: {
-                        formatter: (value, context) => {
-                             return value > 10 ? value + '%' : '';
-                        },
-                        color: '#ffffff',
-                        font: { family: "'Orbitron', sans-serif", weight: 'bold', size: 18 },
-                    }
-                }
-            }
-        });
-
-        const costCtx = document.getElementById('costComparisonChart').getContext('2d');
-        new Chart(costCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Offensive Munition (Avg.)', 'Defensive Interceptor (Avg.)'],
-                datasets: [{
-                    label: 'Estimated Cost (USD)',
-                    data: [110000, 2000000],
-                    backgroundColor: [vibrantPalette.errorRed, vibrantPalette.vibrantCyan],
-                    borderWidth: 0,
-                    borderRadius: 5,
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                ...globalChartOptions,
-                scales: {
-                    x: {
-                        ticks: {
-                             callback: function(value) {
-                                if (value >= 1000000) return '$' + (value / 1000000) + 'M';
-                                if (value >= 1000) return '$' + (value / 1000) + 'K';
-                                return '$' + value;
+                options: {
+                    indexAxis: 'y',
+                    ...globalChartOptions,
+                    scales: {
+                        x: {
+                            stacked: true,
+                            ticks: {
+                                callback: value => value + '%',
+                                color: vibrantPalette.textColor,
+                                font: { size: 16, family: "'Orbitron', sans-serif" }
                             },
-                            color: vibrantPalette.textColor,
-                            font: { size: 16, family: "'Orbitron', sans-serif" }
+                            grid: { color: 'rgba(0, 255, 255, 0.1)' }
                         },
-                         grid: { color: 'rgba(0, 255, 255, 0.1)' }
+                        y: {
+                            stacked: true,
+                            grid: { display: false },
+                            ticks: { color: vibrantPalette.textColor, font: { size: 16, family: "'Orbitron', sans-serif" } }
+                        }
                     },
-                    y: {
-                        grid: { display: false },
-                        ticks: { color: vibrantPalette.textColor, font: { size: 16, family: "'Orbitron', sans-serif" } }
+                    plugins: {
+                        ...globalChartOptions.plugins,
+                        datalabels: {
+                            formatter: (value, context) => {
+                                 return value > 10 ? value + '%' : '';
+                            },
+                            color: '#ffffff',
+                            font: { family: "'Orbitron', sans-serif", weight: 'bold', size: 18 },
+                        }
                     }
+                }
+            });
+
+            const costCtx = document.getElementById('costComparisonChart').getContext('2d');
+            new Chart(costCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Offensive Munition (Avg.)', 'Defensive Interceptor (Avg.)'],
+                    datasets: [{
+                        label: 'Estimated Cost (USD)',
+                        data: [110000, 2000000],
+                        backgroundColor: [vibrantPalette.errorRed, vibrantPalette.vibrantCyan],
+                        borderWidth: 0,
+                        borderRadius: 5,
+                    }]
                 },
-                 plugins: {
-                    ...globalChartOptions.plugins,
-                    legend: { display: false },
-                     datalabels: {
-                        anchor: 'end',
-                        align: 'end',
-                        offset: 4,
-                        formatter: (value, context) => {
-                             if (value >= 1000000) return '$' + (value / 1000000).toFixed(1) + 'M';
-                             return '$' + (value / 1000) + 'K';
+                options: {
+                    indexAxis: 'y',
+                    ...globalChartOptions,
+                    scales: {
+                        x: {
+                            ticks: {
+                                 callback: function(value) {
+                                    if (value >= 1000000) return '$' + (value / 1000000) + 'M';
+                                    if (value >= 1000) return '$' + (value / 1000) + 'K';
+                                    return '$' + value;
+                                },
+                                color: vibrantPalette.textColor,
+                                font: { size: 16, family: "'Orbitron', sans-serif" }
+                            },
+                             grid: { color: 'rgba(0, 255, 255, 0.1)' }
                         },
-                        color: '#ffffff',
-                        font: { family: "'Orbitron', sans-serif", weight: 'bold', size: 18 },
+                        y: {
+                            grid: { display: false },
+                            ticks: { color: vibrantPalette.textColor, font: { size: 16, family: "'Orbitron', sans-serif" } }
+                        }
+                    },
+                     plugins: {
+                        ...globalChartOptions.plugins,
+                        legend: { display: false },
+                         datalabels: {
+                            anchor: 'end',
+                            align: 'end',
+                            offset: 4,
+                            formatter: (value, context) => {
+                                 if (value >= 1000000) return '$' + (value / 1000000).toFixed(1) + 'M';
+                                 return '$' + (value / 1000) + 'K';
+                            },
+                            color: '#ffffff',
+                            font: { family: "'Orbitron', sans-serif", weight: 'bold', size: 18 },
+                        }
+                    }
+                }
+            });
+
+            const interceptionCtx = document.getElementById('interceptionRateChart').getContext('2d');
+            new Chart(interceptionCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Penetrated (Haj Qassem)', 'Intercepted (Arrow-3)', 'Intercepted (Iron Dome)'],
+                    datasets: [{
+                        label: 'Effectiveness vs. Haj Qassem',
+                        data: [30, 40, 30],
+                        backgroundColor: [vibrantPalette.errorRed, vibrantPalette.vibrantCyan, vibrantPalette.successGreen],
+                        borderColor: vibrantPalette.logoDarkBlue,
+                        borderWidth: 5,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    ...globalChartOptions,
+                    cutout: '60%',
+                    plugins: {
+                         ...globalChartOptions.plugins,
+                         legend: { position: 'bottom' },
+                         datalabels: {
+                            formatter: (value, context) => {
+                                return value + '%';
+                            },
+                            color: '#ffffff',
+                            font: { family: "'Orbitron', sans-serif", weight: 'bold', size: 18 },
+                        }
+                    }
+                }
+            });
+
+            async function getLLMResponse(prompt, targetElementId, loadingSpinnerId) {
+                const targetElement = document.getElementById(targetElementId);
+                const loadingSpinner = document.getElementById(loadingSpinnerId);
+                const buttonElement = document.querySelector(`button[id$="${loadingSpinnerId.replace('loading', '')}"]`);
+                
+                if (buttonElement) {
+                    let spinner = document.createElement('span');
+                    spinner.className = 'loading-spinner';
+                    loadingSpinner.classList.remove('hidden');
+                    buttonElement.disabled = true;
+                }
+
+                targetElement.textContent = '';
+                targetElement.classList.add('hidden');
+
+                try {
+                    let chatHistory = [];
+                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                    const payload = { contents: chatHistory };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        targetElement.textContent = text;
+                        targetElement.classList.remove('hidden');
+                    } else {
+                        targetElement.textContent = 'Error: Could not retrieve AI insight. Please try again.';
+                        targetElement.classList.remove('hidden');
+                        console.error("LLM response structure unexpected:", result);
+                    }
+                } catch (error) {
+                    targetElement.textContent = 'Error: Failed to connect to AI server. Please check your internet connection.';
+                    targetElement.classList.remove('hidden');
+                    console.error("Error fetching LLM response:", error);
+                } finally {
+                    if (buttonElement) {
+                        loadingSpinner.classList.add('hidden');
+                        buttonElement.disabled = false;
                     }
                 }
             }
-        });
 
-        const interceptionCtx = document.getElementById('interceptionRateChart').getContext('2d');
-        new Chart(interceptionCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Penetrated (Haj Qassem)', 'Intercepted (Arrow-3)', 'Intercepted (Iron Dome)'],
-                datasets: [{
-                    label: 'Effectiveness vs. Haj Qassem',
-                    data: [30, 40, 30],
-                    backgroundColor: [vibrantPalette.errorRed, vibrantPalette.vibrantCyan, vibrantPalette.successGreen],
-                    borderColor: vibrantPalette.logoDarkBlue,
-                    borderWidth: 5,
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                ...globalChartOptions,
-                cutout: '60%',
-                plugins: {
-                     ...globalChartOptions.plugins,
-                     legend: { position: 'bottom' },
-                     datalabels: {
-                        formatter: (value, context) => {
-                            return value + '%';
-                        },
-                        color: '#ffffff',
-                        font: { family: "'Orbitron', sans-serif", weight: 'bold', size: 18 },
-                    }
-                }
-            }
-        });
+            // --- Event Listeners ---
+            document.getElementById('analyzeBallisticTactics').addEventListener('click', () => {
+                const prompt = "Based on the characteristics of Qassem Basir (upgraded), Haj Qassem, and Kheibar Shekan missiles used in Operation True Promise III, briefly analyze the main tactical advantages of each and how they impact enemy air defense capabilities. Keep the response to a maximum of 700 characters.";
+                getLLMResponse(prompt, 'ballisticTacticsInsight', 'loadingBallisticTactics');
+            });
 
-        async function getLLMResponse(prompt, targetElementId, loadingSpinnerId) {
-            const targetElement = document.getElementById(targetElementId);
-            const loadingSpinner = document.getElementById(loadingSpinnerId);
-            const buttonElement = document.querySelector(`button[id$="${loadingSpinnerId.replace('loading', '')}"]`);
+            document.getElementById('analyzeDroneCostEffectiveness').addEventListener('click', () => {
+                const prompt = "Considering the data from Operation True Promise III and the 38% penetration rate of Shahed-238 drones which caused $8 million in damage, provide a brief analysis of Iran's drone swarm saturation strategy and its cost-asymmetry against expensive air defense. Keep the response to a maximum of 600 characters.";
+                getLLMResponse(prompt, 'droneCostEffectivenessInsight', 'loadingDroneCostEffectiveness');
+            });
+
+            document.getElementById('analyzeFutureThreats').addEventListener('click', () => {
+                const prompt = "Given Iran's recent tactical evolution from saturation to precision and evasion, and information from Operation True Promise III, predict the main challenges for regional air defense in the next 5 years and potential new Iranian technologies or tactics. Keep the response to a maximum of 800 characters.";
+                getLLMResponse(prompt, 'futureThreatsInsight', 'loadingFutureThreats');
+            });
+
+            // --- NEW GALLERY AND TWEET LOGIC ---
             
-            if (buttonElement) {
-                let spinner = document.createElement('span');
-                spinner.className = 'loading-spinner';
+            // --- Image & Video Gallery Logic ---
+            const imageData = [
+                { src: 'https://placehold.co/1280x720.png', hint: 'missile launch night', alt: 'Missile launch at night' },
+                { src: 'https://i.postimg.cc/GhLxGFhP/Gemini-Generated-Image-6ui82b6ui82b6ui8.png', hint: 'radar screen display', alt: 'Air defense radar screen' },
+                { src: 'https://i.postimg.cc/FRxJH6SM/Gemini-Generated-Image-iumdqliumdqliumd.png', hint: 'drone swarm sky', alt: 'Drone swarm in the sky' },
+                { src: 'https://placehold.co/1280x720.png', hint: 'command center holograms', alt: 'Military command center with holograms' },
+                { src: 'https://placehold.co/1280x720.png', hint: 'stealth bomber flying', alt: 'Stealth bomber in flight' }
+            ];
+
+            const videoData = [
+                { src: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4', poster: 'https://i.postimg.cc/vHTjGBDk/Gemini-Generated-Image-iumdqfiumdqfiumd.png', hint: 'missile launch footage', title: 'Launch Sequence' },
+                { src: 'https://test-videos.co.uk/vids/jellyfish/mp4/h264/360/Jellyfish_360_10s_1MB.mp4', poster: 'https://i.postimg.cc/d34d4ft2/Gemini-Generated-Image-iumdqgiumdqgiumd.png', hint: 'drone aerial view', title: 'Drone POV' },
+                { src: 'https://test-videos.co.uk/vids/surfing/mp4/h264/360/Surfing_360_10s_1MB.mp4', poster: 'https://i.postimg.cc/0NDwLjy2/Gemini-Generated-Image-iumdqiiumdqiiumd.png', hint: 'interception footage', title: 'Defense System Active' },
+                { src: 'https://test-videos.co.uk/vids/cat/mp4/h264/360/Cat_360_10s_1MB.mp4', poster: 'https://i.postimg.cc/xTpMmBZY/Gemini-Generated-Image-iumdqjiumdqjiumd.png', hint: 'military analysis', title: 'Expert Analysis' }
+            ];
+
+            const imageThumbnailsContainer = document.getElementById('image-thumbnails');
+            const mainImage = document.getElementById('main-gallery-image');
+            const downloadLink = document.getElementById('download-image-link');
+
+            imageData.forEach((img, index) => {
+                const thumb = document.createElement('img');
+                thumb.src = img.src;
+                thumb.alt = `Thumbnail: ${img.alt}`;
+                thumb.dataset.aiHint = img.hint;
+                thumb.className = 'w-24 h-16 object-cover rounded-md cursor-pointer border-2 border-transparent hover:border-[#00FFFF] transition-all duration-300';
+                if (index === 0) {
+                    thumb.classList.add('active-thumb');
+                }
+                thumb.addEventListener('click', () => {
+                    mainImage.src = img.src;
+                    mainImage.alt = img.alt;
+                    mainImage.dataset.aiHint = img.hint;
+                    downloadLink.href = img.src;
+                    downloadLink.download = `${img.alt.replace(/\s+/g, '_').toLowerCase()}.png`;
+                    
+                    document.querySelectorAll('#image-thumbnails .active-thumb').forEach(t => t.classList.remove('active-thumb'));
+                    thumb.classList.add('active-thumb');
+                });
+                imageThumbnailsContainer.appendChild(thumb);
+            });
+
+            const videoThumbnailsContainer = document.getElementById('video-thumbnails');
+            const mainVideo = document.getElementById('main-gallery-video');
+
+            videoData.forEach((vid, index) => {
+                const thumbContainer = document.createElement('div');
+                thumbContainer.className = 'relative w-32 h-20 object-cover rounded-md cursor-pointer border-2 border-transparent hover:border-[#00FFFF] transition-all duration-300 overflow-hidden group';
+                if (index === 0) {
+                    thumbContainer.classList.add('active-thumb');
+                }
+
+                const thumbImg = document.createElement('img');
+                thumbImg.src = vid.poster;
+                thumbImg.alt = `Thumbnail: ${vid.title}`;
+                thumbImg.dataset.aiHint = vid.hint;
+                thumbImg.className = 'w-full h-full object-cover';
+                
+                const playIcon = document.createElement('div');
+                playIcon.className = 'absolute inset-0 bg-black/40 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity';
+                playIcon.innerHTML = `<i class="fas fa-play text-2xl"></i>`;
+
+                const titleOverlay = document.createElement('div');
+                titleOverlay.className = 'absolute bottom-0 left-0 right-0 p-1 bg-black/60 text-white text-xs text-center truncate';
+                titleOverlay.textContent = vid.title;
+
+                thumbContainer.appendChild(thumbImg);
+                thumbContainer.appendChild(playIcon);
+                thumbContainer.appendChild(titleOverlay);
+
+                thumbContainer.addEventListener('click', () => {
+                    mainVideo.src = vid.src;
+                    mainVideo.poster = vid.poster;
+                    mainVideo.play();
+                    
+                    document.querySelectorAll('#video-thumbnails .active-thumb').forEach(t => t.classList.remove('active-thumb'));
+                    thumbContainer.classList.add('active-thumb');
+                });
+
+                videoThumbnailsContainer.appendChild(thumbContainer);
+            });
+
+            // --- Tweet Generation Logic ---
+            const sampleTweets = [
+                { user: 'StrategicSentinel', handle: '@StratSentinel', avatar: 'https://placehold.co/48x48.png', text: "Operation True Promise III isn't just about payload, it's about psychology. The use of MaRVs and decoys forces a recalculation of defense expenditure. The cost-exchange ratio is now heavily in Iran's favor. #AsymmetricWarfare #MissileTech" },
+                { user: 'DefenseDebrief', handle: '@DefenseDebrief', avatar: 'https://placehold.co/48x48.png', text: 'The shift from Shahab-3 to Kheibar Shekan and Qassem Basir is a generational leap. We are witnessing the move from brute-force saturation to precision-guided, defense-evading systems. This fundamentally alters the strategic balance. #Iran #MilitaryAnalysis' },
+                { user: 'CyberSec_Intel', handle: '@CyberSec_Intel', avatar: 'https://placehold.co/48x48.png', text: "Key takeaway: Qassem Basir's electro-optical seeker makes it resilient to GPS jamming. This is a game-changer against adversaries relying heavily on electronic warfare for defense. A non-jammable, precision missile is a nightmare for any AD system. #EW #Defense" },
+            ];
+
+            function generateTweets() {
+                const tweetsContainer = document.getElementById('tweets-container');
+                const loadingSpinner = document.getElementById('loading-tweets');
+                const buttonElement = document.getElementById('generate-tweets');
+
                 loadingSpinner.classList.remove('hidden');
                 buttonElement.disabled = true;
-            }
+                tweetsContainer.innerHTML = '';
 
-            targetElement.textContent = '';
-            targetElement.classList.add('hidden');
+                setTimeout(() => {
+                    sampleTweets.forEach(tweet => {
+                        const tweetEl = document.createElement('div');
+                        tweetEl.className = 'card rounded-lg p-4 flex gap-4 border-l-4 border-[#00FFFF]';
+                        tweetEl.innerHTML = `
+                            <img src="${tweet.avatar}" data-ai-hint="user avatar" alt="${tweet.user}" class="w-12 h-12 rounded-full">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2">
+                                    <h4 class="font-bold text-white">${tweet.user}</h4>
+                                    <span class="text-sm text-gray-400">${tweet.handle}</span>
+                                </div>
+                                <p class="mt-1 text-gray-300">${tweet.text}</p>
+                            </div>
+                        `;
+                        tweetsContainer.appendChild(tweetEl);
+                    });
 
-            try {
-                // NOTE: The API key is intentionally left blank for security.
-                // This feature will show a placeholder message.
-                targetElement.textContent = 'AI analysis feature is currently disabled for security reasons.';
-                targetElement.classList.remove('hidden');
-
-            } catch (error) {
-                targetElement.textContent = 'Error: Failed to connect to AI server. Please check your internet connection.';
-                targetElement.classList.remove('hidden');
-                console.error("Error fetching LLM response:", error);
-            } finally {
-                if (buttonElement) {
                     loadingSpinner.classList.add('hidden');
                     buttonElement.disabled = false;
-                }
+                }, 2500); // Simulate network delay
             }
-        }
 
-        // --- Event Listeners ---
-        document.getElementById('analyzeBallisticTactics').addEventListener('click', () => {
-            const prompt = "Based on the characteristics of Qassem Basir (upgraded), Haj Qassem, and Kheibar Shekan missiles used in Operation True Promise III, briefly analyze the main tactical advantages of each and how they impact enemy air defense capabilities. Keep the response to a maximum of 700 characters.";
-            getLLMResponse(prompt, 'ballisticTacticsInsight', 'loadingBallisticTactics');
+            document.getElementById('generate-tweets').addEventListener('click', generateTweets);
         });
-
-        document.getElementById('analyzeDroneCostEffectiveness').addEventListener('click', () => {
-            const prompt = "Considering the data from Operation True Promise III and the 38% penetration rate of Shahed-238 drones which caused $8 million in damage, provide a brief analysis of Iran's drone swarm saturation strategy and its cost-asymmetry against expensive air defense. Keep the response to a maximum of 600 characters.";
-            getLLMResponse(prompt, 'droneCostEffectivenessInsight', 'loadingDroneCostEffectiveness');
-        });
-
-        document.getElementById('analyzeFutureThreats').addEventListener('click', () => {
-            const prompt = "Given Iran's recent tactical evolution from saturation to precision and evasion, and information from Operation True Promise III, predict the main challenges for regional air defense in the next 5 years and potential new Iranian technologies or tactics. Keep the response to a maximum of 800 characters.";
-            getLLMResponse(prompt, 'futureThreatsInsight', 'loadingFutureThreats');
-        });
-
     </script>
 </body>
 </html>
-
-    
