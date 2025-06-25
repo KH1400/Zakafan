@@ -75,7 +75,7 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
       <Link 
         href={currentLang === 'en' ? '/' : `/?lang=${currentLang}`} 
         className={cn(
-            "flex items-center gap-3 transition-opacity duration-300",
+            "flex items-center gap-3 transition-all duration-300",
             isSearchExpanded && "opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto"
         )}
       >

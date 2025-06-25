@@ -35,9 +35,26 @@ type SearchComponentProps = {
 export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchComponentProps) {
   const [query, setQuery] = React.useState("");
   const [selectedSections, setSelectedSections] = React.useState<Set<SectionInfo['id']>>(new Set());
-  const inputRef = React.useRef<HTMLInputElement>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        onExpandedChange(false);
+      }
+    };
+
+    if (isExpanded) {
+      document.addEventListener("mousedown", handleClickOutside);
+      const timer = setTimeout(() => inputRef.current?.focus(), 100);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+        clearTimeout(timer);
+      };
+    }
+  }, [isExpanded, onExpandedChange]);
+  
   const handleSectionToggle = (sectionId: SectionInfo['id']) => {
     const newSelection = new Set(selectedSections);
     if (newSelection.has(sectionId)) {
@@ -62,40 +79,43 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
     const langQuery = lang === 'en' ? '' : `?lang=${lang}`;
     return `/${item.sectionId}/${item.slug}${langQuery}`;
   }
-
-  React.useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        onExpandedChange(false);
-      }
-    };
-
-    if (isExpanded) {
-      document.addEventListener("mousedown", handleClickOutside);
-      const timer = setTimeout(() => inputRef.current?.focus(), 100);
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-        clearTimeout(timer);
-      };
-    }
-  }, [isExpanded, onExpandedChange]);
   
   const showResults = isExpanded && query.trim().length > 0;
+  const showDropdown = isExpanded;
 
   return (
-    <div
-      ref={containerRef}
-      className="relative flex items-center"
-    >
-      <Button variant="ghost" size="icon" aria-label="Search" className="h-9 w-9" onClick={() => onExpandedChange(!isExpanded)}>
-        <Search className="h-5 w-5" />
-      </Button>
+    <div ref={containerRef} className="relative">
+       <div className={cn(
+        "relative flex h-10 items-center justify-end rounded-md border transition-all duration-300 ease-in-out",
+        isExpanded ? "w-72 border-input bg-background" : "w-10 border-transparent"
+      )}>
+        <Input
+          ref={inputRef}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={translations.searchPlaceholder[lang]}
+          className={cn(
+            "h-full bg-transparent pe-10 text-base transition-all duration-300 ease-in-out focus-visible:ring-0 focus-visible:ring-offset-0 md:text-sm",
+            isExpanded ? "w-full opacity-100" : "w-0 opacity-0"
+          )}
+        />
+        <Button
+          variant="ghost"
+          size="icon"
+          type="button"
+          aria-label="Toggle Search"
+          className="absolute right-0 top-0 h-10 w-10 shrink-0"
+          onClick={() => onExpandedChange(!isExpanded)}
+        >
+          <Search className="h-5 w-5" />
+        </Button>
+      </div>
 
       <div
         className={cn(
-          "absolute right-0 top-full mt-2 w-[550px] origin-top-right z-20",
+          "absolute right-0 top-full mt-2 w-72 origin-top-right z-20",
           "transition-all duration-300 ease-in-out",
-          isExpanded ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"
+          showDropdown ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"
         )}
       >
         <div
@@ -104,29 +124,15 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
             showResults ? "rounded-b-none" : ""
           )}
         >
-          <div className="relative w-full">
-            <Input
-              ref={inputRef}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder={translations.searchPlaceholder[lang]}
-              className="h-9 pr-8"
-            />
-            {query && (
-              <Button variant="ghost" size="icon" className="absolute right-0 top-0 h-9 w-9" onClick={() => setQuery('')}>
-                <X className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
           <div className="flex w-full items-center justify-between">
             {sections.map(section => (
-              <div key={section.id} className="flex items-center space-x-1">
+              <div key={section.id} className="flex items-center gap-1.5">
                 <Checkbox
                   id={`filter-inline-${section.id}`}
                   checked={selectedSections.has(section.id)}
                   onCheckedChange={() => handleSectionToggle(section.id)}
                 />
-                <Label htmlFor={`filter-inline-${section.id}`} className="text-sm font-normal cursor-pointer">
+                <Label htmlFor={`filter-inline-${section.id}`} className="text-[9px] font-normal cursor-pointer leading-none">
                   {section.title[lang]}
                 </Label>
               </div>
