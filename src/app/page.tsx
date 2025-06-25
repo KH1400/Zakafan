@@ -21,11 +21,13 @@ export default function Home() {
 
   return (
     <div
-      dir={selectedLang.dir}
-      className={`${selectedLang.font} flex flex-col h-screen w-full bg-background overflow-hidden`}
+      className="flex flex-col h-screen w-full bg-background overflow-hidden"
     >
       <Header currentLang={language} onLanguageChange={setLanguage} />
-      <main className="flex-grow overflow-hidden">
+      <main 
+        dir={selectedLang.dir}
+        className={`${selectedLang.font} flex-grow overflow-hidden`}
+      >
         <InteractiveBanners lang={language} />
       </main>
       <Footer lang={language} />

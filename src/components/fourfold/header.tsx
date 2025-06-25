@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -20,27 +21,15 @@ import { cn } from '@/lib/utils';
 
 const languageOrder: Language[] = ['fa', 'ar', 'he', 'en'];
 
-const languageOptions: Record<Language, { name: string; brandName: string; }> = {
-  fa: { name: 'فارسی', brandName: 'داینوگراف جنگ' },
-  en: { name: 'English', brandName: 'War Dynograph' },
-  ar: { name: 'العربية', brandName: 'داينوغراف الحرب' },
-  he: { name: 'עברית', brandName: 'דיינוגרף מלחמה' },
+// Only keep language names, as brand name is now static
+const languageOptions: Record<Language, { name: string; }> = {
+  fa: { name: 'فارسی' },
+  en: { name: 'English' },
+  ar: { name: 'العربية' },
+  he: { name: 'עברית' },
 };
 
-const logoTaglines: Record<Language, string> = {
-    en: "The Dynographic Reference for the Iran-Israel War",
-    fa: "داینوگرافی جنگ ایران - اسرائیل",
-    ar: "المرجع الداينوغرافي للحرب الإيرانية الإسرائيلية",
-    he: "המרجع הדינוגרפי למלחמת איראן-ישראל"
-};
-
-const fontFamilies: Record<Language, string> = {
-    en: "Inter, sans-serif",
-    fa: "Noto Sans Arabic, sans-serif",
-    ar: "Noto Sans Arabic, sans-serif",
-    he: "Noto Sans Hebrew, sans-serif"
-};
-
+// Translations for menu items
 const translations = {
   about: {
     en: 'About Us',
@@ -50,6 +39,11 @@ const translations = {
   },
 }
 
+// Static English branding
+const brandName = "War Dynograph";
+const tagline = "The Dynographic Reference for the Iran-Israel War";
+const fontFamily = "Inter, sans-serif";
+
 type HeaderProps = {
   currentLang: Language;
   onLanguageChange: (lang: Language) => void;
@@ -57,19 +51,17 @@ type HeaderProps = {
 
 export function Header({ currentLang, onLanguageChange }: HeaderProps) {
   const [isSearchExpanded, setSearchExpanded] = useState(false);
-  const isRtl = currentLang === 'fa' || currentLang === 'ar' || currentLang === 'he';
-  const brandName = languageOptions[currentLang].brandName;
-  const tagline = logoTaglines[currentLang];
-  const fontFamily = fontFamilies[currentLang];
-
+  
+  // Fixed LTR layout values
   const brandTextLength = "370";
   const forcedTextLength = "370";
-  const iconX = isRtl ? 470 : 30;
-  const textX = isRtl ? 440 : 60;
-  const textAnchor = isRtl ? "end" : "start";
+  const iconX = 30;
+  const textX = 60;
+  const textAnchor = "start";
   
   return (
     <header 
+      dir="ltr" // Force LTR for header layout
       className="flex h-20 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0"
     >
       <Link 

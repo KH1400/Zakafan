@@ -21,45 +21,31 @@ const aboutTranslations = {
     },
 };
 
-const logoBrandNames = {
-    en: "War Dynograph",
-    fa: "داینوگراف جنگ",
-    ar: "داينوغراف الحرب",
-    he: "דיינוגרף מלחמה"
-};
+// Static English branding for the logo
+const brandName = "War Dynograph";
+const tagline = "The Dynographic Reference for the Iran-Israel War";
+const logoFontFamily = "Inter, sans-serif";
 
-const logoTaglines = {
-    en: "The Dynographic Reference for the Iran-Israel War",
-    fa: "داینوگرافی جنگ ایران - اسرائیل",
-    ar: "المرجع الداينوغرافي للحرب الإيرانية الإسرائيلية",
-    he: "המרجع הדינוגרפי למלחמת איראן-ישראל"
-};
-
-const fontFamilies: Record<Language, string> = {
-    en: "Inter, sans-serif",
-    fa: "Noto Sans Arabic, sans-serif",
-    ar: "Noto Sans Arabic, sans-serif",
-    he: "Noto Sans Hebrew, sans-serif"
+const pageFontFamilies: Record<Language, string> = {
+    en: "font-body",
+    fa: "font-persian",
+    ar: "font-arabic",
+    he: "font-hebrew"
 };
 
 export default function AboutPage({ searchParams }: { searchParams?: { lang?: string } }) {
   const lang = (searchParams?.lang || 'en') as Language;
   const isRtl = lang === 'fa' || lang === 'ar' || lang === 'he';
   const langConfig = {
-    fa: { dir: 'rtl' as const, font: 'font-persian' },
-    en: { dir: 'ltr' as const, font: 'font-body' },
-    ar: { dir: 'rtl' as const, font: 'font-arabic' },
-    he: { dir: 'rtl' as const, font: 'font-hebrew' },
-  }[lang];
-  
-  const brandName = logoBrandNames[lang];
-  const tagline = logoTaglines[lang];
-  const fontFamily = fontFamilies[lang];
+    dir: isRtl ? 'rtl' as const : 'ltr' as const,
+    font: pageFontFamilies[lang],
+  };
 
+  // Fixed LTR layout values for the logo
   const forcedTextLength = "370";
-  const iconX = isRtl ? 470 : 30;
-  const textX = isRtl ? 440 : 60;
-  const textAnchor = isRtl ? "end" : "start";
+  const iconX = 30;
+  const textX = 60;
+  const textAnchor = "start";
 
   return (
     <div dir={langConfig.dir} className={`${langConfig.font} relative flex flex-col min-h-screen w-full items-center justify-center text-white p-4`}>
@@ -82,7 +68,7 @@ export default function AboutPage({ searchParams }: { searchParams?: { lang?: st
             <text 
                 x={textX}
                 y="50" 
-                fontFamily={fontFamily} 
+                fontFamily={logoFontFamily} 
                 fontSize="34" 
                 fontWeight="bold" 
                 className="fill-accent drop-shadow-glow-accent"
@@ -96,7 +82,7 @@ export default function AboutPage({ searchParams }: { searchParams?: { lang?: st
             <text 
                 x={textX}
                 y="80" 
-                fontFamily={fontFamily}
+                fontFamily={logoFontFamily}
                 fontSize="16" 
                 className="fill-white/80"
                 textAnchor={textAnchor}
