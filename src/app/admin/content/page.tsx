@@ -63,7 +63,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import {
@@ -73,6 +72,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 
 
 type Content = {
@@ -113,6 +113,7 @@ export default function ContentPage() {
     const [isFormDialogOpen, setFormDialogOpen] = React.useState(false);
     const [contentToDelete, setContentToDelete] = React.useState<Content | null>(null);
     const [contentToEdit, setContentToEdit] = React.useState<Content | null>(null);
+    const [formContentType, setFormContentType] = React.useState<Content['type'] | ''>(typeMap.article);
 
     const filteredContent = React.useMemo(() => {
         return contentItems.filter(item => {
@@ -150,6 +151,7 @@ export default function ContentPage() {
     
     const handleOpenFormDialog = (content: Content | null) => {
         setContentToEdit(content);
+        setFormContentType(content ? content.type : typeMap.article);
         setFormDialogOpen(true);
     };
 
@@ -159,6 +161,14 @@ export default function ContentPage() {
         const title = formData.get('title') as string;
         const type = formData.get('type') as Content['type'];
         const status = formData.get('status') as Content['status'];
+        const file = formData.get('file-upload') as File;
+
+        if ((type === typeMap.image || type === typeMap.video) && file && file.size > 0) {
+            toast({
+                title: "فایل انتخاب شد",
+                description: `فایل "${file.name}" برای آپلود انتخاب شد. این یک نمونه اولیه است و آپلود واقعی انجام نمی‌شود.`,
+            });
+        }
 
         const newContent: Content = {
             id: contentToEdit ? contentToEdit.id : `CNT-00${contentItems.length + 1}`,
@@ -329,7 +339,7 @@ export default function ContentPage() {
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="type" className="text-right">نوع</Label>
-                            <Select name="type" defaultValue={contentToEdit?.type || typeMap.article} required>
+                            <Select name="type" defaultValue={contentToEdit?.type || typeMap.article} required onValueChange={(value) => setFormContentType(value as Content['type'])}>
                                 <SelectTrigger className="col-span-3">
                                     <SelectValue placeholder="یک نوع انتخاب کنید" />
                                 </SelectTrigger>
@@ -353,6 +363,18 @@ export default function ContentPage() {
                                 </SelectContent>
                             </Select>
                         </div>
+                        {formContentType === typeMap.article && (
+                            <div className="grid grid-cols-4 items-start gap-4">
+                                <Label htmlFor="html-content" className="text-right pt-2">محتوای HTML</Label>
+                                <Textarea id="html-content" name="html-content" placeholder="کد HTML مقاله را اینجا وارد کنید..." className="col-span-3 min-h-[150px]" />
+                            </div>
+                        )}
+                        {(formContentType === typeMap.image || formContentType === typeMap.video) && (
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="file-upload" className="text-right">آپلود فایل</Label>
+                                <Input id="file-upload" name="file-upload" type="file" className="col-span-3" />
+                            </div>
+                        )}
                     </div>
                     <DialogFooter>
                          <Button type="button" variant="secondary" onClick={() => setFormDialogOpen(false)}>لغو</Button>
@@ -382,3 +404,5 @@ export default function ContentPage() {
     </div>
   );
 }
+
+    
