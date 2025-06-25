@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -84,13 +85,13 @@ export function SearchComponent({ lang }: SearchComponentProps) {
 
       <div
         className={cn(
-          "absolute right-0 top-1/2 -translate-y-1/2 flex h-12 items-center gap-3 rounded-md border bg-background p-2 shadow-lg origin-right transition-transform duration-300 ease-in-out",
+          "absolute right-0 top-1/2 -translate-y-1/2 flex flex-col gap-2.5 rounded-md border bg-background p-3 shadow-lg origin-right transition-transform duration-300 ease-in-out",
           isExpanded ? "scale-x-100" : "scale-x-0",
           showResults ? "rounded-b-none" : ""
         )}
         style={{ width: '550px' }}
       >
-        <div className="relative flex-grow">
+        <div className="relative w-full">
           <Input
             ref={inputRef}
             value={query}
@@ -104,7 +105,7 @@ export function SearchComponent({ lang }: SearchComponentProps) {
             </Button>
           )}
         </div>
-        <div className="flex items-center gap-2 pr-2 shrink-0">
+        <div className="flex items-center justify-center gap-4 shrink-0">
           {sections.map(section => (
             <div key={section.id} className="flex items-center space-x-1.5">
               <Checkbox
@@ -121,7 +122,7 @@ export function SearchComponent({ lang }: SearchComponentProps) {
       </div>
 
       {showResults && (
-        <div className="absolute top-[calc(50%+1.5rem)] w-[550px] right-0 z-20">
+        <div className="absolute top-[calc(50%+3rem)] w-[550px] right-0 z-20">
           <div className="rounded-md rounded-t-none border-t-0 border bg-popover text-popover-foreground shadow-lg">
             {filteredContent.length === 0 ? (
               <p className="p-4 text-center text-sm">{translations.noResults[lang]}</p>
