@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -38,35 +37,15 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
   const [selectedSections, setSelectedSections] = React.useState<Set<SectionInfo['id']>>(new Set());
   const containerRef = React.useRef<HTMLDivElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const contentRef = React.useRef<HTMLDivElement>(null);
-  const [dynamicWidth, setDynamicWidth] = React.useState("288px");
 
   React.useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        onExpandedChange(false);
-      }
-    };
-
+    // When expanding, focus the input
     if (isExpanded) {
-      document.addEventListener("mousedown", handleClickOutside);
-      const timer = setTimeout(() => inputRef.current?.focus(), 100);
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-        clearTimeout(timer);
-      };
+      const timer = setTimeout(() => inputRef.current?.focus(), 150); // a small delay for the transition
+      return () => clearTimeout(timer);
     }
-  }, [isExpanded, onExpandedChange]);
+  }, [isExpanded]);
 
-  React.useLayoutEffect(() => {
-    if (contentRef.current) {
-      const padding = 24; 
-      const width = contentRef.current.scrollWidth + padding;
-      const maxWidth = 450;
-      setDynamicWidth(`${Math.min(width, maxWidth)}px`);
-    }
-  }, [lang, isExpanded]);
-  
   const handleSectionToggle = (sectionId: SectionInfo['id']) => {
     const newSelection = new Set(selectedSections);
     if (newSelection.has(sectionId)) {
@@ -96,14 +75,17 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
   const showDropdown = isExpanded;
 
   return (
-    <div ref={containerRef} className="relative h-10 flex items-center">
+    <div 
+        ref={containerRef} 
+        className="relative h-10 flex flex-1 items-center justify-end"
+        onMouseEnter={() => onExpandedChange(true)}
+        onMouseLeave={() => onExpandedChange(false)}
+    >
        <div
-        className="relative flex h-10 items-center justify-end rounded-md border transition-all duration-300 ease-in-out"
-        style={{
-          width: isExpanded ? dynamicWidth : '40px',
-          borderColor: isExpanded ? 'hsl(var(--input))' : 'transparent',
-          backgroundColor: isExpanded ? 'hsl(var(--background))' : 'transparent',
-        }}
+        className={cn(
+            "relative flex h-10 items-center justify-end rounded-md border transition-all duration-300 ease-in-out",
+            isExpanded ? "w-full border-input bg-background" : "w-10 border-transparent bg-transparent"
+        )}
       >
         <Input
           ref={inputRef}
@@ -122,7 +104,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
           type="button"
           aria-label="Toggle Search"
           className="absolute right-0 top-0 h-10 w-10 shrink-0"
-          onClick={() => onExpandedChange(!isExpanded)}
+          onClick={() => onExpandedChange(true)}
         >
           <Search className="h-5 w-5" />
         </Button>
@@ -130,11 +112,10 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
 
       <div
         className={cn(
-          "absolute right-0 top-full mt-2 origin-top-right z-20",
+          "absolute right-0 top-full mt-2 w-full origin-top-right z-20",
           "transition-all duration-300 ease-in-out",
           showDropdown ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"
         )}
-        style={{ width: dynamicWidth }}
       >
         <div
           className={cn(
@@ -142,7 +123,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
             showResults ? "rounded-b-none" : ""
           )}
         >
-          <div ref={contentRef} className="flex w-full items-center justify-between flex-nowrap">
+          <div className="flex w-full items-center justify-between flex-nowrap">
             {sections.map(section => (
               <div key={section.id} className="flex items-center gap-1.5 whitespace-nowrap">
                 <Checkbox
@@ -150,7 +131,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
                   checked={selectedSections.has(section.id)}
                   onCheckedChange={() => handleSectionToggle(section.id)}
                 />
-                <Label htmlFor={`filter-inline-${section.id}`} className="text-xs font-normal cursor-pointer">
+                <Label htmlFor={`filter-inline-${section.id}`} className="text-[10px] font-normal cursor-pointer">
                   {section.title[lang]}
                 </Label>
               </div>
