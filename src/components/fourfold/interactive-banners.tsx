@@ -29,8 +29,8 @@ const translations = {
       title: "Achievements & Victories",
       description: "An overview of Iran's significant achievements and victories during the war.",
       href: "/achievements",
-      image: "https://i.postimg.cc/m2YkLwWk/Gemini-Generated-Image-a1tcj2a1tcj2a1tc.png",
-      imageHint: "Minimalist, symbolic cyberpunk trophy, glowing with brilliant golden-yellow neon light. Trophy is surrounded by a holographic laurel wreath. Dark, serious background with subtle futuristic military patterns. Conveys achievement and honor. Bold and iconic.",
+      image: "https://i.postimg.cc/GhLxGFhP/Gemini-Generated-Image-6ui82b6ui82b6ui8.png",
+      imageHint: "missile silo",
     },
     {
       icon: <MessageSquareQuote className="h-12 w-12" />,
@@ -63,8 +63,8 @@ const translations = {
       title: "دستاوردها و افتخارات",
       description: "مروری بر دستاوردها و پیروزی‌های مهم ایران در طول جنگ.",
       href: "/achievements",
-      image: "https://i.postimg.cc/m2YkLwWk/Gemini-Generated-Image-a1tcj2a1tcj2a1tc.png",
-      imageHint: "cyberpunk trophy",
+      image: "https://i.postimg.cc/GhLxGFhP/Gemini-Generated-Image-6ui82b6ui82b6ui8.png",
+      imageHint: "missile silo",
     },
     {
       icon: <MessageSquareQuote className="h-12 w-12" />,
@@ -97,8 +97,8 @@ const translations = {
       title: "الإنجازات والانتصارات",
       description: "نظرة عامة على إنجازات وانتصارات إيران الهامة خلال الحرب.",
       href: "/achievements",
-      image: "https://i.postimg.cc/m2YkLwWk/Gemini-Generated-Image-a1tcj2a1tcj2a1tc.png",
-      imageHint: "cyberpunk trophy",
+      image: "https://i.postimg.cc/GhLxGFhP/Gemini-Generated-Image-6ui82b6ui82b6ui8.png",
+      imageHint: "missile silo",
     },
     {
       icon: <MessageSquareQuote className="h-12 w-12" />,
@@ -131,8 +131,8 @@ const translations = {
       title: "הישגים וניצחונות",
       description: "סקירה כללית של ההישגים והניצחונות המשמעותיים של איראן במהלך המלחמה.",
       href: "/achievements",
-      image: "https://i.postimg.cc/m2YkLwWk/Gemini-Generated-Image-a1tcj2a1tcj2a1tc.png",
-      imageHint: "cyberpunk trophy",
+      image: "https://i.postimg.cc/GhLxGFhP/Gemini-Generated-Image-6ui82b6ui82b6ui8.png",
+      imageHint: "missile silo",
     },
     {
       icon: <MessageSquareQuote className="h-12 w-12" />,
