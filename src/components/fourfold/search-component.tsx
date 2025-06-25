@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -39,22 +40,21 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
-    // When expanding, focus the input
-    if (isExpanded) {
-      const timer = setTimeout(() => inputRef.current?.focus(), 150); // a small delay for the transition
-      return () => clearTimeout(timer);
+    function handleClickOutside(event: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        onExpandedChange(false);
+      }
     }
-  }, [isExpanded]);
 
-  const handleSectionToggle = (sectionId: SectionInfo['id']) => {
-    const newSelection = new Set(selectedSections);
-    if (newSelection.has(sectionId)) {
-      newSelection.delete(sectionId);
-    } else {
-      newSelection.add(sectionId);
+    if (isExpanded) {
+      document.addEventListener("mousedown", handleClickOutside);
+      const timer = setTimeout(() => inputRef.current?.focus(), 150);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+        clearTimeout(timer);
+      };
     }
-    setSelectedSections(newSelection);
-  };
+  }, [isExpanded, onExpandedChange]);
 
   const filteredContent = React.useMemo(() => {
     if (!query.trim()) return [];
@@ -65,6 +65,16 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
       return inSelectedSection && titleMatches;
     });
   }, [query, selectedSections, lang]);
+
+  const handleSectionToggle = (sectionId: SectionInfo['id']) => {
+    const newSelection = new Set(selectedSections);
+    if (newSelection.has(sectionId)) {
+      newSelection.delete(sectionId);
+    } else {
+      newSelection.add(sectionId);
+    }
+    setSelectedSections(newSelection);
+  };
 
   const createHref = (item: ContentItem) => {
     const langQuery = lang === 'en' ? '' : `?lang=${lang}`;
@@ -123,7 +133,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
             showResults ? "rounded-b-none" : ""
           )}
         >
-          <div className="flex w-full items-center justify-between flex-nowrap">
+          <div className="flex w-full items-center flex-nowrap gap-4 overflow-x-auto pb-2 md:justify-between md:gap-0 md:overflow-visible md:pb-0">
             {sections.map(section => (
               <div key={section.id} className="flex items-center gap-1.5 whitespace-nowrap">
                 <Checkbox
@@ -131,7 +141,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
                   checked={selectedSections.has(section.id)}
                   onCheckedChange={() => handleSectionToggle(section.id)}
                 />
-                <Label htmlFor={`filter-inline-${section.id}`} className="text-[10px] font-normal cursor-pointer">
+                <Label htmlFor={`filter-inline-${section.id}`} className="text-xs font-normal cursor-pointer">
                   {section.title[lang]}
                 </Label>
               </div>
