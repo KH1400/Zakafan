@@ -37,6 +37,12 @@ const translations = {
     ar: 'معلومات عنا',
     he: 'עלינו',
   },
+  adminPanel: {
+    en: 'Admin Panel',
+    fa: 'پنل مدیریت',
+    ar: 'لوحة الإدارة',
+    he: 'פאנל ניהול',
+  },
 }
 
 // Static English branding
@@ -132,6 +138,10 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link href={`/about?lang=${currentLang}`}>{translations.about[currentLang]}</Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href="/admin">{translations.adminPanel[currentLang]}</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
