@@ -60,7 +60,7 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
                 fontFamily={fontFamily} 
                 fontSize="22" 
                 fontWeight="bold" 
-                className="fill-primary drop-shadow-glow-primary"
+                className="fill-accent drop-shadow-glow-accent"
                 textAnchor={isRtl ? "end" : "start"}
             >
                 {languageOptions[currentLang].brandName}
