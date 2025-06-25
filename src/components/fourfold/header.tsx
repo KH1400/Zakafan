@@ -79,7 +79,7 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
             isSearchExpanded && "opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto"
         )}
       >
-        <svg width="500" height="100" viewBox="0 0 500 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-16 w-auto">
+        <svg width="500" height="100" viewBox="0 0 500 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-20 w-auto">
             <g transform={`translate(${iconX}, 50)`} stroke="hsl(var(--accent))" strokeWidth="3" fill="none" className="drop-shadow-glow-accent">
                 <path d="M-20 0 L0 -20 L20 0 L0 20 Z" />
                 <path d="M-10 0 L0 -10 L10 0 L0 10 Z" fill="hsl(var(--accent))" />
@@ -113,7 +113,7 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
         </svg>
       </Link>
 
-      <div className="flex flex-1 items-center justify-end gap-2">
+      <div className="flex flex-1 items-center justify-end gap-2 min-w-0">
         <SearchComponent 
             lang={currentLang} 
             isExpanded={isSearchExpanded}

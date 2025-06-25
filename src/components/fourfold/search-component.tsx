@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -39,6 +38,15 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
   const [isInputFocused, setInputFocused] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const contentRef = React.useRef<HTMLDivElement>(null);
+  const [contentWidth, setContentWidth] = React.useState<number | undefined>();
+
+  React.useLayoutEffect(() => {
+    if (contentRef.current) {
+        // Add a little padding to the calculated width
+        setContentWidth(contentRef.current.scrollWidth + 4);
+    }
+  }, [lang, isExpanded]); // Re-calculate on lang change or when it becomes visible
 
   React.useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -88,15 +96,16 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
   return (
     <div 
         ref={containerRef} 
-        className="relative h-10 flex flex-1 items-center justify-end"
+        className="relative h-10 flex items-center justify-end max-w-full"
         onMouseEnter={() => onExpandedChange(true)}
         onMouseLeave={() => !query.trim() && !isInputFocused && onExpandedChange(false)}
     >
        <div
         className={cn(
-            "relative flex h-10 items-center justify-end rounded-md border transition-all duration-300 ease-in-out",
-            isExpanded ? "w-full max-w-full border-input bg-background" : "w-10 border-transparent bg-transparent"
+            "relative flex h-10 items-center justify-end rounded-md border transition-all duration-300 ease-in-out max-w-full",
+            isExpanded ? "border-input bg-background" : "border-transparent bg-transparent"
         )}
+        style={{ width: isExpanded ? `${contentWidth}px` : '2.5rem' }}
       >
         <Input
           ref={inputRef}
@@ -107,10 +116,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
             "h-full bg-transparent pe-10 text-base ring-offset-background transition-all duration-300 ease-in-out focus-visible:ring-0 focus-visible:ring-offset-0 md:text-sm",
             isExpanded ? "w-full opacity-100 pl-3" : "w-0 opacity-0 p-0"
           )}
-          onFocus={() => {
-            onExpandedChange(true);
-            setInputFocused(true);
-          }}
+          onFocus={() => setInputFocused(true)}
           onBlur={() => setInputFocused(false)}
         />
         <Button
@@ -127,18 +133,19 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
 
       <div
         className={cn(
-          "absolute right-0 top-full mt-2 w-full origin-top-right z-20",
+          "absolute right-0 top-full mt-2 w-auto origin-top-right z-20 max-w-full",
           "transition-all duration-300 ease-in-out",
           showDropdown ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"
         )}
       >
         <div
-          className={cn(
-            "flex flex-col gap-2.5 rounded-md border bg-background p-3 shadow-lg",
-            showResults ? "rounded-b-none" : ""
-          )}
+            className={cn(
+                "flex flex-col gap-2.5 rounded-md border bg-background p-3 shadow-lg",
+                showResults ? "rounded-b-none" : ""
+            )}
+            style={{ width: contentWidth ? `${contentWidth}px` : 'auto' }}
         >
-          <div className="flex w-full items-center flex-wrap justify-start gap-x-4 gap-y-2 pb-2 md:flex-nowrap md:justify-between md:gap-0 md:pb-0">
+          <div ref={contentRef} className="flex w-full items-center flex-wrap justify-start gap-x-4 gap-y-2 pb-2 md:flex-nowrap md:justify-between md:gap-0 md:pb-0">
             {sections.map(section => (
               <div key={section.id} className="flex items-center gap-1.5 whitespace-nowrap">
                 <Checkbox
@@ -155,7 +162,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
         </div>
 
         {showResults && (
-          <div className="rounded-md rounded-t-none border-t-0 border bg-popover text-popover-foreground shadow-lg">
+          <div className="rounded-md rounded-t-none border-t-0 border bg-popover text-popover-foreground shadow-lg" style={{ width: contentWidth ? `${contentWidth}px` : 'auto' }}>
             {filteredContent.length === 0 ? (
               <p className="p-4 text-center text-sm">{translations.noResults[lang]}</p>
             ) : (
