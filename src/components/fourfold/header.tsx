@@ -56,14 +56,14 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
     he: "Noto Sans Hebrew, sans-serif"
   }[currentLang];
 
-  const iconX = isRtl ? 350 : 50;
-  const textX = isRtl ? 310 : 90;
+  const iconX = isRtl ? 470 : 30;
+  const textX = isRtl ? 440 : 60;
   const textAnchor = isRtl ? "end" : "start";
 
   return (
     <header className="flex h-20 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0">
       <Link href={currentLang === 'en' ? '/' : `/?lang=${currentLang}`} className="flex items-center gap-3">
-        <svg width="400" height="100" viewBox="0 0 400 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-24 w-auto">
+        <svg width="500" height="100" viewBox="0 0 500 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-24 w-auto">
             <g transform={`translate(${iconX}, 50)`} stroke="hsl(var(--accent))" strokeWidth="3" fill="none" className="drop-shadow-glow-accent">
                 <path d="M-20 0 L0 -20 L20 0 L0 20 Z" />
                 <path d="M-10 0 L0 -10 L10 0 L0 10 Z" fill="hsl(var(--accent))" />
@@ -77,8 +77,6 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
                 className="fill-accent drop-shadow-glow-accent"
                 textAnchor={textAnchor}
                 dominantBaseline="middle"
-                textLength="210"
-                lengthAdjust="spacingAndGlyphs"
             >
                 {languageOptions[currentLang].brandName}
             </text>
@@ -89,8 +87,6 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
                 fontSize="16" 
                 className="fill-white/80"
                 textAnchor={textAnchor}
-                textLength="210"
-                lengthAdjust="spacingAndGlyphs"
             >
                 {logoTaglines[currentLang]}
             </text>
