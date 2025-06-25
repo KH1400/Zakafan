@@ -1,6 +1,9 @@
 
+"use client";
+
 import * as React from "react";
 import Link from "next/link";
+import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   FileText,
@@ -32,11 +35,21 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 
+const menuItems = [
+    { href: '/admin', label: 'داشبورد', icon: LayoutDashboard },
+    { href: '/admin/content', label: 'مدیریت محتوا', icon: FileText },
+    { href: '/admin/users', label: 'کاربران', icon: Users },
+    { href: '/admin/analytics', label: 'آمار و تحلیل', icon: BarChart3 },
+    { href: '/admin/settings', label: 'تنظیمات', icon: Settings },
+];
+
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+
   return (
     <SidebarProvider>
       <div dir="rtl">
@@ -48,62 +61,29 @@ export default function AdminLayout({
           </SidebarHeader>
           <SidebarContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive
-                  tooltip={{ children: "داشبورد", side: "left" }}
-                >
-                  <Link href="/admin">
-                    <LayoutDashboard />
-                    <span>داشبورد</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  tooltip={{ children: "محتوا", side: "left" }}
-                >
-                  <Link href="/admin/content">
-                    <FileText />
-                    <span>مدیریت محتوا</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  tooltip={{ children: "کاربران", side: "left" }}
-                >
-                  <Link href="/admin/users">
-                    <Users />
-                    <span>کاربران</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  tooltip={{ children: "آمار", side: "left" }}
-                >
-                  <Link href="/admin/analytics">
-                    <BarChart3 />
-                    <span>آمار و تحلیل</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  tooltip={{ children: "تنظیمات", side: "left" }}
-                >
-                  <Link href="/admin/settings">
-                    <Settings />
-                    <span>تنظیمات</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+                {menuItems.map((item) => {
+                    const Icon = item.icon;
+                    // The dashboard link is active only on exact match.
+                    // Other links are active if the path starts with their href.
+                    const isActive = item.href === '/admin' 
+                        ? pathname === item.href 
+                        : pathname.startsWith(item.href);
+
+                    return (
+                        <SidebarMenuItem key={item.href}>
+                            <SidebarMenuButton
+                                asChild
+                                isActive={isActive}
+                                tooltip={{ children: item.label, side: "left" }}
+                            >
+                                <Link href={item.href}>
+                                    <Icon />
+                                    <span>{item.label}</span>
+                                </Link>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    );
+                })}
             </SidebarMenu>
           </SidebarContent>
           <SidebarFooter>
