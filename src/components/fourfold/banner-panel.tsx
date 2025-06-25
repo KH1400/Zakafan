@@ -2,9 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { iconMap, IconName } from "../../lib/iconMap";
 
 type BannerPanelProps = {
-  icon: ReactNode;
+  icon: string;
   title: string;
   description: string;
   href: string;
@@ -28,6 +29,9 @@ export function BannerPanel({
   onMouseEnter,
   isLast = false,
 }: BannerPanelProps) {
+  const IconComponent = iconMap.hasOwnProperty(icon)
+  ? iconMap[icon as keyof typeof iconMap]
+  : null;
   return (
     <Link
       href={href}
@@ -65,7 +69,7 @@ export function BannerPanel({
             isHovered ? "mb-4" : "mb-0"
           )}
         >
-          {icon}
+          {IconComponent  ? <IconComponent className="h-12 w-12" /> : null}
         </div>
         <h2 className="text-2xl md:text-4xl font-bold font-headline transition-all duration-500 ease-in-out text-white drop-shadow-lg">
           {title}
