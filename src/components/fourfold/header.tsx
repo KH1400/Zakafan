@@ -53,12 +53,16 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
   return (
     <header className="flex h-20 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0">
       <Link href={currentLang === 'en' ? '/' : `/?lang=${currentLang}`} className="flex items-center gap-3">
-        <svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-10 w-auto">
+        <svg width="280" height="80" viewBox="0 0 280 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-20 w-auto">
+            <g transform={`translate(${isRtl ? 245 : 35}, 40)`} stroke="hsl(var(--accent))" strokeWidth="2.5" fill="none" className="drop-shadow-glow-accent">
+                <path d="M-15 0 L0 -15 L15 0 L0 15 Z" />
+                <path d="M-8 0 L0 -8 L8 0 L0 8 Z" fill="hsl(var(--accent))" />
+            </g>
             <text 
-                x={isRtl ? "195" : "5"} 
-                y="30" 
+                x={isRtl ? 210 : 70}
+                y="42" 
                 fontFamily={fontFamily} 
-                fontSize="22" 
+                fontSize="28" 
                 fontWeight="bold" 
                 className="fill-accent drop-shadow-glow-accent"
                 textAnchor={isRtl ? "end" : "start"}
@@ -66,10 +70,10 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
                 {languageOptions[currentLang].brandName}
             </text>
             <text 
-                x={isRtl ? "195" : "5"} 
-                y="50" 
+                x={isRtl ? 210 : 70}
+                y="68" 
                 fontFamily={fontFamily} 
-                fontSize="10" 
+                fontSize="14" 
                 className="fill-muted-foreground"
                 textAnchor={isRtl ? "end" : "start"}
             >

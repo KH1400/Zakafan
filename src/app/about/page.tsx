@@ -65,28 +65,32 @@ export default function AboutPage({ searchParams }: { searchParams?: { lang?: st
       <div className="absolute inset-0 bg-black/70 -z-10" />
 
       <div className="flex flex-col items-center text-center max-w-3xl">
-        <svg width="280" height="80" viewBox="0 0 280 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-24 w-auto">
-          <text 
-            x={isRtl ? "275" : "5"}
-            y="40" 
-            fontFamily={fontFamilies[lang]} 
-            fontSize="28" 
-            fontWeight="bold" 
-            className="fill-accent drop-shadow-glow-accent"
-            textAnchor={isRtl ? "end" : "start"}
-          >
-            {logoBrandNames[lang]}
-          </text>
-          <text 
-            x={isRtl ? "275" : "5"}
-            y="65" 
-            fontFamily={fontFamilies[lang]} 
-            fontSize="14" 
-            className="fill-white/80"
-            textAnchor={isRtl ? "end" : "start"}
-          >
-            {logoTaglines[lang]}
-          </text>
+        <svg width="340" height="100" viewBox="0 0 340 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-24 w-auto">
+            <g transform={`translate(${isRtl ? 300 : 40}, 50)`} stroke="hsl(var(--accent))" strokeWidth="3" fill="none" className="drop-shadow-glow-accent">
+                <path d="M-20 0 L0 -20 L20 0 L0 20 Z" />
+                <path d="M-10 0 L0 -10 L10 0 L0 10 Z" fill="hsl(var(--accent))" />
+            </g>
+            <text 
+                x={isRtl ? 260 : 80}
+                y="50" 
+                fontFamily={fontFamilies[lang]} 
+                fontSize="34" 
+                fontWeight="bold" 
+                className="fill-accent drop-shadow-glow-accent"
+                textAnchor={isRtl ? "end" : "start"}
+            >
+                {logoBrandNames[lang]}
+            </text>
+            <text 
+                x={isRtl ? 260 : 80}
+                y="80" 
+                fontFamily={fontFamilies[lang]} 
+                fontSize="16" 
+                className="fill-white/80"
+                textAnchor={isRtl ? "end" : "start"}
+            >
+                {logoTaglines[lang]}
+            </text>
         </svg>
 
         <p className="mt-8 text-lg md:text-xl leading-relaxed text-white/90">
