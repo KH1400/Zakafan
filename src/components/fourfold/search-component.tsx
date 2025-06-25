@@ -38,6 +38,8 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
   const [selectedSections, setSelectedSections] = React.useState<Set<SectionInfo['id']>>(new Set());
   const containerRef = React.useRef<HTMLDivElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const contentRef = React.useRef<HTMLDivElement>(null);
+  const [dynamicWidth, setDynamicWidth] = React.useState("288px");
 
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -55,6 +57,16 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
       };
     }
   }, [isExpanded, onExpandedChange]);
+
+  React.useLayoutEffect(() => {
+    if (contentRef.current) {
+      // p-3 is 0.75rem. 2 * 0.75rem = 1.5rem. Assuming 1rem = 16px, padding is 24px.
+      const width = contentRef.current.scrollWidth + 24;
+      // Set a max width to prevent it from becoming too large on desktop
+      const maxWidth = 384; // w-96
+      setDynamicWidth(`${Math.min(width, maxWidth)}px`);
+    }
+  }, [lang]);
   
   const handleSectionToggle = (sectionId: SectionInfo['id']) => {
     const newSelection = new Set(selectedSections);
@@ -86,17 +98,21 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
 
   return (
     <div ref={containerRef} className="relative">
-       <div className={cn(
-        "relative flex h-10 items-center justify-end rounded-md border transition-all duration-300 ease-in-out",
-        isExpanded ? "w-72 border-input bg-background" : "w-10 border-transparent"
-      )}>
+       <div
+        className="relative flex h-10 items-center justify-end rounded-md border transition-all duration-300 ease-in-out"
+        style={{
+          width: isExpanded ? dynamicWidth : '40px',
+          borderColor: isExpanded ? 'hsl(var(--input))' : 'transparent',
+          backgroundColor: isExpanded ? 'hsl(var(--background))' : 'transparent',
+        }}
+      >
         <Input
           ref={inputRef}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={translations.searchPlaceholder[lang]}
           className={cn(
-            "h-full bg-transparent pe-10 text-base transition-all duration-300 ease-in-out focus-visible:ring-0 focus-visible:ring-offset-0 md:text-sm",
+            "h-full bg-transparent pe-10 text-base ring-offset-background transition-all duration-300 ease-in-out focus-visible:ring-0 focus-visible:ring-offset-0 md:text-sm",
             isExpanded ? "w-full opacity-100" : "w-0 opacity-0"
           )}
           onFocus={() => onExpandedChange(true)}
@@ -115,10 +131,11 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
 
       <div
         className={cn(
-          "absolute right-0 top-full mt-2 w-72 origin-top-right z-20",
+          "absolute right-0 top-full mt-2 origin-top-right z-20",
           "transition-all duration-300 ease-in-out",
           showDropdown ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"
         )}
+        style={{ width: dynamicWidth }}
       >
         <div
           className={cn(
@@ -126,7 +143,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
             showResults ? "rounded-b-none" : ""
           )}
         >
-          <div className="flex w-full items-center justify-between flex-nowrap">
+          <div ref={contentRef} className="flex w-full items-center justify-between flex-nowrap">
             {sections.map(section => (
               <div key={section.id} className="flex items-center gap-1.5 whitespace-nowrap">
                 <Checkbox
