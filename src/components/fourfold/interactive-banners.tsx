@@ -8,7 +8,7 @@ import type { Language } from "@/lib/content-data";
 
 const bannerData = [
   {
-    icon: <Shield className="h-12 w-12" />,
+    icon: "Shield",
     title: {
       en: "Military Power",
       fa: "قدرت نظامی",
@@ -22,12 +22,12 @@ const bannerData = [
       he: "מידע על היכולות והציוד הצבאי של איראן.",
     },
     href: "/services",
-    image: "https://i.postimg.cc/bw1xjb39/Gemini-Generated-Image-b3uzh6b3uzh6b3uz.png",
+    image: "/categories/c4.png",
     imageHint:
       "Symbolic holographic military shield, glowing with dominant blue neon light. Intricate cyberpunk circuitry patterns. Background of faint, glowing outlines of futuristic tanks and jets in a dark, high-tech command center. Minimalist, bold, powerful, serious military feel.",
   },
   {
-    icon: <BarChart3 className="h-12 w-12" />,
+    icon: "BarChart3",
     title: {
       en: "War Statistics",
       fa: "امار و ارقام جنگ",
@@ -41,11 +41,11 @@ const bannerData = [
       he: "מבט על נתונים וסטטיסטיקות מרכזיים לאורך המלחמה.",
     },
     href: "/projects",
-    image: "https://i.postimg.cc/sfBdTRXx/Gemini-Generated-Image-l1uliil1uliil1ul.png",
+    image: "/categories/c3.png",
     imageHint: "holographic chart",
   },
   {
-    icon: <Trophy className="h-12 w-12" />,
+    icon: "Trophy",
     title: {
       en: "Achievements & Victories",
       fa: "دستاوردها و افتخارات",
@@ -59,11 +59,11 @@ const bannerData = [
       he: "סקירה כללית של ההישגים והניצחונות המשמעותיים של איראן במהלך המלחמה.",
     },
     href: "/achievements",
-    image: "https://i.postimg.cc/9f1bdv2B/Gemini-Generated-Image-a1tcj2a1tcj2a1tc.png",
+    image: "/categories/c2.png",
     imageHint: "missile silo",
   },
   {
-    icon: <MessageSquareQuote className="h-12 w-12" />,
+    icon: "MessageSquareQuote",
     title: {
       en: "Answering Questions",
       fa: "پاسخ به شبهات",
@@ -77,7 +77,7 @@ const bannerData = [
       he: "מענה לשאלות נפוצות והפרכת מידע מוטעה.",
     },
     href: "/contact",
-    image: "https://i.postimg.cc/XqBg0qC2/Gemini-Generated-Image-qlk5zkqlk5zkqlk5.png",
+    image: "/categories/c1.png",
     imageHint: "question mark neon",
   },
 ];
