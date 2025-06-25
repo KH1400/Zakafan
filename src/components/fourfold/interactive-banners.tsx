@@ -28,7 +28,7 @@ const translations = {
       title: "Achievements & Victories",
       description: "An overview of Iran's significant achievements and victories during the war.",
       href: "/achievements",
-      image: "https://i.postimg.cc/GhLxGFhP/Gemini-Generated-Image-6ui82b6ui82b6ui8.png",
+      image: "https://i.postimg.cc/9f1bdv2B/Gemini-Generated-Image-a1tcj2a1tcj2a1tc.png",
       imageHint: "missile silo",
     },
     {
@@ -62,7 +62,7 @@ const translations = {
       title: "دستاوردها و افتخارات",
       description: "مروری بر دستاوردها و پیروزی‌های مهم ایران در طول جنگ.",
       href: "/achievements",
-      image: "https://i.postimg.cc/GhLxGFhP/Gemini-Generated-Image-6ui82b6ui82b6ui8.png",
+      image: "https://i.postimg.cc/9f1bdv2B/Gemini-Generated-Image-a1tcj2a1tcj2a1tc.png",
       imageHint: "missile silo",
     },
     {
@@ -96,7 +96,7 @@ const translations = {
       title: "الإنجازات والانتصارات",
       description: "نظرة عامة على إنجازات وانتصارات إيران الهامة خلال الحرب.",
       href: "/achievements",
-      image: "https://i.postimg.cc/GhLxGFhP/Gemini-Generated-Image-6ui82b6ui82b6ui8.png",
+      image: "https://i.postimg.cc/9f1bdv2B/Gemini-Generated-Image-a1tcj2a1tcj2a1tc.png",
       imageHint: "missile silo",
     },
     {
@@ -130,7 +130,7 @@ const translations = {
       title: "הישגים וניצחונות",
       description: "סקירה כללית של ההישגים והניצחונות המשמעותיים של איראן במהלך המלחמה.",
       href: "/achievements",
-      image: "https://i.postimg.cc/GhLxGFhP/Gemini-Generated-Image-6ui82b6ui82b6ui8.png",
+      image: "https://i.postimg.cc/9f1bdv2B/Gemini-Generated-Image-a1tcj2a1tcj2a1tc.png",
       imageHint: "missile silo",
     },
     {
