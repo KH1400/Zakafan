@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -75,7 +76,7 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
         href={currentLang === 'en' ? '/' : `/?lang=${currentLang}`} 
         className={cn(
             "flex items-center gap-3 transition-opacity duration-300",
-            isSearchExpanded && "opacity-0 md:opacity-100"
+            isSearchExpanded && "opacity-0 pointer-events-none"
         )}
       >
         <svg width="500" height="100" viewBox="0 0 500 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-24 w-auto">
@@ -100,7 +101,7 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
             <text 
                 x={textX}
                 y="80" 
-                fontFamily={fontFamily} 
+                fontFamily={fontFamily}
                 fontSize="16" 
                 className="fill-white/80"
                 textAnchor={textAnchor}
