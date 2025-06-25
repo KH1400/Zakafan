@@ -118,15 +118,15 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
               </Button>
             )}
           </div>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <div className="flex w-full items-center justify-between">
             {sections.map(section => (
-              <div key={section.id} className="flex items-center space-x-1.5">
+              <div key={section.id} className="flex items-center space-x-1">
                 <Checkbox
                   id={`filter-inline-${section.id}`}
                   checked={selectedSections.has(section.id)}
                   onCheckedChange={() => handleSectionToggle(section.id)}
                 />
-                <Label htmlFor={`filter-inline-${section.id}`} className="text-[11px] font-normal cursor-pointer">
+                <Label htmlFor={`filter-inline-${section.id}`} className="text-[9px] font-normal cursor-pointer">
                   {section.title[lang]}
                 </Label>
               </div>
