@@ -29,10 +29,10 @@ const logoBrandNames = {
 };
 
 const logoTaglines = {
-    en: "The Modern Warfare Reference",
-    fa: "مرجع جنگ مدرن",
-    ar: "مرجع الحرب الحديثة",
-    he: "העיון למלחמה מודרנית"
+    en: "The Dynographic Reference for the Iran-Israel War",
+    fa: "مرجع داینوگرافیک جنگ ایران و اسراءیل",
+    ar: "المرجع الداينوغرافي للحرب الإيرانية الإسرائيلية",
+    he: "המרجع הדינוגרפי למלחמת איראן-ישראל"
 };
 
 const fontFamilies: Record<Language, string> = {
