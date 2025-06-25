@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -125,9 +126,9 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
             showResults ? "rounded-b-none" : ""
           )}
         >
-          <div className="flex w-full items-center justify-between">
+          <div className="flex w-full items-center justify-between flex-nowrap">
             {sections.map(section => (
-              <div key={section.id} className="flex items-center gap-1.5">
+              <div key={section.id} className="flex items-center gap-1.5 whitespace-nowrap">
                 <Checkbox
                   id={`filter-inline-${section.id}`}
                   checked={selectedSections.has(section.id)}
