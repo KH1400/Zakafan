@@ -30,7 +30,7 @@ const logoBrandNames = {
 
 const logoTaglines = {
     en: "The Dynographic Reference for the Iran-Israel War",
-    fa: "مرجع داینوگرافیک جنگ ایران و اسرائیل",
+    fa: "داینوگرافی جنگ ایران - اسرائیل",
     ar: "المرجع الداينوغرافي للحرب الإيرانية الإسرائيلية",
     he: "המרجع הדינוגרפי למלחמת איראן-ישראל"
 };
@@ -52,11 +52,14 @@ export default function AboutPage({ searchParams }: { searchParams?: { lang?: st
     he: { dir: 'rtl' as const, font: 'font-hebrew' },
   }[lang];
   
-  const logoFontFamily = "Inter, sans-serif";
-  const iconX = 30;
-  const textX = 60;
-  const textAnchor = "start";
-  const titleTextLength = "370";
+  const brandName = logoBrandNames[lang];
+  const tagline = logoTaglines[lang];
+  const fontFamily = fontFamilies[lang];
+
+  const forcedTextLength = "370";
+  const iconX = isRtl ? 470 : 30;
+  const textX = isRtl ? 440 : 60;
+  const textAnchor = isRtl ? "end" : "start";
 
   return (
     <div dir={langConfig.dir} className={`${langConfig.font} relative flex flex-col h-screen w-screen items-center justify-center text-white p-4`}>
@@ -79,26 +82,28 @@ export default function AboutPage({ searchParams }: { searchParams?: { lang?: st
             <text 
                 x={textX}
                 y="50" 
-                fontFamily={logoFontFamily} 
+                fontFamily={fontFamily} 
                 fontSize="34" 
                 fontWeight="bold" 
                 className="fill-accent drop-shadow-glow-accent"
                 textAnchor={textAnchor}
                 dominantBaseline="middle"
+                textLength={forcedTextLength}
+                lengthAdjust="spacingAndGlyphs"
             >
-                {logoBrandNames['en']}
+                {brandName}
             </text>
             <text 
                 x={textX}
                 y="80" 
-                fontFamily={logoFontFamily}
+                fontFamily={fontFamily}
                 fontSize="16" 
                 className="fill-white/80"
                 textAnchor={textAnchor}
-                textLength={titleTextLength}
+                textLength={forcedTextLength}
                 lengthAdjust="spacingAndGlyphs"
             >
-                {logoTaglines['en']}
+                {tagline}
             </text>
         </svg>
 

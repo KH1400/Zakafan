@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -14,8 +15,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SearchComponent } from './search-component';
-
-type Language = 'fa' | 'en' | 'ar' | 'he';
+import type { Language } from '@/lib/content-data';
 
 const languageOrder: Language[] = ['fa', 'ar', 'he', 'en'];
 
@@ -28,9 +28,16 @@ const languageOptions: Record<Language, { name: string; brandName: string; }> = 
 
 const logoTaglines = {
     en: "The Dynographic Reference for the Iran-Israel War",
-    fa: "مرجع داینوگرافیک جنگ ایران و اسرائیل",
+    fa: "داینوگرافی جنگ ایران - اسرائیل",
     ar: "المرجع الداينوغرافي للحرب الإيرانية الإسرائيلية",
     he: "המרجع הדינוגרפי למלחמת איראן-ישראל"
+};
+
+const fontFamilies: Record<Language, string> = {
+    en: "Inter, sans-serif",
+    fa: "Noto Sans Arabic, sans-serif",
+    ar: "Noto Sans Arabic, sans-serif",
+    he: "Noto Sans Hebrew, sans-serif"
 };
 
 const translations = {
@@ -48,15 +55,18 @@ type HeaderProps = {
 };
 
 export function Header({ currentLang, onLanguageChange }: HeaderProps) {
-  const logoFontFamily = "Inter, sans-serif";
-  const iconX = 30;
-  const textX = 60;
-  const textAnchor = "start";
-  const titleTextLength = "370";
+  const isRtl = currentLang === 'fa' || currentLang === 'ar' || currentLang === 'he';
+  const brandName = languageOptions[currentLang].brandName;
+  const tagline = logoTaglines[currentLang];
+  const fontFamily = fontFamilies[currentLang];
 
+  const forcedTextLength = "370";
+  const iconX = isRtl ? 470 : 30;
+  const textX = isRtl ? 440 : 60;
+  const textAnchor = isRtl ? "end" : "start";
+  
   return (
     <header 
-      dir="ltr"
       className="flex h-20 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0"
     >
       <Link href={currentLang === 'en' ? '/' : `/?lang=${currentLang}`} className="flex items-center gap-3">
@@ -68,26 +78,28 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
             <text 
                 x={textX}
                 y="50" 
-                fontFamily={logoFontFamily} 
+                fontFamily={fontFamily} 
                 fontSize="34" 
                 fontWeight="bold" 
                 className="fill-accent drop-shadow-glow-accent"
                 textAnchor={textAnchor}
                 dominantBaseline="middle"
+                textLength={forcedTextLength}
+                lengthAdjust="spacingAndGlyphs"
             >
-                {languageOptions['en'].brandName}
+                {brandName}
             </text>
             <text 
                 x={textX}
                 y="80" 
-                fontFamily={logoFontFamily} 
+                fontFamily={fontFamily} 
                 fontSize="16" 
                 className="fill-white/80"
                 textAnchor={textAnchor}
-                textLength={titleTextLength}
+                textLength={forcedTextLength}
                 lengthAdjust="spacingAndGlyphs"
             >
-                {logoTaglines['en']}
+                {tagline}
             </text>
         </svg>
       </Link>

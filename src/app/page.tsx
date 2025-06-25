@@ -5,8 +5,7 @@ import { useState } from "react";
 import { Header } from "@/components/fourfold/header";
 import { InteractiveBanners } from "@/components/fourfold/interactive-banners";
 import { Footer } from "@/components/fourfold/footer";
-
-type Language = 'fa' | 'en' | 'ar' | 'he';
+import type { Language } from '@/lib/content-data';
 
 const languageOptions: Record<Language, { dir: 'rtl' | 'ltr'; font: string }> = {
   fa: { dir: 'rtl', font: 'font-persian' },
