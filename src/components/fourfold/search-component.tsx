@@ -36,9 +36,9 @@ type SearchComponentProps = {
 export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchComponentProps) {
   const [query, setQuery] = React.useState("");
   const [selectedSections, setSelectedSections] = React.useState<Set<SectionInfo['id']>>(new Set());
+  const [isInputFocused, setInputFocused] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const contentRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -90,7 +90,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
         ref={containerRef} 
         className="relative h-10 flex flex-1 items-center justify-end"
         onMouseEnter={() => onExpandedChange(true)}
-        onMouseLeave={() => !query.trim() && onExpandedChange(false)}
+        onMouseLeave={() => !query.trim() && !isInputFocused && onExpandedChange(false)}
     >
        <div
         className={cn(
@@ -107,7 +107,11 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
             "h-full bg-transparent pe-10 text-base ring-offset-background transition-all duration-300 ease-in-out focus-visible:ring-0 focus-visible:ring-offset-0 md:text-sm",
             isExpanded ? "w-full opacity-100 pl-3" : "w-0 opacity-0 p-0"
           )}
-          onFocus={() => onExpandedChange(true)}
+          onFocus={() => {
+            onExpandedChange(true);
+            setInputFocused(true);
+          }}
+          onBlur={() => setInputFocused(false)}
         />
         <Button
           variant="ghost"
@@ -122,7 +126,6 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
       </div>
 
       <div
-        style={{ width: containerRef.current?.offsetWidth }}
         className={cn(
           "absolute right-0 top-full mt-2 w-full origin-top-right z-20",
           "transition-all duration-300 ease-in-out",
@@ -130,7 +133,6 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
         )}
       >
         <div
-          ref={contentRef}
           className={cn(
             "flex flex-col gap-2.5 rounded-md border bg-background p-3 shadow-lg",
             showResults ? "rounded-b-none" : ""
@@ -165,6 +167,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange }: SearchCo
                       className="block w-full p-2 rounded-sm transition-colors hover:bg-accent hover:text-accent-foreground"
                       onClick={() => {
                         setQuery("");
+                        setInputFocused(false);
                         onExpandedChange(false);
                       }}
                     >
