@@ -13,6 +13,7 @@ type BannerPanelProps = {
   isHovered: boolean;
   isAnyHovered: boolean;
   onMouseEnter: () => void;
+  isLast?: boolean;
 };
 
 export function BannerPanel({
@@ -25,17 +26,22 @@ export function BannerPanel({
   isHovered,
   isAnyHovered,
   onMouseEnter,
+  isLast = false,
 }: BannerPanelProps) {
   return (
     <Link
       href={href}
       className={cn(
-        "group relative h-full overflow-hidden transition-all duration-700 ease-in-out",
+        "group relative h-full shrink-0 overflow-hidden transition-all duration-700 ease-in-out",
         {
           "basis-1/4": !isAnyHovered,
           "basis-[64%]": isHovered,
           "basis-[12%]": isAnyHovered && !isHovered,
-        }
+        },
+        // If no item is hovered, all items should be able to grow to fill the container.
+        // If an item IS hovered, only the LAST item should be allowed to grow to fill any rounding-error gaps.
+        !isAnyHovered && "grow",
+        isAnyHovered && isLast && "grow"
       )}
       onMouseEnter={onMouseEnter}
       aria-label={`Go to ${title} page`}

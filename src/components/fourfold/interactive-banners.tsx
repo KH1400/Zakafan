@@ -169,6 +169,7 @@ export function InteractiveBanners({ lang = 'en' }: { lang: Language }) {
             isHovered={isHovered}
             isAnyHovered={isAnyHovered}
             onMouseEnter={() => setHoveredIndex(index)}
+            isLast={index === bannerData.length - 1}
           />
         )
       })}
