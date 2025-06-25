@@ -13,6 +13,7 @@ const languageOptions: Record<Language, { dir: 'rtl' | 'ltr'; font: string }> = 
   ar: { dir: 'rtl', font: 'font-arabic' },
   he: { dir: 'rtl', font: 'font-hebrew' },
 };
+// FGGGGG
 
 export default function Home() {
   const [language, setLanguage] = useState<Language>('en');
