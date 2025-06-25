@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from 'react';
@@ -28,7 +27,7 @@ const languageOptions: Record<Language, { name: string; brandName: string; }> = 
   he: { name: 'עברית', brandName: 'דיינוגרף מלחמה' },
 };
 
-const logoTaglines = {
+const logoTaglines: Record<Language, string> = {
     en: "The Dynographic Reference for the Iran-Israel War",
     fa: "داینوگرافی جنگ ایران - اسرائیل",
     ar: "المرجع الداينوغرافي للحرب الإيرانية الإسرائيلية",
@@ -63,6 +62,7 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
   const tagline = logoTaglines[currentLang];
   const fontFamily = fontFamilies[currentLang];
 
+  const brandTextLength = "370";
   const forcedTextLength = "370";
   const iconX = isRtl ? 470 : 30;
   const textX = isRtl ? 440 : 60;
@@ -76,7 +76,7 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
         href={currentLang === 'en' ? '/' : `/?lang=${currentLang}`} 
         className={cn(
             "flex items-center gap-3 transition-opacity duration-300",
-            isSearchExpanded && "opacity-0 pointer-events-none"
+            isSearchExpanded && "opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto"
         )}
       >
         <svg width="500" height="100" viewBox="0 0 500 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-24 w-auto">
@@ -93,7 +93,7 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
                 className="fill-accent drop-shadow-glow-accent"
                 textAnchor={textAnchor}
                 dominantBaseline="middle"
-                textLength={forcedTextLength}
+                textLength={brandTextLength}
                 lengthAdjust="spacingAndGlyphs"
             >
                 {brandName}
