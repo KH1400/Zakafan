@@ -30,7 +30,7 @@ const logoBrandNames = {
 
 const logoTaglines = {
     en: "The Dynographic Reference for the Iran-Israel War",
-    fa: "مرجع داینوگرافیک جنگ ایران و اسراءیل",
+    fa: "مرجع داینوگرافیک جنگ ایران و اسرائیل",
     ar: "المرجع الداينوغرافي للحرب الإيرانية الإسرائيلية",
     he: "המרجع הדינוגרפי למלחמת איראן-ישראל"
 };
@@ -83,6 +83,8 @@ export default function AboutPage({ searchParams }: { searchParams?: { lang?: st
                 className="fill-accent drop-shadow-glow-accent"
                 textAnchor={textAnchor}
                 dominantBaseline="middle"
+                textLength="210"
+                lengthAdjust="spacingAndGlyphs"
             >
                 {logoBrandNames[lang]}
             </text>
@@ -93,6 +95,8 @@ export default function AboutPage({ searchParams }: { searchParams?: { lang?: st
                 fontSize="16" 
                 className="fill-white/80"
                 textAnchor={textAnchor}
+                textLength="210"
+                lengthAdjust="spacingAndGlyphs"
             >
                 {logoTaglines[lang]}
             </text>

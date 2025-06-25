@@ -28,7 +28,7 @@ const languageOptions: Record<Language, { name: string; brandName: string; }> = 
 
 const logoTaglines = {
     en: "The Dynographic Reference for the Iran-Israel War",
-    fa: "مرجع داینوگرافیک جنگ ایران و اسراءیل",
+    fa: "مرجع داینوگرافیک جنگ ایران و اسرائیل",
     ar: "المرجع الداينوغرافي للحرب الإيرانية الإسرائيلية",
     he: "המרجع הדינוגרפי למלחמת איראן-ישראל"
 };
@@ -77,6 +77,8 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
                 className="fill-accent drop-shadow-glow-accent"
                 textAnchor={textAnchor}
                 dominantBaseline="middle"
+                textLength="210"
+                lengthAdjust="spacingAndGlyphs"
             >
                 {languageOptions[currentLang].brandName}
             </text>
@@ -87,6 +89,8 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
                 fontSize="16" 
                 className="fill-white/80"
                 textAnchor={textAnchor}
+                textLength="210"
+                lengthAdjust="spacingAndGlyphs"
             >
                 {logoTaglines[currentLang]}
             </text>
@@ -107,7 +111,7 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
               <DropdownMenuSubTrigger>{languageOptions[currentLang].name}</DropdownMenuSubTrigger>
               <DropdownMenuSubContent>
                 {languageOrder.map((key) => (
-                  <DropdownMenuItem key={key} onSelect={() => onLanguageChange(key)}>
+                  <DropdownMenuItem key={key} onSelect={() => onLanguageChange(key as Language)}>
                     {languageOptions[key].name}
                   </DropdownMenuItem>
                 ))}
