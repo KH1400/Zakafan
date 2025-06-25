@@ -64,7 +64,7 @@ export function MosaicLayout({ panels, baseHref, lang }: MosaicLayoutProps) {
 
   return (
     <div className="w-full">
-      <div className="grid w-full auto-rows-fr grid-cols-1 md:grid-cols-3 md:grid-rows-6 gap-2">
+      <div className="grid w-full grid-cols-1 md:grid-cols-3 md:auto-rows-[15rem] gap-2">
         {processedPanels.map((panel) => (
           <MosaicPanel key={panel.title} panel={panel} baseHref={baseHref} lang={lang} />
         ))}

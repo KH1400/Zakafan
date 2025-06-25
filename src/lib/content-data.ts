@@ -80,6 +80,9 @@ const servicesPanels = {
         { title: "Air Force", image: images.jet, imageHint: "fighter jet takeoff", gridArea: "5 / 3 / 7 / 4" },
         { title: "Intelligence Ops", image: images.satellite, imageHint: "satellite data", gridArea: "6 / 1 / 7 / 2" },
         { title: "Military Engineering", image: images.radar, imageHint: "bridge construction", gridArea: "6 / 2 / 7 / 3" },
+        { title: "Sample Service 1", image: images.missile, imageHint: "missile launch silo", gridArea: "7 / 1 / 8 / 2" },
+        { title: "Sample Service 2", image: images.drone, imageHint: "military drone sky", gridArea: "7 / 2 / 8 / 4" },
+        { title: "Sample Service 3", image: images.warship, imageHint: "warship at sea", gridArea: "8 / 1 / 9 / 3" },
     ],
     fa: [
         { title: "برنامه موشکی", image: images.missile, imageHint: "missile launch silo", gridArea: "1 / 1 / 3 / 3" },
@@ -94,6 +97,9 @@ const servicesPanels = {
         { title: "نیروی هوایی", image: images.jet, imageHint: "fighter jet takeoff", gridArea: "5 / 3 / 7 / 4" },
         { title: "عملیات اطلاعاتی", image: images.satellite, imageHint: "satellite data", gridArea: "6 / 1 / 7 / 2" },
         { title: "مهندسی نظامی", image: images.radar, imageHint: "bridge construction", gridArea: "6 / 2 / 7 / 3" },
+        { title: "سرویس نمونه ۱", image: images.missile, imageHint: "missile launch silo", gridArea: "7 / 1 / 8 / 2" },
+        { title: "سرویس نمونه ۲", image: images.drone, imageHint: "military drone sky", gridArea: "7 / 2 / 8 / 4" },
+        { title: "سرویس نمونه ۳", image: images.warship, imageHint: "warship at sea", gridArea: "8 / 1 / 9 / 3" },
     ],
     ar: [
         { title: "برنامج الصواريخ", image: images.missile, imageHint: "missile launch silo", gridArea: "1 / 1 / 3 / 3" },
@@ -108,6 +114,9 @@ const servicesPanels = {
         { title: "القوات الجوية", image: images.jet, imageHint: "fighter jet takeoff", gridArea: "5 / 3 / 7 / 4" },
         { title: "عمليات استخباراتية", image: images.satellite, imageHint: "satellite data", gridArea: "6 / 1 / 7 / 2" },
         { title: "الهندسة العسكرية", image: images.radar, imageHint: "bridge construction", gridArea: "6 / 2 / 7 / 3" },
+        { title: "خدمة العينة 1", image: images.missile, imageHint: "missile launch silo", gridArea: "7 / 1 / 8 / 2" },
+        { title: "خدمة العينة 2", image: images.drone, imageHint: "military drone sky", gridArea: "7 / 2 / 8 / 4" },
+        { title: "خدمة العينة 3", image: images.warship, imageHint: "warship at sea", gridArea: "8 / 1 / 9 / 3" },
     ],
     he: [
         { title: "תוכנית טילים", image: images.missile, imageHint: "missile launch silo", gridArea: "1 / 1 / 3 / 3" },
@@ -122,6 +131,9 @@ const servicesPanels = {
         { title: "חיל האוויר", image: images.jet, imageHint: "fighter jet takeoff", gridArea: "5 / 3 / 7 / 4" },
         { title: "מבצעי מודיעין", image: images.satellite, imageHint: "satellite data", gridArea: "6 / 1 / 7 / 2" },
         { title: "הנדסה צבאית", image: images.radar, imageHint: "bridge construction", gridArea: "6 / 2 / 7 / 3" },
+        { title: "שירות לדוגמה 1", image: images.missile, imageHint: "missile launch silo", gridArea: "7 / 1 / 8 / 2" },
+        { title: "שירות לדוגמה 2", image: images.drone, imageHint: "military drone sky", gridArea: "7 / 2 / 8 / 4" },
+        { title: "שירות לדוגמה 3", image: images.warship, imageHint: "warship at sea", gridArea: "8 / 1 / 9 / 3" },
     ],
 };
 
@@ -139,6 +151,9 @@ const projectsPanels = {
         { title: "International Reaction", image: images.cyber, imageHint: "world leaders table", gridArea: "5 / 2 / 6 / 4" },
         { title: "Veteran Stories", image: images.soldierTech, imageHint: "old soldier portrait", gridArea: "6 / 2 / 7 / 3" },
         { title: "Memorials", image: images.soldierSilhouette, imageHint: "war memorial", gridArea: "6 / 3 / 7 / 4" },
+        { title: "Sample Project 1", image: images.timeline, imageHint: "abstract timeline spiral", gridArea: "7 / 1 / 8 / 2" },
+        { title: "Sample Project 2", image: images.abstractData, imageHint: "financial charts graphs", gridArea: "7 / 2 / 8 / 4" },
+        { title: "Sample Project 3", image: images.soldierSilhouette, imageHint: "memorial solemn", gridArea: "8 / 1 / 9 / 3" },
     ],
     fa: [
         { title: "گاه‌شمار", image: images.timeline, imageHint: "abstract timeline spiral", gridArea: "1 / 1 / 3 / 3" },
@@ -153,6 +168,9 @@ const projectsPanels = {
         { title: "واکنش بین‌المللی", image: images.cyber, imageHint: "world leaders table", gridArea: "5 / 2 / 6 / 4" },
         { title: "روایت کهنه‌سربازان", image: images.soldierTech, imageHint: "old soldier portrait", gridArea: "6 / 2 / 7 / 3" },
         { title: "یادبودها", image: images.soldierSilhouette, imageHint: "war memorial", gridArea: "6 / 3 / 7 / 4" },
+        { title: "پروژه نمونه ۱", image: images.timeline, imageHint: "abstract timeline spiral", gridArea: "7 / 1 / 8 / 2" },
+        { title: "پروژه نمونه ۲", image: images.abstractData, imageHint: "financial charts graphs", gridArea: "7 / 2 / 8 / 4" },
+        { title: "پروژه نمونه ۳", image: images.soldierSilhouette, imageHint: "memorial solemn", gridArea: "8 / 1 / 9 / 3" },
     ],
     ar: [
         { title: "الجدول الزمني", image: images.timeline, imageHint: "abstract timeline spiral", gridArea: "1 / 1 / 3 / 3" },
@@ -167,6 +185,9 @@ const projectsPanels = {
         { title: "رد الفعل الدولي", image: images.cyber, imageHint: "world leaders table", gridArea: "5 / 2 / 6 / 4" },
         { title: "قصص المحاربين القدامى", image: images.soldierTech, imageHint: "old soldier portrait", gridArea: "6 / 2 / 7 / 3" },
         { title: "النصب التذكارية", image: images.soldierSilhouette, imageHint: "war memorial", gridArea: "6 / 3 / 7 / 4" },
+        { title: "مشروع العينة 1", image: images.timeline, imageHint: "abstract timeline spiral", gridArea: "7 / 1 / 8 / 2" },
+        { title: "مشروع العينة 2", image: images.abstractData, imageHint: "financial charts graphs", gridArea: "7 / 2 / 8 / 4" },
+        { title: "مشروع العينة 3", image: images.soldierSilhouette, imageHint: "memorial solemn", gridArea: "8 / 1 / 9 / 3" },
     ],
     he: [
         { title: "ציר זמן", image: images.timeline, imageHint: "abstract timeline spiral", gridArea: "1 / 1 / 3 / 3" },
@@ -181,6 +202,9 @@ const projectsPanels = {
         { title: "תגובה בינלאומית", image: images.cyber, imageHint: "world leaders table", gridArea: "5 / 2 / 6 / 4" },
         { title: "סיפורי ותיקים", image: images.soldierTech, imageHint: "old soldier portrait", gridArea: "6 / 2 / 7 / 3" },
         { title: "אנדרטאות", image: images.soldierSilhouette, imageHint: "war memorial", gridArea: "6 / 3 / 7 / 4" },
+        { title: "פרויקט לדוגמה 1", image: images.timeline, imageHint: "abstract timeline spiral", gridArea: "7 / 1 / 8 / 2" },
+        { title: "פרויקט לדוגמה 2", image: images.abstractData, imageHint: "financial charts graphs", gridArea: "7 / 2 / 8 / 4" },
+        { title: "פרויקט לדוגמה 3", image: images.soldierSilhouette, imageHint: "memorial solemn", gridArea: "8 / 1 / 9 / 3" },
     ],
 };
 
@@ -198,6 +222,9 @@ const achievementsPanels = {
         { title: "Defense of Ahvaz", image: images.radar, imageHint: "city under attack", gridArea: "5 / 3 / 7 / 4" },
         { title: "Psychological Operations", image: images.cyber, imageHint: "radio tower", gridArea: "6 / 1 / 7 / 2" },
         { title: "Civilian Resistance", image: images.soldierTech, imageHint: "people protesting", gridArea: "6 / 2 / 7 / 3" },
+        { title: "Sample Achievement 1", image: images.soldierTech, imageHint: "victory flag city", gridArea: "7 / 1 / 8 / 3" },
+        { title: "Sample Achievement 2", image: images.soldierMap, imageHint: "military strategy map", gridArea: "7 / 3 / 8 / 4" },
+        { title: "Sample Achievement 3", image: images.tank, imageHint: "tank battle river", gridArea: "8 / 1 / 9 / 2" },
     ],
     fa: [
         { title: "آزادسازی خرمشهر", image: images.soldierTech, imageHint: "victory flag city", gridArea: "1 / 1 / 3 / 3" },
@@ -212,6 +239,9 @@ const achievementsPanels = {
         { title: "دفاع از اهواز", image: images.radar, imageHint: "city under attack", gridArea: "5 / 3 / 7 / 4" },
         { title: "عملیات روانی", image: images.cyber, imageHint: "radio tower", gridArea: "6 / 1 / 7 / 2" },
         { title: "مقاومت مردمی", image: images.soldierTech, imageHint: "people protesting", gridArea: "6 / 2 / 7 / 3" },
+        { title: "دستاورد نمونه ۱", image: images.soldierTech, imageHint: "victory flag city", gridArea: "7 / 1 / 8 / 3" },
+        { title: "دستاورد نمونه ۲", image: images.soldierMap, imageHint: "military strategy map", gridArea: "7 / 3 / 8 / 4" },
+        { title: "دستاورد نمونه ۳", image: images.tank, imageHint: "tank battle river", gridArea: "8 / 1 / 9 / 2" },
     ],
     ar: [
         { title: "تحرير المحمرة", image: images.soldierTech, imageHint: "victory flag city", gridArea: "1 / 1 / 3 / 3" },
@@ -226,6 +256,9 @@ const achievementsPanels = {
         { title: "الدفاع عن الأهواز", image: images.radar, imageHint: "city under attack", gridArea: "5 / 3 / 7 / 4" },
         { title: "عمليات نفسية", image: images.cyber, imageHint: "radio tower", gridArea: "6 / 1 / 7 / 2" },
         { title: "المقاومة المدنية", image: images.soldierTech, imageHint: "people protesting", gridArea: "6 / 2 / 7 / 3" },
+        { title: "إنجاز العينة 1", image: images.soldierTech, imageHint: "victory flag city", gridArea: "7 / 1 / 8 / 3" },
+        { title: "إنجاز العينة 2", image: images.soldierMap, imageHint: "military strategy map", gridArea: "7 / 3 / 8 / 4" },
+        { title: "إنجاز العينة 3", image: images.tank, imageHint: "tank battle river", gridArea: "8 / 1 / 9 / 2" },
     ],
     he: [
         { title: "שחרור ח'וראמשהר", image: images.soldierTech, imageHint: "victory flag city", gridArea: "1 / 1 / 3 / 3" },
@@ -240,6 +273,9 @@ const achievementsPanels = {
         { title: "ההגנה על אהוואז", image: images.radar, imageHint: "city under attack", gridArea: "5 / 3 / 7 / 4" },
         { title: "מבצעים פסיכולוגיים", image: images.cyber, imageHint: "radio tower", gridArea: "6 / 1 / 7 / 2" },
         { title: "התנגדות אזרחית", image: images.soldierTech, imageHint: "people protesting", gridArea: "6 / 2 / 7 / 3" },
+        { title: "הישג לדוגמה 1", image: images.soldierTech, imageHint: "victory flag city", gridArea: "7 / 1 / 8 / 3" },
+        { title: "הישג לדוגמה 2", image: images.soldierMap, imageHint: "military strategy map", gridArea: "7 / 3 / 8 / 4" },
+        { title: "הישג לדוגמה 3", image: images.tank, imageHint: "tank battle river", gridArea: "8 / 1 / 9 / 2" },
     ],
 };
 
@@ -257,6 +293,9 @@ const contactPanels = {
         { title: "Censored Information", image: images.cyber, imageHint: "redacted document", gridArea: "5 / 3 / 7 / 4" },
         { title: "Official Statements", image: images.soldierTech, imageHint: "government building", gridArea: "6 / 1 / 7 / 2" },
         { title: "Submit a Question", image: images.questionMark, imageHint: "person thinking", gridArea: "6 / 2 / 7 / 3" },
+        { title: "Sample Question 1", image: images.questionMark, imageHint: "shattered glass illusion", gridArea: "7 / 1 / 8 / 2" },
+        { title: "Sample Question 2", image: images.cyber, imageHint: "scholar writing book", gridArea: "7 / 2 / 8 / 3" },
+        { title: "Sample Question 3", image: images.abstractData, imageHint: "light dark balance", gridArea: "7 / 3 / 8 / 4" },
     ],
     fa: [
         { title: "تصورات غلط", image: images.questionMark, imageHint: "shattered glass illusion", gridArea: "1 / 1 / 3 / 3" },
@@ -271,6 +310,9 @@ const contactPanels = {
         { title: "اطلاعات سانسور شده", image: images.cyber, imageHint: "redacted document", gridArea: "5 / 3 / 7 / 4" },
         { title: "بیانیه‌های رسمی", image: images.soldierTech, imageHint: "government building", gridArea: "6 / 1 / 7 / 2" },
         { title: "ارسال سوال", image: images.questionMark, imageHint: "person thinking", gridArea: "6 / 2 / 7 / 3" },
+        { title: "سوال نمونه ۱", image: images.questionMark, imageHint: "shattered glass illusion", gridArea: "7 / 1 / 8 / 2" },
+        { title: "سوال نمونه ۲", image: images.cyber, imageHint: "scholar writing book", gridArea: "7 / 2 / 8 / 3" },
+        { title: "سوال نمونه ۳", image: images.abstractData, imageHint: "light dark balance", gridArea: "7 / 3 / 8 / 4" },
     ],
     ar: [
         { title: "مفاهيم خاطئة", image: images.questionMark, imageHint: "shattered glass illusion", gridArea: "1 / 1 / 3 / 3" },
@@ -285,6 +327,9 @@ const contactPanels = {
         { title: "معلومات خاضعة للرقابة", image: images.cyber, imageHint: "redacted document", gridArea: "5 / 3 / 7 / 4" },
         { title: "البيانات الرسمية", image: images.soldierTech, imageHint: "government building", gridArea: "6 / 1 / 7 / 2" },
         { title: "إرسال سؤال", image: images.questionMark, imageHint: "person thinking", gridArea: "6 / 2 / 7 / 3" },
+        { title: "سؤال العينة 1", image: images.questionMark, imageHint: "shattered glass illusion", gridArea: "7 / 1 / 8 / 2" },
+        { title: "سؤال العينة 2", image: images.cyber, imageHint: "scholar writing book", gridArea: "7 / 2 / 8 / 3" },
+        { title: "سؤال العينة 3", image: images.abstractData, imageHint: "light dark balance", gridArea: "7 / 3 / 8 / 4" },
     ],
     he: [
         { title: "תפיסות שגויות", image: images.questionMark, imageHint: "shattered glass illusion", gridArea: "1 / 1 / 3 / 3" },
@@ -299,6 +344,9 @@ const contactPanels = {
         { title: "מידע מצונזר", image: images.cyber, imageHint: "redacted document", gridArea: "5 / 3 / 7 / 4" },
         { title: "הצהרות רשמיות", image: images.soldierTech, imageHint: "government building", gridArea: "6 / 1 / 7 / 2" },
         { title: "שלח שאלה", image: images.questionMark, imageHint: "person thinking", gridArea: "6 / 2 / 7 / 3" },
+        { title: "שאלה לדוגמה 1", image: images.questionMark, imageHint: "shattered glass illusion", gridArea: "7 / 1 / 8 / 2" },
+        { title: "שאלה לדוגמה 2", image: images.cyber, imageHint: "scholar writing book", gridArea: "7 / 2 / 8 / 3" },
+        { title: "שאלה לדוגמה 3", image: images.abstractData, imageHint: "light dark balance", gridArea: "7 / 3 / 8 / 4" },
     ],
 };
 
