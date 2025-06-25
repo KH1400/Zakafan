@@ -48,20 +48,17 @@ type HeaderProps = {
 };
 
 export function Header({ currentLang, onLanguageChange }: HeaderProps) {
-  const isRtl = currentLang === 'fa' || currentLang === 'ar' || currentLang === 'he';
-  const fontFamily = {
-    en: "Inter, sans-serif",
-    fa: "Noto Sans Arabic, sans-serif",
-    ar: "Noto Sans Arabic, sans-serif",
-    he: "Noto Sans Hebrew, sans-serif"
-  }[currentLang];
-
-  const iconX = isRtl ? 470 : 30;
-  const textX = isRtl ? 440 : 60;
-  const textAnchor = isRtl ? "end" : "start";
+  const logoFontFamily = "Inter, sans-serif";
+  const iconX = 30;
+  const textX = 60;
+  const textAnchor = "start";
+  const titleTextLength = "370";
 
   return (
-    <header className="flex h-20 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0">
+    <header 
+      dir="ltr"
+      className="flex h-20 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0"
+    >
       <Link href={currentLang === 'en' ? '/' : `/?lang=${currentLang}`} className="flex items-center gap-3">
         <svg width="500" height="100" viewBox="0 0 500 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-24 w-auto">
             <g transform={`translate(${iconX}, 50)`} stroke="hsl(var(--accent))" strokeWidth="3" fill="none" className="drop-shadow-glow-accent">
@@ -71,24 +68,26 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
             <text 
                 x={textX}
                 y="50" 
-                fontFamily={fontFamily} 
+                fontFamily={logoFontFamily} 
                 fontSize="34" 
                 fontWeight="bold" 
                 className="fill-accent drop-shadow-glow-accent"
                 textAnchor={textAnchor}
                 dominantBaseline="middle"
             >
-                {languageOptions[currentLang].brandName}
+                {languageOptions['en'].brandName}
             </text>
             <text 
                 x={textX}
                 y="80" 
-                fontFamily={fontFamily} 
+                fontFamily={logoFontFamily} 
                 fontSize="16" 
                 className="fill-white/80"
                 textAnchor={textAnchor}
+                textLength={titleTextLength}
+                lengthAdjust="spacingAndGlyphs"
             >
-                {logoTaglines[currentLang]}
+                {logoTaglines['en']}
             </text>
         </svg>
       </Link>

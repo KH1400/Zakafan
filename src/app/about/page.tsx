@@ -52,9 +52,11 @@ export default function AboutPage({ searchParams }: { searchParams?: { lang?: st
     he: { dir: 'rtl' as const, font: 'font-hebrew' },
   }[lang];
   
-  const iconX = isRtl ? 470 : 30;
-  const textX = isRtl ? 440 : 60;
-  const textAnchor = isRtl ? "end" : "start";
+  const logoFontFamily = "Inter, sans-serif";
+  const iconX = 30;
+  const textX = 60;
+  const textAnchor = "start";
+  const titleTextLength = "370";
 
   return (
     <div dir={langConfig.dir} className={`${langConfig.font} relative flex flex-col h-screen w-screen items-center justify-center text-white p-4`}>
@@ -77,24 +79,26 @@ export default function AboutPage({ searchParams }: { searchParams?: { lang?: st
             <text 
                 x={textX}
                 y="50" 
-                fontFamily={fontFamilies[lang]} 
+                fontFamily={logoFontFamily} 
                 fontSize="34" 
                 fontWeight="bold" 
                 className="fill-accent drop-shadow-glow-accent"
                 textAnchor={textAnchor}
                 dominantBaseline="middle"
             >
-                {logoBrandNames[lang]}
+                {logoBrandNames['en']}
             </text>
             <text 
                 x={textX}
                 y="80" 
-                fontFamily={fontFamilies[lang]} 
+                fontFamily={logoFontFamily}
                 fontSize="16" 
                 className="fill-white/80"
                 textAnchor={textAnchor}
+                textLength={titleTextLength}
+                lengthAdjust="spacingAndGlyphs"
             >
-                {logoTaglines[lang]}
+                {logoTaglines['en']}
             </text>
         </svg>
 
