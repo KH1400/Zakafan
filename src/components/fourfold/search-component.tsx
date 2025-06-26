@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { allContentItems, sections, type Language, type ContentItem, type SectionInfo } from "@/lib/content-data";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "../../lib/language-context";
 
 
 const translations = {
@@ -39,6 +40,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
   const [isInputFocused, setInputFocused] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const {selectedLang} = useLanguage();
 
   React.useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -61,7 +63,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
     if (!query.trim()) return [];
     
     return allContentItems.filter(item => {
-      const inSelectedSection = selectedSections.size === 0 || selectedSections.has(item.sectionId);
+      const inSelectedSection = selectedSections.size === 0 || selectedSections.has(item.categories[0]);
       const titleMatches = item.title[lang].toLowerCase().includes(query.toLowerCase());
       return inSelectedSection && titleMatches;
     });
@@ -79,7 +81,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
 
   const createHref = (item: ContentItem) => {
     const langQuery = lang === 'en' ? '' : `?lang=${lang}`;
-    return `/${item.sectionId}/${item.slug}${langQuery}`;
+    return `/${item.id}/${item.slug}${langQuery}`;
   }
   
   const showResults = isExpanded && query.trim().length > 0;
@@ -87,6 +89,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
 
   return (
     <div 
+        dir={selectedLang.dir}
         ref={containerRef} 
         className={cn(
             "relative flex items-center justify-end transition-all duration-300 ease-in-out",
@@ -122,7 +125,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
           size="icon"
           type="button"
           aria-label="Toggle Search"
-          className="absolute right-0 top-0 h-10 w-10 shrink-0"
+          className={`absolute end-0 top-0 h-10 w-10 shrink-0`}
           onClick={() => onExpandedChange(!isExpanded)}
         >
           <Search className="h-5 w-5" />
@@ -165,7 +168,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
             ) : (
               <ul className="max-h-[40vh] overflow-y-auto p-1">
                 {filteredContent.map(item => (
-                  <li key={`${item.sectionId}-${item.slug}`}>
+                  <li key={`${item.id}-${item.slug}`}>
                     <Link
                       href={createHref(item)}
                       className="block w-full p-2 rounded-sm transition-colors hover:bg-accent hover:text-accent-foreground"
@@ -178,7 +181,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
                       <div className="flex flex-col">
                         <span className="font-medium">{item.title[lang]}</span>
                         <span className="text-xs text-muted-foreground">
-                          {sections.find(s => s.id === item.sectionId)?.title[lang]}
+                          {sections.find(s => s.id === item.categories[0])?.title[lang]}
                         </span>
                       </div>
                     </Link>

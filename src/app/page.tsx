@@ -1,36 +1,17 @@
+'use client';
 
-"use client";
-
-import { useState } from "react";
-import { Header } from "@/components/fourfold/header";
 import { InteractiveBanners } from "@/components/fourfold/interactive-banners";
 import { Footer } from "@/components/fourfold/footer";
-import type { Language } from '@/lib/content-data';
-
-const languageOptions: Record<Language, { dir: 'rtl' | 'ltr'; font: string }> = {
-  fa: { dir: 'rtl', font: 'font-persian' },
-  en: { dir: 'ltr', font: 'font-body' },
-  ar: { dir: 'rtl', font: 'font-arabic' },
-  he: { dir: 'rtl', font: 'font-hebrew' },
-};
+import { useLanguage } from '@/lib/language-context';
 
 export default function Home() {
-  const [language, setLanguage] = useState<Language>('en');
-
-  const selectedLang = languageOptions[language];
+  const { language } = useLanguage();
 
   return (
-    <div
-      className="flex flex-col h-screen w-full bg-background overflow-hidden"
-    >
-      <Header currentLang={language} onLanguageChange={setLanguage} />
-      <main 
-        dir={selectedLang.dir}
-        className={`${selectedLang.font} flex-grow overflow-hidden`}
-      >
+    <div className="flex flex-col h-full">
+      <div className="flex-grow overflow-hidden">
         <InteractiveBanners lang={language} />
-      </main>
-      <Footer lang={language} />
+      </div>
     </div>
   );
 }

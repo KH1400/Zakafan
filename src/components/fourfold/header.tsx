@@ -1,8 +1,8 @@
-
 "use client";
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
 import {
@@ -57,6 +57,31 @@ type HeaderProps = {
 
 export function Header({ currentLang, onLanguageChange }: HeaderProps) {
   const [isSearchExpanded, setSearchExpanded] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  
+  // Function to handle language change with URL update
+  const handleLanguageChange = (lang: Language) => {
+    // Update the callback
+    onLanguageChange(lang);
+    
+    // Update URL
+    const currentPath = window.location.pathname;
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    
+    if (lang === 'en') {
+      // Remove lang parameter for English (default)
+      newSearchParams.delete('lang');
+    } else {
+      // Set lang parameter for other languages
+      newSearchParams.set('lang', lang);
+    }
+    
+    const queryString = newSearchParams.toString();
+    const newUrl = queryString ? `${currentPath}?${queryString}` : currentPath;
+    
+    router.push(newUrl);
+  };
   
   // Fixed LTR layout values
   const brandTextLength = "370";
@@ -118,7 +143,7 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
             onExpandedChange={setSearchExpanded}
         />
 
-        <DropdownMenu>
+        <DropdownMenu dir="rtl">
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" aria-label="Open menu">
               <Menu className="h-5 w-5" />
@@ -129,7 +154,7 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
               <DropdownMenuSubTrigger>{languageOptions[currentLang].name}</DropdownMenuSubTrigger>
               <DropdownMenuSubContent>
                 {languageOrder.map((key) => (
-                  <DropdownMenuItem key={key} onSelect={() => onLanguageChange(key as Language)}>
+                  <DropdownMenuItem key={key} onSelect={() => handleLanguageChange(key as Language)}>
                     {languageOptions[key].name}
                   </DropdownMenuItem>
                 ))}

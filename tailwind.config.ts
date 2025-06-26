@@ -16,10 +16,22 @@ export default {
       fontFamily: {
         body: ['Inter', 'sans-serif'],
         headline: ['Inter', 'sans-serif'],
-        persian: ['Noto Sans Arabic', 'sans-serif'],
-        arabic: ['Noto Sans Arabic', 'sans-serif'],
-        hebrew: ['Noto Sans Hebrew', 'sans-serif'],
         code: ['monospace'],
+        
+        // YekanBakh font family
+        'persian': ['var(--font-yekan-bakh)', 'sans-serif'],
+        
+        // Other fonts
+        'inter': ['Inter', 'sans-serif'],
+        'arabic': ['Noto Sans Arabic', 'sans-serif'],
+        'hebrew': ['Noto Sans Hebrew', 'sans-serif'],
+        
+        // Alternative: if you want separate weight classes
+        'yekan-bakh-regular': ['var(--font-yekan-bakh-regular)', 'sans-serif'],
+        'yekan-bakh-bold': ['var(--font-yekan-bakh-bold)', 'sans-serif'],
+        'yekan-bakh-light': ['var(--font-yekan-bakh-light)', 'sans-serif'],
+        'yekan-bakh-semibold': ['var(--font-yekan-bakh-semibold)', 'sans-serif'],
+        'yekan-bakh-black': ['var(--font-yekan-bakh-black)', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',

@@ -37,6 +37,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Eye, Users, Download, FileText, Calendar as CalendarIcon } from "lucide-react";
 import type { ChartConfig } from "@/components/ui/chart";
+import { useLanguage } from "../../lib/language-context";
+import { Language } from "../../lib/content-data";
 
 const chartData = [
   { month: "فروردین", thisMonth: 186, lastMonth: 80 },
@@ -66,13 +68,14 @@ const recentActivities = [
 ];
 
 export default function AdminDashboardPage() {
+  const { language, selectedLang } = useLanguage();
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: new Date(),
     to: new Date(new Date().setDate(new Date().getDate() + 7)),
   });
 
   return (
-    <div className="flex flex-col min-h-full p-4 md:p-6 bg-muted/40 font-persian" dir="rtl">
+    <div dir={selectedLang.dir} className="flex flex-col min-h-full p-4 md:p-6 bg-muted/40 font-persian">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold">داشبورد</h1>
         <Popover>

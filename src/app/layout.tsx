@@ -1,31 +1,50 @@
+'use client';
 
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
+import { Header } from "@/components/fourfold/header";
+import { LanguageProvider, useLanguage } from '@/lib/language-context';
+import { Footer } from '../components/fourfold/footer';
+import { yekanBakh } from '../lib/fonts';
 
-export const metadata: Metadata = {
-  title: 'War Dynograph',
-  description: 'An interactive portal for modern conflict analysis.',
-};
+// Inner Layout Component
+function LayoutContent({ children }: { children: React.ReactNode }) {
+  const { language, setLanguage, selectedLang } = useLanguage();
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
   return (
-    <html lang="en" className="dark">
+    <html lang={language} className={`dark ${yekanBakh.variable}`} dir={selectedLang.dir}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@400;700&display=swap" rel="stylesheet" />
+        <link rel="preload" href="/fonts/YekanBakh-Regular.woff" as="font" type="font/woff" crossOrigin="anonymous" />
       </head>
-      <body className="font-body antialiased">
-        {children}
+      <body className={`${selectedLang.font} font-persian antialiased`}>
+        <div className="flex flex-col h-screen w-full bg-background overflow-hidden">
+          <Header currentLang={language} onLanguageChange={setLanguage} />
+          <main className="flex-grow overflow-hidden">
+            {children}
+          </main>
+        </div>
         <Toaster />
       </body>
+      {/* <Footer lang={language} /> */}
     </html>
+  );
+}
+
+// Main Layout Component
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <LanguageProvider>
+      <LayoutContent>{children}</LayoutContent>
+    </LanguageProvider>
   );
 }
