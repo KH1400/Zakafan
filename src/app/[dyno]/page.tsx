@@ -1,7 +1,7 @@
 "use client"
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Footer } from "@/components/fourfold/footer";
 import { MosaicLayout } from "@/components/fourfold/mosaic-layout";
 import {
@@ -21,23 +21,14 @@ const goBackTranslations = {
 };
 
 export default function ProjectsPage({
-  params,
-  searchParams,
+  params
 }: {
   params: { dyno: string };
-  searchParams?: { lang?: string };
 }) {
-  const { language, setLanguage, selectedLang } = useLanguage();
+  const { language, selectedLang } = useLanguage();
   const categoryHref = params.dyno;
   const [dynos, setDynos] = useState<MosaicPanelData[]>([]);
   const [category, setCategory] = useState<SectionInfo>();
-
-  // Set language from URL params if provided
-  useEffect(() => {
-    if (searchParams?.lang && searchParams.lang !== language) {
-      setLanguage(searchParams.lang as Language);
-    }
-  }, [searchParams?.lang, language, setLanguage]);
 
   useEffect(() => {
     getDynos();
@@ -69,24 +60,25 @@ export default function ProjectsPage({
   };
   
   if(!category){
-    return <div className="flex items-center justify-center min-h-screen">
+    return <div className={`${selectedLang.font} flex items-center justify-center min-h-screen`}>
       <p>Loading...</p>
     </div>;
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className={`${selectedLang.font} flex flex-col h-full`}>
       {/* Header - now separate from layout header */}
-      <header className="flex h-20 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0 sticky top-0 z-20">
-        <h1 className="text-xl md:text-2xl font-bold font-headline">
-          {category.title[language]}
-        </h1>
+      <header className={`${selectedLang.font} flex h-20 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0 sticky top-0 z-20`}>
         <Button asChild variant="outline">
           <Link href={language === "en" ? "/" : `/?lang=${language}`}>
-            <ArrowLeft className={selectedLang.dir === 'rtl' ? "ml-2" : "mr-2"} />
+            {(selectedLang.dir === 'ltr') && <ArrowLeft className={"mr-2"} />}
+            {(selectedLang.dir === 'rtl') && <ArrowRight className={"ml-2"} />}
             {goBackTranslations[language]}
           </Link>
         </Button>
+        <h1 className={`${selectedLang.font} text-xl md:text-2xl font-bold font-headline`}>
+          {category.title[language]}
+        </h1>
       </header>
       
       {/* Main content */}

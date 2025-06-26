@@ -3,6 +3,7 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { iconMap, IconName } from "../../lib/iconMap";
+import { useLanguage } from "../../lib/language-context";
 
 type BannerPanelProps = {
   icon: string;
@@ -15,6 +16,7 @@ type BannerPanelProps = {
   isAnyHovered: boolean;
   onMouseEnter: () => void;
   isLast?: boolean;
+  priority?: boolean; // اضافه کردن prop برای کنترل priority
 };
 
 export function BannerPanel({
@@ -28,10 +30,12 @@ export function BannerPanel({
   isAnyHovered,
   onMouseEnter,
   isLast = false,
+  priority = false, // پیش‌فرض false برای lazy loading
 }: BannerPanelProps) {
   const IconComponent = iconMap.hasOwnProperty(icon)
   ? iconMap[icon as keyof typeof iconMap]
   : null;
+  const { selectedLang } = useLanguage();
   return (
     <Link
       href={href}
@@ -56,6 +60,13 @@ export function BannerPanel({
         fill
         className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
         data-ai-hint={imageHint}
+        // Lazy Loading Properties
+        loading={priority ? "eager" : "lazy"}
+        priority={priority}
+        // بهینه‌سازی‌های اضافی
+        placeholder="blur"
+        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
       
@@ -69,9 +80,9 @@ export function BannerPanel({
             isHovered ? "mb-4" : "mb-0"
           )}
         >
-          {IconComponent  ? <IconComponent className="h-12 w-12" /> : null}
+          {IconComponent ? <IconComponent className="h-12 w-12" /> : null}
         </div>
-        <h2 className="text-2xl md:text-4xl font-bold font-headline transition-all duration-500 ease-in-out text-white drop-shadow-lg">
+        <h2 className={`text-2xl ${selectedLang.font} md:text-4xl font-bold font-headline transition-all duration-500 ease-in-out text-white drop-shadow-lg`}>
           {title}
         </h2>
         <p

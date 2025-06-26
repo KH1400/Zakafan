@@ -87,3 +87,53 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* YekanBakh Font Classes */
+.font-yekan-bakh {
+  font-family: var(--font-yekan-bakh), sans-serif;
+}
+
+/* Specific weight classes for YekanBakh */
+.yekan-light {
+  font-family: var(--font-yekan-bakh), sans-serif;
+  font-weight: 300;
+}
+
+.yekan-regular {
+  font-family: var(--font-yekan-bakh), sans-serif;
+  font-weight: 400;
+}
+
+.yekan-semibold {
+  font-family: var(--font-yekan-bakh), sans-serif;
+  font-weight: 600;
+}
+
+.yekan-bold {
+  font-family: var(--font-yekan-bakh), sans-serif;
+  font-weight: 700;
+}
+
+.yekan-black {
+  font-family: var(--font-yekan-bakh), sans-serif;
+  font-weight: 900;
+}
+
+/* Persian text optimization */
+.font-yekan-bakh {
+  font-feature-settings: 'kern' 1, 'liga' 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* RTL text direction helpers */
+.rtl-text {
+  direction: rtl;
+  text-align: right;
+}
+
+.ltr-text {
+  direction: ltr;
+  text-align: left;
+}

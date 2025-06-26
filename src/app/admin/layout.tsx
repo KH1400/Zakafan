@@ -35,6 +35,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "../../lib/language-context";
 
 const menuItems = [
     { href: '/admin', label: 'داشبورد', icon: LayoutDashboard },
@@ -50,10 +51,10 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-
+  const {language, selectedLang} = useLanguage();
   return (
-    <SidebarProvider dir="rtl">
-      <Sidebar side="right" collapsible="icon">
+    <SidebarProvider dir={selectedLang.dir}>
+      <Sidebar collapsible="icon">
         <SidebarHeader>
           <h2 className="text-xl font-semibold p-2 group-data-[collapsible=icon]:hidden">
             پنل مدیریت

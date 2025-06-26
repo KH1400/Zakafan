@@ -1,9 +1,11 @@
 
+'use client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { type Language } from '@/lib/content-data';
+import { useLanguage } from '../../lib/language-context';
 
 const goBackTranslations = {
     en: "Go Back Home",
@@ -33,13 +35,8 @@ const pageFontFamilies: Record<Language, string> = {
     he: "font-hebrew"
 };
 
-export default function AboutPage({ searchParams }: { searchParams?: { lang?: string } }) {
-  const lang = (searchParams?.lang || 'en') as Language;
-  const isRtl = lang === 'fa' || lang === 'ar' || lang === 'he';
-  const langConfig = {
-    dir: isRtl ? 'rtl' as const : 'ltr' as const,
-    font: pageFontFamilies[lang],
-  };
+export default function AboutPage() {
+  const {language, selectedLang} = useLanguage();
 
   // Fixed LTR layout values for the logo
   const forcedTextLength = "370";
@@ -48,12 +45,13 @@ export default function AboutPage({ searchParams }: { searchParams?: { lang?: st
   const textAnchor = "start";
 
   return (
-    <div dir={langConfig.dir} className={`${langConfig.font} relative flex flex-col min-h-screen w-full items-center justify-center text-white p-4`}>
+    <div dir={selectedLang.dir} className={`${selectedLang.font} relative flex flex-col min-h-screen w-full items-center justify-center text-white p-4`}>
       <Image
         src="/about/c5.png"
         alt="Background"
-        fill
-        className="object-cover -z-10"
+        width={1920}  // عرض واقعی عکس
+        height={1080} // ارتفاع واقعی عکس
+        className="absolute inset-0 object-cover -z-10"
         data-ai-hint="holographic datasphere"
         priority
       />
@@ -94,13 +92,14 @@ export default function AboutPage({ searchParams }: { searchParams?: { lang?: st
         </svg>
 
         <p className="mt-8 text-lg md:text-xl leading-relaxed text-white/90">
-          {aboutTranslations.content[lang]}
+          {aboutTranslations.content[language]}
         </p>
 
         <Button asChild variant="outline" className="mt-10 bg-transparent hover:bg-white/10 border-white/50 text-white hover:text-white">
-          <Link href={lang === 'en' ? '/' : `/?lang=${lang}`}>
-            <ArrowLeft className={isRtl ? "ml-2" : "mr-2"} />
-            {goBackTranslations[lang]}
+          <Link href={language === 'en' ? '/' : `/?lang=${language}`}>
+            {(selectedLang.dir === 'ltr') && <ArrowLeft className={"mr-2"} />}
+            {(selectedLang.dir === 'rtl') && <ArrowRight className={"ml-2"} />}
+            {goBackTranslations[language]}
           </Link>
         </Button>
       </div>

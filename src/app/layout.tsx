@@ -6,21 +6,23 @@ import { Toaster } from '@/components/ui/toaster';
 import { Header } from "@/components/fourfold/header";
 import { LanguageProvider, useLanguage } from '@/lib/language-context';
 import { Footer } from '../components/fourfold/footer';
+import { yekanBakh } from '../lib/fonts';
 
 // Inner Layout Component
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const { language, setLanguage, selectedLang } = useLanguage();
 
   return (
-    <html lang={language} className="dark" dir={selectedLang.dir}>
+    <html lang={language} className={`dark ${yekanBakh.variable}`} dir={selectedLang.dir}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@400;700&display=swap" rel="stylesheet" />
+        <link rel="preload" href="/fonts/YekanBakh-Regular.woff" as="font" type="font/woff" crossOrigin="anonymous" />
       </head>
-      <body className={`${selectedLang.font} antialiased`}>
+      <body className={`${selectedLang.font} font-persian antialiased`}>
         <div className="flex flex-col h-screen w-full bg-background overflow-hidden">
           <Header currentLang={language} onLanguageChange={setLanguage} />
           <main className="flex-grow overflow-hidden">
