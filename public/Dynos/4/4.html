@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مقایسه نظامی ایران و اسرائیل: اینفوگرافیک ۲۰۲۵</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet">
+    <!--
+    Narrative & Structure Plan:
+    1.  Header: Title and overall GFP ranking comparison.
+    2.  Section 1 - Manpower: Compare active, reserve, and available personnel using Bar and Donut charts.
+    3.  Section 2 - Land Power: Detail the quantitative advantages in tanks, armored vehicles, and rocket projectors with Bar charts.
+    4.  Section 3 - Air Power: Showcase Israel's technological edge with a comparison of total aircraft and advanced fighters using a Radar chart.
+    5.  Section 4 - Naval Power: Contrast Iran's submarine fleet with Israel's surface vessels using Bar charts.
+    6.  Section 5 - Economic & Strategic Depth: Visualize the differences in defense budget, resource production, and logistics using Bar charts and large stat callouts.
+    7.  Footer: A concluding summary of the core strategic differences (quantity vs. quality).
+
+    Visualization Choices:
+    - Overall Ranking: Goal: Inform -> Single Big Number -> Justification: Clear, immediate impact.
+    - Manpower (Active vs Reserve): Goal: Compare Composition -> Stacked Bar Chart (Chart.js) -> Justification: Excellent for showing parts of a whole for direct comparison.
+    - Land Power (Tanks, etc.): Goal: Compare Categories -> Horizontal Bar Charts (Chart.js) -> Justification: Clean, easy-to-read comparison of disparate numbers.
+    - Air Power: Goal: Compare multiple features -> Radar Chart (Chart.js) -> Justification: Effectively compares multiple metrics (fighters, tankers, attack helos) for two entities.
+    - Naval Power: Goal: Compare Categories -> Bar Charts (Chart.js) -> Justification: Simple and effective for comparing fleet numbers.
+    - Financials (Budget): Goal: Compare -> Bar Chart (Chart.js) -> Justification: Clearly shows the significant disparity in spending.
+    - Resources (Oil): Goal: Inform -> Single Big Number -> Justification: Emphasizes Iran's massive strategic advantage.
+    - All charts are implemented with Chart.js on Canvas. NO SVG or Mermaid JS are used.
+
+    Color Palette Selection: "Brilliant Blues"
+    - #2A4D69 (Dark Blue)
+    - #4B86B4 (Medium Blue)
+    - #ADCBE3 (Light Blue)
+    - #E7EFF6 (Very Light Blue / White)
+    - #63ACE5 (Bright Blue Accent)
+    - Iran will be represented by #2A4D69, Israel by #4B86B4, with accents from other palette colors.
+    -->
+    <style>
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: #E7EFF6;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+        .rtl {
+            direction: rtl;
+        }
+        .ltr {
+            direction: ltr;
+        }
+    </style>
+</head>
+<body class="rtl">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-black text-[#2A4D69] mb-2">مقایسه نظامی ایران و اسرائیل</h1>
+            <p class="text-xl text-[#4B86B4] font-bold">تحلیل داده‌های Global Firepower برای سال ۲۰۲۵</p>
+        </header>
+
+        <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8 grid grid-cols-1 md:grid-cols-2 items-center text-center">
+            <div class="border-b-2 md:border-b-0 md:border-l-2 border-dashed border-gray-200 pb-4 md:pb-0 md:pl-8 mb-4 md:mb-0">
+                <h3 class="text-2xl font-bold text-[#2A4D69]">ایران</h3>
+                <p class="text-6xl font-black text-[#63ACE5] my-2">16</p>
+                <p class="text-lg text-gray-600">رتبه در جهان</p>
+            </div>
+            <div>
+                <h3 class="text-2xl font-bold text-[#4B86B4]">اسرائیل</h3>
+                <p class="text-6xl font-black text-[#63ACE5] my-2">15</p>
+                <p class="text-lg text-gray-600">رتبه در جهان</p>
+            </div>
+        </div>
+
+        <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <div class="lg:col-span-3 bg-white rounded-2xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-center mb-1 text-[#2A4D69]">نیروی انسانی: برتری کمی و کیفی ایران</h2>
+                <p class="text-center text-gray-600 mb-6 max-w-3xl mx-auto">ایران نه تنها از برتری عددی در نیروی انسانی فعال و در دسترس بهره می‌برد، بلکه بر اساس دکترین خود، بر عواملی چون عرق به وطن و روحیه شهادت‌طلبانه نشأت‌گرفته از اعتقادات مذهبی تأکید دارد. </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="chart-container"><canvas id="manpowerChart"></canvas></div>
+                    <div class="chart-container"><canvas id="availableManpowerChart"></canvas></div>
+                </div>
+            </div>
+
+            <div class="md:col-span-2 lg:col-span-3 bg-white rounded-2xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-center mb-1 text-[#2A4D69]">نیروی زمینی: عمق زرهی و قدرت آتش ایران</h2>
+                <p class="text-center text-gray-600 mb-6 max-w-3xl mx-auto">در عرصه نبرد زمینی، ایران از نظر تعداد تجهیزات، به ویژه در بخش خودروهای زرهی و پرتابگرهای موشکی، برتری قابل توجهی دارد که نشان از یک استراتژی مبتنی بر کمیت و اشباع میدان نبرد است.</p>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 text-center">
+                    <div>
+                        <h3 class="font-bold text-lg text-gray-700">تانک‌ها</h3>
+                        <div class="chart-container" style="height: 256px;"><canvas id="tanksChart"></canvas></div>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-gray-700">خودروهای زرهی</h3>
+                        <div class="chart-container" style="height: 256px;"><canvas id="armoredVehiclesChart"></canvas></div>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg text-gray-700">پرتابگرهای موشکی</h3>
+                        <div class="chart-container" style="height: 256px;"><canvas id="rocketProjectorsChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="md:col-span-2 lg:col-span-2 bg-white rounded-2xl shadow-lg p-6">
+                 <h2 class="text-2xl font-bold text-center mb-1 text-[#2A4D69]">نیروی هوایی: برتری فناورانه اسرائیل</h2>
+                <p class="text-center text-gray-600 mb-6 max-w-3xl mx-auto">اسرائیل با در اختیار داشتن ناوگان هوایی مدرن‌تر و بزرگ‌تر، به خصوص در تعداد جنگنده‌های پیشرفته، تانکرهای سوخت‌رسان و هلیکوپترهای تهاجمی، کنترل آسمان را به عنوان یک مزیت استراتژیک در اختیار دارد.</p>
+                <div class="chart-container mx-auto"><canvas id="airpowerChart"></canvas></div>
+            </div>
+            
+            <div class="lg:col-span-1 bg-white rounded-2xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-center mb-1 text-[#2A4D69]">نیروی دریایی</h2>
+                <p class="text-center text-gray-600 mb-6">استراتژی‌های دریایی دو کشور متفاوت است. ایران بر روی ناوگان بزرگ زیردریایی برای بازدارندگی و عملیات نامتقارن تمرکز کرده، در حالی که اسرائیل ناوگان سطحی کوچک‌تر اما مدرن‌تری دارد.</p>
+                <div class="chart-container mb-4" style="height: 192px;"><canvas id="navalFleetChart"></canvas></div>
+                 <div class="text-center bg-[#E7EFF6] rounded-xl p-4">
+                    <p class="text-lg font-bold text-[#2A4D69]">زیردریایی‌های ایران</p>
+                    <p class="text-5xl font-black text-[#2A4D69] ltr">25</p>
+                    <p class="text-xs text-gray-500">در مقابل ۵ زیردریایی اسرائیل</p>
+                </div>
+            </div>
+
+            <div class="lg:col-span-3 bg-white rounded-2xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-center mb-1 text-[#2A4D69]">پشتوانه اقتصادی و لجستیک</h2>
+                <p class="text-center text-gray-600 mb-6 max-w-3xl mx-auto">اسرائیل با بودجه دفاعی تقریباً دو برابری، توان سرمایه‌گذاری بیشتری در فناوری‌های نوین دارد. از سوی دیگر، ایران با منابع عظیم انرژی و زیرساخت‌های لجستیکی گسترده، از عمق استراتژیک و پایداری بیشتری در یک درگیری طولانی‌مدت برخوردار است.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="chart-container" style="height: 320px;"><canvas id="financeChart"></canvas></div>
+                    <div class="grid grid-cols-2 gap-4 text-center">
+                        <div class="bg-[#E7EFF6] rounded-xl p-4">
+                            <p class="text-lg font-bold text-[#2A4D69]">تولید نفت ایران</p>
+                            <p class="text-3xl md:text-4xl font-black text-[#2A4D69] my-1 ltr">~4M</p>
+                            <p class="text-sm text-gray-600">بشکه در روز</p>
+                        </div>
+                        <div class="bg-gray-100 rounded-xl p-4">
+                            <p class="text-lg font-bold text-[#4B86B4]">تولید نفت اسرائیل</p>
+                            <p class="text-3xl md:text-4xl font-black text-[#4B86B4] my-1 ltr">15k</p>
+                            <p class="text-sm text-gray-600">بشکه در روز</p>
+                        </div>
+                         <div class="bg-[#E7EFF6] rounded-xl p-4 col-span-2">
+                            <p class="text-lg font-bold text-[#2A4D69]">فرودگاه‌های قابل استفاده</p>
+                            <p class="text-3xl md:text-4xl font-black text-[#2A4D69] my-1 ltr">173</p>
+                            <p class="text-sm text-gray-600">در ایران، در مقابل ۳۷ در اسرائیل</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="mt-12 text-center bg-white rounded-2xl shadow-lg p-8">
+            <h2 class="text-2xl font-bold text-[#2A4D69]">نتیجه‌گیری: کمیت در برابر کیفیت</h2>
+            <p class="text-gray-700 mt-4 max-w-4xl mx-auto leading-relaxed">
+                مقایسه قدرت نظامی ایران و اسرائیل، تقابل دو استراتژی متفاوت را به نمایش می‌گذارد. قدرت ایران در <span class="font-bold text-[#2A4D69]">کمیت، نیروی انسانی انبوه، عمق استراتژیک جغرافیایی و توانایی تولید انبوه تسلیحات بومی</span> مانند موشک‌ها و زیردریایی‌ها نهفته است. در مقابل، برتری اسرائیل از <span class="font-bold text-[#4B86B4]">فناوری پیشرفته، بودجه دفاعی بالا، نیروی هوایی مدرن و سیستم‌های دفاعی پیچیده</span> نشأت می‌گیرد. هرگونه رویارویی احتمالی، آزمونی برای این دو رویکرد متفاوت در عرصه نبرد خواهد بود.
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                if (!item) return '';
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) {
+                    return label.join(' ');
+                }
+                return label;
+            };
+            
+            const chartDefaultOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                family: 'Vazirmatn'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback
+                        },
+                        bodyFont: {
+                            family: 'Vazirmatn'
+                        },
+                        titleFont: {
+                            family: 'Vazirmatn'
+                        }
+                    }
+                }
+            };
+            
+            const iranColor = '#2A4D69';
+            const israelColor = '#4B86B4';
+            const accentColor1 = '#ADCBE3';
+            const accentColor2 = '#63ACE5';
+
+
+            new Chart(document.getElementById('manpowerChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['نیروهای فعال', 'نیروهای ذخیره'],
+                    datasets: [{
+                        label: 'ایران',
+                        data: [610000, 350000],
+                        backgroundColor: iranColor,
+                        borderColor: iranColor,
+                        borderWidth: 1
+                    }, {
+                        label: 'اسرائیل',
+                        data: [170000, 465000],
+                        backgroundColor: israelColor,
+                        borderColor: israelColor,
+                        borderWidth: 1
+                    }]
+                },
+                options: { ...chartDefaultOptions, scales: { y: { beginAtZero: true } } }
+            });
+
+            new Chart(document.getElementById('availableManpowerChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['نیروی انسانی در دسترس ایران', 'نیروی انسانی در دسترس اسرائیل'],
+                    datasets: [{
+                        data: [49496685, 3949099],
+                        backgroundColor: [iranColor, israelColor],
+                        hoverOffset: 4
+                    }]
+                },
+                options: chartDefaultOptions
+            });
+
+            new Chart(document.getElementById('tanksChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['ایران', 'اسرائیل'],
+                    datasets: [{
+                        label: 'تعداد تانک‌ها',
+                        data: [1713, 1300],
+                        backgroundColor: [iranColor, israelColor],
+                        barPercentage: 0.6,
+                    }]
+                },
+                options: { ...chartDefaultOptions, indexAxis: 'y', plugins: { legend: { display: false } } }
+            });
+
+            new Chart(document.getElementById('armoredVehiclesChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['ایران', 'اسرائیل'],
+                    datasets: [{
+                        label: 'خودروهای زرهی',
+                        data: [65825, 35985],
+                        backgroundColor: [iranColor, israelColor],
+                        barPercentage: 0.6,
+                    }]
+                },
+                options: { ...chartDefaultOptions, indexAxis: 'y', plugins: { legend: { display: false } } }
+            });
+            
+            new Chart(document.getElementById('rocketProjectorsChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['ایران', 'اسرائیل'],
+                    datasets: [{
+                        label: 'پرتابگرهای موشکی',
+                        data: [1517, 183],
+                        backgroundColor: [iranColor, israelColor],
+                        barPercentage: 0.6,
+                    }]
+                },
+                options: { ...chartDefaultOptions, indexAxis: 'y', plugins: { legend: { display: false } } }
+            });
+
+            new Chart(document.getElementById('airpowerChart'), {
+                type: 'radar',
+                data: {
+                    labels: ['جنگنده‌ها', 'هلیکوپتر تهاجمی', 'هواپیمای ترابری', 'تانکر سوخت‌رسان', 'کل هواگردها'],
+                    datasets: [{
+                        label: 'ایران',
+                        data: [188, 13, 87, 6, 551],
+                        backgroundColor: 'rgba(42, 77, 105, 0.2)',
+                        borderColor: iranColor,
+                        pointBackgroundColor: iranColor,
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: iranColor
+                    }, {
+                        label: 'اسرائیل',
+                        data: [240, 48, 13, 14, 611],
+                        backgroundColor: 'rgba(75, 134, 180, 0.2)',
+                        borderColor: israelColor,
+                        pointBackgroundColor: israelColor,
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: israelColor
+                    }]
+                },
+                options: chartDefaultOptions
+            });
+
+            new Chart(document.getElementById('navalFleetChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['ایران', 'اسرائیل'],
+                    datasets: [{
+                        label: 'تعداد کل ناوگان',
+                        data: [107, 62],
+                        backgroundColor: [iranColor, israelColor]
+                    }]
+                },
+                options: { ...chartDefaultOptions, plugins: { legend: { display: false } } }
+            });
+
+            new Chart(document.getElementById('financeChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['بودجه دفاعی (میلیارد دلار)'],
+                    datasets: [{
+                        label: 'ایران',
+                        data: [15.45],
+                        backgroundColor: iranColor,
+                    }, {
+                        label: 'اسرائیل',
+                        data: [30.5],
+                        backgroundColor: israelColor,
+                    }]
+                },
+                options: chartDefaultOptions
+            });
+
+        });
+    </script>
+</body>
+</html>

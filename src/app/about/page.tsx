@@ -36,7 +36,7 @@ const pageFontFamilies: Record<Language, string> = {
 };
 
 export default function AboutPage() {
-  const {language, selectedLang} = useLanguage();
+  // const {language, selectedLang} = useLanguage();
 
   // Fixed LTR layout values for the logo
   const forcedTextLength = "370";
@@ -45,7 +45,7 @@ export default function AboutPage() {
   const textAnchor = "start";
 
   return (
-    <div dir={selectedLang.dir} className={`${selectedLang.font} relative flex flex-col min-h-screen w-full items-center justify-center text-white p-4`}>
+    <div className={`relative flex flex-col min-h-screen w-full items-center justify-center text-white p-4`}>
       <Image
         src="/about/c5.png"
         alt="Background"
@@ -92,14 +92,15 @@ export default function AboutPage() {
         </svg>
 
         <p className="mt-8 text-lg md:text-xl leading-relaxed text-white/90">
-          {aboutTranslations.content[language]}
+          {aboutTranslations.content['fa']}
         </p>
 
         <Button asChild variant="outline" className="mt-10 bg-transparent hover:bg-white/10 border-white/50 text-white hover:text-white">
-          <Link href={language === 'en' ? '/' : `/?lang=${language}`}>
-            {(selectedLang.dir === 'ltr') && <ArrowLeft className={"mr-2"} />}
-            {(selectedLang.dir === 'rtl') && <ArrowRight className={"ml-2"} />}
-            {goBackTranslations[language]}
+          <Link href={`/?lang=${'fa'}`}>
+            {/* {(selectedLang.dir === 'ltr') && <ArrowLeft className={"mr-2"} />}
+            {(selectedLang.dir === 'rtl') && <ArrowRight className={"ml-2"} />} */}
+            <ArrowRight className={"ml-2"} />
+            {goBackTranslations['fa']}
           </Link>
         </Button>
       </div>

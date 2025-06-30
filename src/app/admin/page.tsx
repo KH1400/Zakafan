@@ -1,9 +1,7 @@
 
 "use client";
 
-import * as React from "react";
-import { format } from "date-fns";
-import { DateRange } from "react-day-picker";
+import {useContext, createContext} from "react";
 import {
   Card,
   CardContent,
@@ -38,7 +36,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Eye, Users, Download, FileText, Calendar as CalendarIcon } from "lucide-react";
 import type { ChartConfig } from "@/components/ui/chart";
 import { useLanguage } from "../../lib/language-context";
-import { Language } from "../../lib/content-data";
+import FileUploadComponent from "../../components/fourfold/uploader";
+
+import '../../hooks/use-uploader';
 
 const chartData = [
   { month: "فروردین", thisMonth: 186, lastMonth: 80 },
@@ -69,21 +69,31 @@ const recentActivities = [
 
 export default function AdminDashboardPage() {
   const { language, selectedLang } = useLanguage();
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(),
-    to: new Date(new Date().setDate(new Date().getDate() + 7)),
-  });
+  // const [date, setDate] = React.useState<DateRange | undefined>({
+  //   from: new Date(),
+  //   to: new Date(new Date().setDate(new Date().getDate() + 7)),
+  // });
 
   return (
     <div dir={selectedLang.dir} className="flex flex-col min-h-full p-4 md:p-6 bg-muted/40 font-persian">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold">داشبورد</h1>
+        <FileUploadComponent
+          dataType="image"
+          multiple={true}
+          processDocument={false}
+          maxSize={10}
+          accept="image/*"
+          title="آپلود تصاویر"
+          onError={(error) => console.log('Error:', error)}
+          onUploadComplete={(meta) => console.log('Uploaded:', meta)}
+        />
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline">
               <CalendarIcon className="ml-2 h-4 w-4" />
               <span>
-                {date?.from ? (
+                {/* {date?.from ? (
                   date.to ? (
                     <>
                       {format(date.from, "dd LLL, y")} -{" "}
@@ -94,11 +104,11 @@ export default function AdminDashboardPage() {
                   )
                 ) : (
                   <span>محدوده زمانی</span>
-                )}
+                )} */}
               </span>
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="end">
+          {/* <PopoverContent className="w-auto p-0" align="end">
             <Calendar
               initialFocus
               mode="range"
@@ -107,7 +117,7 @@ export default function AdminDashboardPage() {
               onSelect={setDate}
               numberOfMonths={2}
             />
-          </PopoverContent>
+          </PopoverContent> */}
         </Popover>
       </div>
 

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اینفوگرافی: کانون کنترل در متا</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: #f0f4f8;
+        }
+        
+        /* -- Animation Keyframes -- */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .infographic-card {
+            background: linear-gradient(145deg, #ffffff, #f7f9fc);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            height: 100%;
+            opacity: 0; /* Initially hidden for animation */
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .infographic-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+        }
+        
+        .infographic-card:hover .icon-container svg {
+             animation: pulse 1s ease-in-out;
+        }
+
+        .infographic-title {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #1e3a8a; /* Dark Blue */
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            line-height: 1.1;
+        }
+        .stat-label {
+            color: #4b5563;
+            margin-top: 8px;
+            font-size: 1rem;
+            line-height: 1.5;
+            min-height: 48px; /* Give space for labels */
+        }
+        .icon-container {
+            margin-bottom: 16px;
+            transition: transform 0.3s ease;
+        }
+        
+        /* -- Tooltip for clarification -- */
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip-text {
+            visibility: hidden;
+            width: 220px;
+            background-color: #1e293b;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -110px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem;
+        }
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #1e293b transparent transparent transparent;
+        }
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+
+        <!-- بخش اول: روند جهانی درخواست داده -->
+        <section class="mb-12">
+            <h2 class="infographic-title text-center">۱. روند جهانی درخواست داده از سوی دولت‌ها</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="infographic-card" style="animation-delay: 0.1s;">
+                    <div class="icon-container text-blue-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v.01" /></svg>
+                    </div>
+                    <p class="stat-number text-blue-600" data-target="12.1">+</p>
+                    <p class="stat-label">میلیون حساب کاربری درخواست شده توسط دولت‌ها از ۲۰۱۳</p>
+                </div>
+                <div class="infographic-card" style="animation-delay: 0.2s;">
+                    <div class="icon-container text-blue-600">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+                    </div>
+                    <p class="stat-number text-blue-600" data-target="971">٪</p>
+                    <p class="stat-label">رشد درخواست‌ها از متا (۲۰۱۳-۲۰۲۲)</p>
+                </div>
+                <div class="infographic-card" style="animation-delay: 0.3s;">
+                    <div class="icon-container text-blue-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                    </div>
+                    <p class="stat-number text-blue-600" data-target="78">٪</p>
+                    <p class="stat-label">نرخ موافقت متا با درخواست‌های دولتی</p>
+                </div>
+                <div class="infographic-card" style="animation-delay: 0.4s;">
+                    <div class="icon-container text-blue-600">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <p class="stat-number text-blue-600" data-target="0"></p>
+                    <p class="stat-label">درخواست رسمی ثبت‌شده از سوی ایران</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- بخش دوم: نبردهای حقوقی -->
+        <section class="mb-12">
+            <h2 class="infographic-title text-center">۲. نبردهای حقوقی و جریمه‌های سنگین</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="infographic-card" style="animation-delay: 0.1s;">
+                     <div class="icon-container text-green-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v.01" /></svg>
+                    </div>
+                    <p class="stat-number text-green-600" data-target="1.2">€ میلیارد</p>
+                    <p class="stat-label">بزرگترین جریمه GDPR علیه متا (۲۰۲۳)</p>
+                </div>
+                <div class="infographic-card" style="animation-delay: 0.2s;">
+                    <div class="icon-container text-green-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                    </div>
+                    <p class="stat-number text-green-600" data-target="405">€ میلیون</p>
+                    <p class="stat-label">جریمه اینستاگرام برای نقض حریم خصوصی کودکان</p>
+                </div>
+                <div class="infographic-card" style="animation-delay: 0.3s;">
+                    <div class="icon-container text-green-600">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" /></svg>
+                    </div>
+                    <p class="stat-number text-green-600" data-target="1400">+</p>
+                    <p class="stat-label">نفر هدف جاسوس‌افزار پگاسوس از طریق واتساپ</p>
+                </div>
+                 <div class="infographic-card" style="animation-delay: 0.4s;">
+                    <div class="icon-container text-green-600">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <p class="stat-number text-green-600" data-target="167">$+ میلیون</p>
+                    <p class="stat-label">جریمه شرکت NSO برای حمله به واتساپ</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- بخش سوم: سانسور و قطع اینترنت -->
+        <section class="mb-12">
+            <h2 class="infographic-title text-center">۳. سانسور و قطع اینترنت (آمار ۲۰۲۴)</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="infographic-card" style="animation-delay: 0.1s;">
+                    <div class="icon-container text-red-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+                    </div>
+                    <p class="stat-number text-red-600" data-target="296"></p>
+                    <p class="stat-label">مورد قطع عمدی اینترنت در ۵۴ کشور</p>
+                </div>
+                <div class="infographic-card" style="animation-delay: 0.2s;">
+                   <div class="icon-container text-red-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2h1a2 2 0 002-2v-1a2 2 0 012-2h1.945M7.884 5.945L9 3m0 0l1.116 2.945m-1.116-2.945a2.25 2.25 0 013.341 0L15 3m-2.116 2.945L12 9.565" /></svg>
+                    </div>
+                    <p class="stat-number text-red-600" data-target="85"></p>
+                    <p class="stat-label">میانمار، بزرگترین عامل قطع اینترنت در جهان</p>
+                </div>
+                <div class="infographic-card" style="animation-delay: 0.3s;">
+                    <div class="icon-container text-red-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    </div>
+                    <p class="stat-number text-red-600" data-target="3"></p>
+                    <p class="stat-label">مورد قطع اینترنت ثبت شده برای ایران</p>
+                </div>
+                 <div class="infographic-card" style="animation-delay: 0.4s;">
+                    <div class="icon-container text-red-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" viewBox="0 0 24 24" fill="currentColor"><path d="M11.68,6.48l-2.4,4.2l2.4,4.2H14l2.4-4.2l-2.4-4.2H11.68z M4,4v16h16V4H4z M17,17v-1.17l-2.29-2.29l2.29-2.29V9h-1.17L13.54,11.3,11.25,9H10v1.83l2.29,2.29L10,15.17V17h1.25l2.29-2.3,2.29,2.3H17z"/></svg>
+                    </div>
+                    <p class="stat-number text-red-600" data-target="103"></p>
+                    <p class="stat-label">مورد قطع اینترنت به دلیل درگیری‌ها</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- بخش چهارم: سیاست‌های تعدیل محتوا -->
+        <section>
+            <h2 class="infographic-title text-center">۴. سیاست‌های تعدیل محتوا: یک بام و دو هوا؟</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="infographic-card" style="animation-delay: 0.1s;">
+                     <div class="icon-container text-purple-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <p class="stat-number text-purple-600" data-target="94">٪</p>
+                    <p class="stat-label">نرخ موافقت متا با درخواست‌های حذف محتوای اسرائیل</p>
+                </div>
+                <div class="infographic-card" style="animation-delay: 0.2s;">
+                    <div class="icon-container text-purple-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                    </div>
+                    <p class="stat-number text-purple-600" data-target="90000">+</p>
+                    <p class="stat-label">پست حذف شده به درخواست اسرائیل</p>
+                </div>
+                <div class="infographic-card" style="animation-delay: 0.3s;">
+                    <div class="icon-container text-purple-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" /></svg>
+                    </div>
+                    <p class="stat-number text-purple-600" data-target="1050">+</p>
+                    <p class="stat-label">مورد سرکوب محتوای حامیان فلسطین</p>
+                </div>
+                 <div class="infographic-card" style="animation-delay: 0.4s;">
+                     <div class="tooltip-container">
+                        <div class="icon-container text-purple-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <span class="tooltip-text">این هیئت مستقل، در ۸۲٪ موارد، با تصمیم متا برای حذف یا نگه داشتن محتوا مخالفت کرده و آن را لغو نموده است.</span>
+                     </div>
+                    <p class="stat-number text-purple-600" data-target="82">٪</p>
+                    <p class="stat-label">درصد مخالفت هیئت نظارت با تصمیمات محتوایی متا</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+    
+    <script>
+        // -- Animated Counter Script --
+        document.addEventListener("DOMContentLoaded", () => {
+            const counters = document.querySelectorAll('.stat-number');
+
+            const animateCounter = (counter) => {
+                const target = +counter.getAttribute('data-target');
+                const suffix = counter.innerText.replace(/[\d.,+]/g, ''); // Get suffix like %, +, etc.
+                const prefix = counter.innerText.startsWith('+') ? '+' : '';
+                
+                counter.innerText = prefix + '0' + suffix; // Start from 0
+
+                const duration = 1500; // 1.5 seconds
+                const stepTime = Math.abs(Math.floor(duration / target)) || 1;
+
+                let start = 0;
+                const updateCounter = () => {
+                    start += 1;
+                    if(target > 10000) { // For large numbers like 90000
+                        start = Math.floor(start * 1.05); // Accelerate large numbers
+                    }
+                    if (start < target) {
+                        if (target.toString().includes('.')) { // Handle decimals
+                             counter.innerText = prefix + start.toFixed(1).toLocaleString('fa-IR') + suffix;
+                        } else {
+                             counter.innerText = prefix + Math.ceil(start).toLocaleString('fa-IR') + suffix;
+                        }
+                        setTimeout(updateCounter, stepTime);
+                    } else {
+                        counter.innerText = prefix + target.toLocaleString('fa-IR') + suffix;
+                    }
+                };
+                updateCounter();
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounter(entry.target);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.7 
+            });
+
+            counters.forEach(counter => {
+                observer.observe(counter);
+            });
+        });
+    </script>
+
+</body>
+</html>
