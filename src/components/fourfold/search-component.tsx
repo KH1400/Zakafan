@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { allContentItems, sections, type Language, type ContentItem, type SectionInfo } from "@/lib/content-data";
+import { type Language, type Dyno, type DynoCategory } from "@/lib/content-data";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "../../lib/language-context";
 
@@ -36,7 +36,7 @@ type SearchComponentProps = {
 
 export function SearchComponent({ lang, isExpanded, onExpandedChange, className }: SearchComponentProps) {
   const [query, setQuery] = React.useState("");
-  const [selectedSections, setSelectedSections] = React.useState<Set<SectionInfo['id']>>(new Set());
+  const [selectedSections, setSelectedSections] = React.useState<Set<DynoCategory['id']>>(new Set());
   const [isInputFocused, setInputFocused] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -61,25 +61,24 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
 
   const filteredContent = React.useMemo(() => {
     if (!query.trim()) return [];
-    
-    return allContentItems.filter(item => {
-      const inSelectedSection = selectedSections.size === 0 || selectedSections.has(item.categories[0]);
-      const titleMatches = item.title[lang].toLowerCase().includes(query.toLowerCase());
-      return inSelectedSection && titleMatches;
-    });
+    // return allDynos.filter((item: Dyno) => {
+    //   const inSelectedSection = selectedSections.size === 0 || selectedSections.has(item.categories[0].id);
+    //   const titleMatches = item.title[lang].toLowerCase().includes(query.toLowerCase());
+    //   return inSelectedSection && titleMatches;
+    // });
   }, [query, selectedSections, lang]);
 
-  const handleSectionToggle = (sectionId: SectionInfo['id']) => {
+  const handleSectionToggle = (categoryId: DynoCategory['id']) => {
     const newSelection = new Set(selectedSections);
-    if (newSelection.has(sectionId)) {
-      newSelection.delete(sectionId);
+    if (newSelection.has(categoryId)) {
+      newSelection.delete(categoryId);
     } else {
-      newSelection.add(sectionId);
+      newSelection.add(categoryId);
     }
     setSelectedSections(newSelection);
   };
 
-  const createHref = (item: ContentItem) => {
+  const createHref = (item: Dyno) => {
     const langQuery = lang === 'en' ? '' : `?lang=${lang}`;
     return `/${item.id}/${item.slug}${langQuery}`;
   }
@@ -146,24 +145,24 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
             )}
         >
           <div className="flex w-full items-center flex-wrap justify-start gap-x-4 gap-y-2 md:flex-nowrap md:justify-between">
-            {sections.map(section => (
-              <div key={section.id} className="flex items-center gap-1.5 whitespace-nowrap">
+            {/* {dynoCategories.map(dynoCategory => (
+              <div key={dynoCategory.id} className="flex items-center gap-1.5 whitespace-nowrap">
                 <Checkbox
-                  id={`filter-inline-${section.id}`}
-                  checked={selectedSections.has(section.id)}
-                  onCheckedChange={() => handleSectionToggle(section.id)}
+                  id={`filter-inline-${dynoCategory.id}`}
+                  checked={selectedSections.has(dynoCategory.id)}
+                  onCheckedChange={() => handleSectionToggle(dynoCategory.id)}
                 />
-                <Label htmlFor={`filter-inline-${section.id}`} className="text-xs font-normal cursor-pointer">
-                  {section.title[lang]}
+                <Label htmlFor={`filter-inline-${dynoCategory.id}`} className="text-xs font-normal cursor-pointer">
+                  {dynoCategory.title[lang]}
                 </Label>
               </div>
-            ))}
+            ))} */}
           </div>
         </div>
 
         {showResults && (
           <div className="rounded-md rounded-t-none border-t-0 border bg-popover text-popover-foreground shadow-lg">
-            {filteredContent.length === 0 ? (
+            {/* {filteredContent.length === 0 ? (
               <p className="p-4 text-center text-sm">{translations.noResults[lang]}</p>
             ) : (
               <ul className="max-h-[40vh] overflow-y-auto p-1">
@@ -181,14 +180,14 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
                       <div className="flex flex-col">
                         <span className="font-medium">{item.title[lang]}</span>
                         <span className="text-xs text-muted-foreground">
-                          {sections.find(s => s.id === item.categories[0])?.title[lang]}
+                          {dynoCategories.find(s => s.id === item.categories[0].id)?.title[lang]}
                         </span>
                       </div>
                     </Link>
                   </li>
                 ))}
               </ul>
-            )}
+            )} */}
           </div>
         )}
       </div>

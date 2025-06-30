@@ -69,10 +69,10 @@ const recentActivities = [
 
 export default function AdminDashboardPage() {
   const { language, selectedLang } = useLanguage();
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(),
-    to: new Date(new Date().setDate(new Date().getDate() + 7)),
-  });
+  // const [date, setDate] = React.useState<DateRange | undefined>({
+  //   from: new Date(),
+  //   to: new Date(new Date().setDate(new Date().getDate() + 7)),
+  // });
 
   return (
     <div dir={selectedLang.dir} className="flex flex-col min-h-full p-4 md:p-6 bg-muted/40 font-persian">
@@ -83,7 +83,7 @@ export default function AdminDashboardPage() {
             <Button variant="outline">
               <CalendarIcon className="ml-2 h-4 w-4" />
               <span>
-                {date?.from ? (
+                {/* {date?.from ? (
                   date.to ? (
                     <>
                       {format(date.from, "dd LLL, y")} -{" "}
@@ -94,11 +94,11 @@ export default function AdminDashboardPage() {
                   )
                 ) : (
                   <span>محدوده زمانی</span>
-                )}
+                )} */}
               </span>
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="end">
+          {/* <PopoverContent className="w-auto p-0" align="end">
             <Calendar
               initialFocus
               mode="range"
@@ -107,7 +107,7 @@ export default function AdminDashboardPage() {
               onSelect={setDate}
               numberOfMonths={2}
             />
-          </PopoverContent>
+          </PopoverContent> */}
         </Popover>
       </div>
 

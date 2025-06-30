@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اینفوگرافیک: تحلیل فتوای هسته‌ای ایران</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: #0B0E1B;
+            color: #FFFFFF;
+        }
+        .card {
+            background-color: #27346A;
+            border: 1px solid #5D6AB2;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .flowchart-arrow {
+            font-size: 2rem;
+            color: #8397E1;
+            line-height: 1;
+        }
+        .flowchart-box {
+            border: 2px solid #5D6AB2;
+            background-color: #27346A;
+            padding: 1rem;
+            text-align: center;
+            border-radius: 0.5rem;
+            flex-grow: 1;
+        }
+    </style>
+    
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">فقه بازدارندگی</h1>
+            <p class="text-lg md:text-xl text-[#8397E1]">تحلیل جامع مسیرها و انگیزه‌های تغییر فتوای هسته‌ای ایران</p>
+        </header>
+
+        <main class="space-y-16">
+
+            <section id="fatwa-nature">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold mb-2">ماهیت دوگانه فتوا</h2>
+                    <p class="text-md text-gray-300 max-w-3xl mx-auto">فتوای تحریم سلاح‌های هسته‌ای، هم یک اصل اعتقادی ریشه‌دار و هم یک ابزار راهبردی در دیپلماسی ایران است. این فتوا بر حرمت کشتار جمعی استوار است اما با تمرکز بر «کاربرد»، فضا را برای «ابهام راهبردی» باز می‌گذارد.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="card rounded-lg p-6 text-center">
+                        <h3 class="text-2xl font-semibold text-white mb-3">مبنای فقهی-اخلاقی</h3>
+                        <p class="text-gray-200">بر اساس آیات قرآن (مانند نفی «فساد در زمین» و «اسراف در قتل») و سیره پیامبر، کشتار بی‌رویه و هدف قرار دادن غیرنظامیان حرام است. این فتوا ریشه در سنت فقهی عمیق اسلام دارد.</p>
+                        <div class="text-4xl mt-4 text-[#8397E1]">📖</div>
+                    </div>
+                    <div class="card rounded-lg p-6 text-center">
+                        <h3 class="text-2xl font-semibold text-white mb-3">ابزار دیپلماتیک-راهبردی</h3>
+                        <p class="text-gray-200">ایران از فتوا به عنوان سندی برای اثبات صلح‌آمیز بودن برنامه خود و اعتمادسازی در مذاکرات استفاده کرده است. این امر هزینه سیاسی عدول از آن را افزایش داده اما اعتبار آن مشروط به شرایط است.</p>
+                        <div class="text-4xl mt-4 text-[#8397E1]">⚖️</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="change-architecture">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold mb-2">معماری تغییر در فقه شیعه</h2>
+                    <p class="text-md text-gray-300 max-w-3xl mx-auto">فقه سیاسی شیعه از طریق مفاهیمی چون «حکم حکومتی» و «مصلحت نظام»، ظرفیت بالایی برای انطباق با شرایط اضطراری دارد و می‌تواند احکام اولیه را برای حفظ بقای نظام تغییر دهد.</p>
+                </div>
+                <div class="card rounded-lg p-6">
+                    <div class="flex flex-col md:flex-row items-center justify-around gap-4 text-white">
+                        <div class="flowchart-box">
+                            <h4 class="font-bold text-lg">فتوای اولیه</h4>
+                            <p class="text-sm">حرمت تولید و کاربرد سلاح کشتار جمعی</p>
+                        </div>
+                        <div class="flowchart-arrow transform md:-rotate-90">↓</div>
+                        <div class="flowchart-box bg-[#5D6AB2] border-[#8397E1]">
+                            <h4 class="font-bold text-lg">شرایط اضطراری</h4>
+                            <p class="text-sm">(تهدید وجودی)</p>
+                        </div>
+                        <div class="flowchart-arrow transform md:-rotate-90">↓</div>
+                        <div class="flowchart-box">
+                            <h4 class="font-bold text-lg">اصل حاکم</h4>
+                            <p class="text-sm">تشخیص «مصلحت نظام» برای حفظ بقا</p>
+                        </div>
+                        <div class="flowchart-arrow transform md:-rotate-90">↓</div>
+                         <div class="flowchart-box bg-[#8397E1] border-white text-black">
+                            <h4 class="font-bold text-lg">حکم حکومتی</h4>
+                            <p class="text-sm">دستور ولی فقیه برای تغییر دکترین (واجب‌الاطاعه)</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="triggers">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold mb-2">محرک‌های راهبردی</h2>
+                    <p class="text-md text-gray-300 max-w-3xl mx-auto">تصمیم برای تغییر دکترین، بیش از آنکه فقهی باشد، پاسخی به واقعیت‌های امنیتی و فشارهای ژئوپلیتیکی خواهد بود.</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="card rounded-lg p-6">
+                        <h3 class="text-2xl font-semibold text-center mb-4">مقایسه زرادخانه‌های هسته‌ای منطقه</h3>
+                        <p class="text-center text-sm text-gray-300 mb-4">حضور قدرت‌های هسته‌ای در همسایگی ایران، محاسبات بازدارندگی را پیچیده می‌کند.</p>
+                        <div class="chart-container">
+                            <canvas id="warheadsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card rounded-lg p-6 flex flex-col justify-center">
+                        <h3 class="text-2xl font-semibold text-center mb-4">سناریوهای کلیدی برای تغییر</h3>
+                         <div class="space-y-4">
+                            <div class="bg-[#0B0E1B] p-4 rounded-lg">
+                                <h4 class="font-bold text-lg">۱. تهدید وجودی مستقیم</h4>
+                                <p class="text-sm text-gray-300">حمله نظامی گسترده به زیرساخت‌های حیاتی یا تأسیسات هسته‌ای که شکست بازدارندگی متعارف را اثبات کند.</p>
+                            </div>
+                            <div class="bg-[#0B0E1B] p-4 rounded-lg">
+                                <h4 class="font-bold text-lg">۲. آبشار اشاعه منطقه‌ای</h4>
+                                <p class="text-sm text-gray-300">دستیابی رقیب منطقه‌ای (به‌ویژه عربستان سعودی) به سلاح هسته‌ای که موازنه قدرت را به هم بزند.</p>
+                            </div>
+                             <div class="bg-[#0B0E1B] p-4 rounded-lg">
+                                <h4 class="font-bold text-lg">۳. گربه به گوشه رانده شده</h4>
+                                <p class="text-sm text-gray-300">ترکیب فشارهای فلج‌کننده اقتصادی، خرابکاری مستمر و انزوای سیاسی که نظام را در معرض فروپاشی تدریجی قرار دهد.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="perspectives">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold mb-2">شکاف فقهی: شیعه در برابر اهل سنت</h2>
+                    <p class="text-md text-gray-300 max-w-3xl mx-auto">در نقطه مقابل فتوای تحریم ایران، دیدگاه غالب در میان علمای طراز اول اهل سنت، دستیابی به سلاح هسته‌ای برای بازدارندگی را یک «واجب» دینی می‌داند.</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                     <div class="card rounded-lg p-6">
+                        <h3 class="text-2xl font-semibold text-center mb-4">مقایسه دو فتوا</h3>
+                        <div class="chart-container" style="height: 300px; max-height: 350px;">
+                            <canvas id="fatwaComparisonChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="text-center md:text-right">
+                        <h3 class="text-2xl font-bold text-white mb-3">تفسیر متضاد از یک آیه</h3>
+                        <p class="text-gray-200 mb-4">هر دو دیدگاه به آیه ۶۰ سوره انفال ($وَأَعِدّوا لَهُم مَا استَطَعتُم مِن قُوَّةٍ$) استناد می‌کنند. فقه شیعه آن را در چارچوب اخلاق جنگ و نفی کشتار جمعی تفسیر می‌کند، در حالی که فقه سنی آن را دستوری برای دستیابی به «برابری نظامی» با دشمنان می‌داند.</p>
+                        <p class="text-gray-400">این تضاد، خود یک «معمای امنیتی» با ابعاد دینی ایجاد می‌کند که می‌تواند به آبشار اشاعه دامن بزند.</p>
+                    </div>
+                </div>
+            </section>
+
+             <section id="indicators">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold mb-2">شاخص‌های کلیدی برای رصد</h2>
+                    <p class="text-md text-gray-300 max-w-3xl mx-auto">تغییر در دکترین هسته‌ای به صورت ناگهانی رخ نخواهد داد. این شاخص‌ها می‌توانند علائم هشداردهنده باشند.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="card rounded-lg p-6">
+                        <h3 class="text-xl font-semibold text-center mb-3">📡 گفتمانی و رسانه‌ای</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-200">
+                            <li>تغییر واژگان از «حرمت کاربرد» به «مزایای داشتن»</li>
+                            <li>مشروط‌سازی مکرر و علنی اعتبار فتوا</li>
+                        </ul>
+                    </div>
+                    <div class="card rounded-lg p-6">
+                        <h3 class="text-xl font-semibold text-center mb-3">⚖️ سیاسی و حقوقی</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-200">
+                            <li>ارائه طرح در مجلس برای بازنگری دکترین دفاعی</li>
+                            <li>خروج رسمی از پیمان منع گسترش (NPT)</li>
+                        </ul>
+                    </div>
+                    <div class="card rounded-lg p-6">
+                        <h3 class="text-xl font-semibold text-center mb-3">🔬 فنی و عملیاتی</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-200">
+                            <li>افزایش غنی‌سازی به سطح ۹۰ درصد</li>
+                            <li>اخراج بازرسان آژانس از سایت‌های کلیدی</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="text-center mt-16 pt-8 border-t border-[#27346A]">
+            <p class="text-sm text-gray-400">این اینفوگرافیک بر اساس تحلیل جامع "فقه بازدارندگی: مسیرها و انگیزه‌های تغییر فتوای هسته‌ای ایران" تهیه شده است.</p>
+            <p class="text-xs text-gray-500 mt-2">طراحی و پیاده‌سازی: Canvas Infographics | ژوئن ۲۰۲۵</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const wrapText = (label) => {
+                const maxLength = 16;
+                if (label.length <= maxLength) {
+                    return label;
+                }
+                const words = label.split(' ');
+                const lines = [];
+                let currentLine = '';
+                words.forEach(word => {
+                    if ((currentLine + ' ' + word).trim().length > maxLength) {
+                        lines.push(currentLine.trim());
+                        currentLine = word;
+                    } else {
+                        currentLine = (currentLine + ' ' + word).trim();
+                    }
+                });
+                lines.push(currentLine.trim());
+                return lines;
+            };
+
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) {
+                    return label.join(' ');
+                } else {
+                    return label;
+                }
+            };
+            
+            const chartDefaultOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#FFFFFF',
+                            font: {
+                                family: "'Vazirmatn', sans-serif",
+                                size: 14
+                            }
+                        }
+                    },
+                    tooltip: {
+                        titleFont: { family: "'Vazirmatn', sans-serif" },
+                        bodyFont: { family: "'Vazirmatn', sans-serif" },
+                        callbacks: {
+                            title: tooltipTitleCallback
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#27346A' },
+                        ticks: { 
+                            color: '#FFFFFF',
+                             font: {
+                                family: "'Vazirmatn', sans-serif",
+                            }
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { 
+                            color: '#FFFFFF',
+                            font: {
+                                family: "'Vazirmatn', sans-serif",
+                            }
+                        }
+                    }
+                }
+            };
+
+            const createWarheadChart = () => {
+                const ctx = document.getElementById('warheadsChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['اسرائیل (تخمینی)', 'پاکستان', 'هند', 'ایران'].map(wrapText),
+                        datasets: [{
+                            label: 'تعداد کلاهک‌های هسته‌ای تخمینی',
+                            data: [90, 170, 164, 0],
+                            backgroundColor: ['#8397E1', '#5D6AB2', '#27346A', '#FFFFFF'],
+                            borderColor: '#0B0E1B',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: chartDefaultOptions
+                });
+            };
+
+            const createFatwaComparisonChart = () => {
+                const ctx = document.getElementById('fatwaComparisonChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['حرام (دیدگاه رسمی شیعه)', 'واجب (دیدگاه غالب اهل سنت)'],
+                        datasets: [{
+                            data: [50, 50],
+                            backgroundColor: ['#5D6AB2', '#8397E1'],
+                            borderColor: '#0B0E1B',
+                            borderWidth: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: '#FFFFFF',
+                                    font: {
+                                        family: "'Vazirmatn', sans-serif",
+                                        size: 14
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                titleFont: { family: "'Vazirmatn', sans-serif" },
+                                bodyFont: { family: "'Vazirmatn', sans-serif" }
+                            }
+                        }
+                    }
+                });
+            };
+
+            createWarheadChart();
+            createFatwaComparisonChart();
+        });
+    </script>
+</body>
+</html>
