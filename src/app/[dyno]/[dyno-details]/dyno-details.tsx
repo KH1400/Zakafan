@@ -6,7 +6,7 @@ import HtmlRenderer from '../../../components/htmlviewer';
 import { Button } from '../../../components/ui/button';
 import { ArrowLeft, ArrowLeftRight, ArrowRight } from 'lucide-react';
 import Loding from '../../../components/fourfold/loading';
-import { fetchDynos, fetchDynosBySlug, fetchSummarysFromAPI, generateSummary, updateSummary } from '../../../lib/api';
+import { fetchDynoBySlug, fetchSummarys, generateSummary, updateSummary } from '../../../lib/api';
 import { useNavigation } from 'react-day-picker';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -26,6 +26,7 @@ const translations = {
     edit: "ویرایش",
     copy: "کپی",
     generateNew: "تولید محتوای جدید",
+    generating: "در حال تولید...",
     copied: "کپی شد!",
     download: "دانلود تصویر"
   },
@@ -42,6 +43,7 @@ const translations = {
     edit: "تحرير",
     copy: "نسخ",
     generateNew: "إنتاج محتوى جديد",
+    generating: "إنتاج...",
     copied: "تم النسخ!",
     download: "تحميل الصورة"
   },
@@ -58,6 +60,7 @@ const translations = {
     edit: "Edit",
     copy: "Copy",
     generateNew: "Generate New Content",
+    generating: "Generating...",
     copied: "Copied!",
     download: "Download Image"
   },
@@ -74,6 +77,7 @@ const translations = {
     edit: "עריכה",
     copy: "העתק",
     generateNew: "יצירת תוכן חדש",
+    generating: "יצירת תוכן חדש...",
     copied: "הועתק!",
     download: "הורד תמונה"
   }
@@ -171,13 +175,13 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
     
     try {
       // فرض می‌کنیم تابع fetchMessages وجود دارد
-      const newMessages = await fetchSummarysFromAPI(dyno.id);
+      const newMessages: Dyno = await fetchSummarys({dynoId: dyno.id}).json();
       // به‌روزرسانی state
       setDyno(prevDyno => {
         if (!prevDyno) return prevDyno;
         return {
           ...prevDyno,
-          summaries: newMessages.map((s: any) => ({id: s.id, content: s.generated_summary, createdAt: s.updated_at}))
+          summaries: newMessages.summaries.map((s: any) => ({id: s.id, content: s.generated_summary, createdAt: s.updated_at}))
         };
       });
     } catch (error) {
@@ -191,7 +195,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
     
     try {
       setIsGeneratingSummary(true);
-      const response = await generateSummary(dyno.id);
+      const response: any = await generateSummary({dynoId: dyno.id}).json();
       
       if (response.websocket_url && response.session_id) {
         setCurrentSessionId(response.session_id);
@@ -290,7 +294,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
   const handleSaveEdit = async () => {
     if (dyno && editingId) {
       try {
-        const res = await updateSummary(editingId, editText)
+        const res: {id: number,generated_summary: string, created_at: string } = await updateSummary({summaryId: editingId, generatedSummary: editText}).json();
         setDyno({ ...dyno, summaries: dyno.summaries.map(s => {if(s.id === editingId){return {id: res.id, content: res.generated_summary, createdAt: res.created_at}}else{return s}}) });
         setEditingId(null);
         setEditText('');
@@ -313,7 +317,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
 
   const getDyno = async () => {
     try {
-      const dyns = await fetchDynosBySlug(slug);
+      const dyns: any = await fetchDynoBySlug({slug}).json();
       console.log('dyno: 11 ', dyns)
       const mappedDyno: Dyno = {
         id: dyns.id,
@@ -349,7 +353,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
       ref={scrollContainerRef}
       className="w-full h-full overflow-y-auto bg-background"
     >
-      <div className="grid grid-cols-12 gap-6 max-w-7xl mx-auto">
+      <div className="grid grid-cols-12 gap-6 px-12 mx-auto">
         {/* Enhanced Header Content Card with Scroll Animation */}
         <div className={`
           col-span-12 sticky top-0 z-50 
@@ -487,7 +491,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
               {isGeneratingSummary ? (
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                  در حال تولید...
+                  {t.generating}
                 </div>
               ) : (
                 t.generateNew
@@ -499,10 +503,10 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
             <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
               <div className="flex items-center gap-2 text-blue-700">
                 <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                <span className="text-sm">در حال تولید پیام جدید...</span>
-                {currentSessionId && (
+                <span className="text-sm">{t.generating}</span>
+                {/* {currentSessionId && (
                   <span className="text-xs text-blue-500">({currentSessionId.slice(0, 8)}...)</span>
-                )}
+                )} */}
               </div>
             </div>
           )}

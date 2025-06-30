@@ -39,8 +39,9 @@ export default function DynosPage({ slug }: { slug: string }) {
 
   const getDynos = async (categoryHref: string) => {
     try {
-      const dyns = await fetchDynos(categoryHref);
-      const panelData = dyns.map((item: any, index: number) => ({
+      const dyns: any = await fetchDynos({categoryHref}).json();
+      const panelData = dyns.dynographs.map((item: any, index: number) => ({
+        id: item.id,
         title: item.title,
         description: item.description[language] || item.description['fa'],
         image: item.image_file || `/categories/c${item.categories[0].id}.jpg`,
@@ -50,9 +51,10 @@ export default function DynosPage({ slug }: { slug: string }) {
         categories: item.categories.map((c: any) => c.id),
         createdAt: item.created_at
       }));
+      console.log(panelData.map(p => ({id: p.id, title: p.title['fa']})))
       setDynos(panelData);
     } catch (error) {
-      
+      console.log(error)
     }
   }
 
@@ -72,7 +74,7 @@ export default function DynosPage({ slug }: { slug: string }) {
   return (
     <div className={`${selectedLang.font} flex flex-col h-full`}>
       {/* Header - now separate from layout header */}
-      <header className={`${selectedLang.font} flex h-20 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0 sticky top-0 z-20`}>
+      <header className={`${selectedLang.font} flex h-14 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0 sticky top-0 z-20`}>
         <Button asChild variant="outline">
           <Link href={language === "en" ? "/" : `/?lang=${language}`}>
             {(selectedLang.dir === 'ltr') && <ArrowLeft className={"mr-2"} />}
@@ -87,11 +89,11 @@ export default function DynosPage({ slug }: { slug: string }) {
       
       {/* Main content */}
       <div className="flex-grow w-full overflow-y-auto">
-          <MosaicLayout
-            panels={dynos}
-            baseHref={category.href}
-            lang={language}
-          />
+        <MosaicLayout
+          panels={dynos}
+          baseHref={category.href}
+          lang={language}
+        />
       </div>
       
       {/* Footer */}

@@ -1,9 +1,7 @@
 
 "use client";
 
-import * as React from "react";
-import { format } from "date-fns";
-import { DateRange } from "react-day-picker";
+import {useContext, createContext} from "react";
 import {
   Card,
   CardContent,
@@ -38,7 +36,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Eye, Users, Download, FileText, Calendar as CalendarIcon } from "lucide-react";
 import type { ChartConfig } from "@/components/ui/chart";
 import { useLanguage } from "../../lib/language-context";
-import { Language } from "../../lib/content-data";
+import FileUploadComponent from "../../components/fourfold/uploader";
+
+import '../../hooks/use-uploader';
 
 const chartData = [
   { month: "فروردین", thisMonth: 186, lastMonth: 80 },
@@ -78,6 +78,16 @@ export default function AdminDashboardPage() {
     <div dir={selectedLang.dir} className="flex flex-col min-h-full p-4 md:p-6 bg-muted/40 font-persian">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold">داشبورد</h1>
+        <FileUploadComponent
+          dataType="image"
+          multiple={true}
+          processDocument={false}
+          maxSize={10}
+          accept="image/*"
+          title="آپلود تصاویر"
+          onError={(error) => console.log('Error:', error)}
+          onUploadComplete={(meta) => console.log('Uploaded:', meta)}
+        />
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline">
