@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
-import { Menu } from 'lucide-react';
+import { Menu, Sun, Moon } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -43,6 +44,18 @@ const translations = {
     ar: 'لوحة الإدارة',
     he: 'פאנל ניהול',
   },
+  darkMode: {
+    en: 'Dark Mode',
+    fa: 'حالت تیره',
+    ar: 'الوضع المظلم',
+    he: 'מצב כהה',
+  },
+  lightMode: {
+    en: 'Light Mode',
+    fa: 'حالت روشن',
+    ar: 'الوضع المضيء',
+    he: 'מצב בהיר',
+  },
 }
 
 // Static English branding
@@ -59,6 +72,7 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
   const [isSearchExpanded, setSearchExpanded] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { theme, setTheme } = useTheme();
   
   // Function to handle language change with URL update
   const handleLanguageChange = (lang: Language) => {
@@ -81,6 +95,11 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
     const newUrl = queryString ? `${currentPath}?${queryString}` : currentPath;
     
     router.push(newUrl);
+  };
+
+  // Function to toggle theme
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
   };
   
   // Fixed LTR layout values
@@ -142,6 +161,21 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
             isExpanded={isSearchExpanded}
             onExpandedChange={setSearchExpanded}
         />
+
+        {/* Theme Toggle Button */}
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={toggleTheme}
+          aria-label={theme === 'dark' ? translations.lightMode[currentLang] : translations.darkMode[currentLang]}
+          className="transition-transform hover:scale-110"
+        >
+          {theme === 'dark' ? (
+            <Sun className="h-5 w-5 text-yellow-500" />
+          ) : (
+            <Moon className="h-5 w-5 text-slate-600 dark:text-slate-400" />
+          )}
+        </Button>
 
         <DropdownMenu dir="rtl">
           <DropdownMenuTrigger asChild>

@@ -1,47 +1,94 @@
-import { allContentItems, SectionInfo, sections } from "./content-data";
+import { DynoCategory } from "./content-data";
+import ky from 'ky';
 
-export async function fetchCategories() {
-  const res = await fetch("http://2.189.254.109:8000/api/v1/dynograph/categories", {
-    cache: "no-store", // برای SSR که همیشه دیتا جدید بگیره
-  });
+export const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+export const api = ky.create({
+  prefixUrl: baseUrl,
+  timeout: false,
+  hooks: {
+    // beforeRequest: [
+    //   (req) => {
+    //     const original = new URL(req.url);
+    //     const searchParams = new URLSearchParams(original.searchParams.entries().filter((k, v) => Boolean(v)));
+    //     const url = new URL(`${original.pathname}${searchParams}`);
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch categories");
+    //     req.url = url;
+    //   },
+    // ]
   }
+});
 
-  const data = await res.json();
-  return data.categories;
+export const withBearer = (token: string) => !!token ? ({ Authorization: `Bearer ${token}` }) : {};
+
+export const apiPostLogin = ({ email, password, captcha_token, remember_me }:{ email?: string, password?: string, captcha_token?: string, remember_me?: string } = {}) =>
+  api.post("auth/login/", { json: { email, password, captcha_token, remember_me } });
+
+// export const apiPostRefreshToken = ({ refresh } = {}) =>
+//   api.post("auth/token/refresh/", { json: { refresh } });
+
+export async function fetchCategories2() {
+  const maxRetries = 4;
+  const retryDelay = 5000; // ۵ ثانیه به میلی‌ثانیه
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const res = await fetch(`${baseUrl}/dynograph/categories`, {
+        cache: "no-store", // برای SSR که همیشه دیتا جدید بگیره
+      });
+
+      if (!res.ok) {
+        throw new Error(`Request failed with status ${res.status}`);
+      }
+
+      const data = await res.json();
+      return data.categories;
+    } catch (error) {
+      if (attempt === maxRetries) {
+        throw new Error("Failed to fetch categories after multiple attempts");
+      }
+
+      // صبر قبل از تلاش بعدی
+      await new Promise((resolve) => setTimeout(resolve, retryDelay));
+    }
+  }
 }
 
 export async function fetchCategory(categoryHref: string) {
-  // const res = await fetch(`http://2.189.254.109:8000/api/v1/dynograph/categories/${categoryId}`, {
-  //   cache: "no-store", // برای SSR که همیشه دیتا جدید بگیره
-  // });
-
-  // if (!res.ok) {
-  //   throw new Error("Failed to fetch categories");
-  // }
-  // const category = await res.json();
-  // return category;
-
-  return sections.find((s: SectionInfo) => s.href === categoryHref);
+  const cates: any = await fetchCategories().json();
+  return cates.categories.find((s: DynoCategory) => s.href === categoryHref);
 }
 
-export async function fetchDynos(categoryHref: string, lang: string) {
-  // const res = await fetch("http://wwwwww/api/v1/category", {
-  //   cache: "no-store", // برای SSR که همیشه دیتا جدید بگیره
-  // });
+const token ="Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyNCwidXNlcm5hbWUiOiJtZXRpZjEyQGdtYWlsLmNvbSIsImVtYWlsIjoibWV0aWYxMkBnbWFpbC5jb20iLCJyb2xlcyI6WyJhZG1pbiIsImVkaXRvciIsImF1dGhvciJdLCJleHAiOjE3NTE4MDM5NTYsImlhdCI6MTc1MTE5OTE1NiwidHlwZSI6ImFjY2VzcyJ9.GNu7hQ2GiaDuqKeh7qsSzFhqK-SmpbJL4mzbKRE8fTo"
 
-  // if (!res.ok) {
-  //   throw new Error("Failed to fetch categories");
-  // }
+export const fetchCategories = () => 
+  api.get(`dynograph/categories`, {
+    retry: {
+      limit: 4, // تلاش مجدد تا 4 بار
+      methods: ['get'], // فقط روی GET اعمال شه
+      statusCodes: [408, 413, 429, 500, 502, 503, 504],
+      backoffLimit: 500 // حداکثر تاخیر بین retry (ms)
+    },
+    cache: 'no-store',
+  });
 
-  // return res.json();
+export const fetchDynos = ({categoryHref}) => 
+  api.get(`dynograph/dynographs${categoryHref?`?category_href=${categoryHref}`:''}`);
 
-  const sectionInfo = sections.find((s: SectionInfo) => s.href === categoryHref)
-  const sectionContent = allContentItems.filter((item) =>
-    item.categories.includes(sectionInfo?.id || 0)
-  );
+export const generateSummary = ({dynoId}) => 
+  api.post('chatbot/prompts/stream', {json: {
+    prompt_template_id: 1,
+    dynograph_id: dynoId,
+    processing_model_name: "openrouter:gemini-2.5-flash-lite-preview-06-17"
+  }});
 
-  return sectionContent;
-}
+export const fetchDynoBySlug = ({slug}) => 
+  api.get(`dynograph/dynographs/slug/${slug}`);
+
+export const fetchSummarys = ({dynoId}) => 
+  api.get(`dynograph/dynographs/${dynoId}`);
+
+export const updateSummary = ({summaryId, generatedSummary}) => 
+  api.put(`dynograph/dynograph-summaries/${summaryId}`, { json: { generated_summary: generatedSummary } });
+
+export const apiPostStoreUploadUrl = () =>
+  `${baseUrl}store/upload`;
