@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { MosaicPanelData } from "../../lib/content-data";
+import { MosaicPanelData } from "../../lib/content-types";
 import { useLanguage } from "../../lib/language-context";
 import { Languages } from "lucide-react";
 

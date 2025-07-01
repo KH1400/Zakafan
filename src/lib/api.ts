@@ -1,4 +1,4 @@
-import { DynoCategory } from "./content-data";
+import { DynoCategory } from "./content-types";
 import ky from 'ky';
 
 export const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -6,6 +6,8 @@ console.log(baseUrl)
 export const api = ky.create({
   prefixUrl: baseUrl,
   timeout: false,
+  // credentials: 'include',
+  
   hooks: {
     // beforeRequest: [
     //   (req) => {
@@ -69,7 +71,7 @@ export const fetchCategories = () =>
       statusCodes: [408, 413, 429, 500, 502, 503, 504],
       backoffLimit: 500 // حداکثر تاخیر بین retry (ms)
     },
-    cache: 'no-store',
+    cache: 'no-store'
   });
 
 export const fetchDynos = ({categoryHref}) => 
@@ -80,7 +82,8 @@ export const generateSummary = ({dynoId}) =>
     prompt_template_id: 1,
     dynograph_id: dynoId,
     processing_model_name: "openrouter:gemini-2.5-flash-lite-preview-06-17"
-  }});
+  }
+});
 
 export const fetchDynoBySlug = ({slug}) => 
   api.get(`dynograph/dynographs/slug/${slug}`);
@@ -89,7 +92,7 @@ export const fetchSummarys = ({dynoId}) =>
   api.get(`dynograph/dynographs/${dynoId}`);
 
 export const updateSummary = ({summaryId, generatedSummary}) => 
-  api.put(`dynograph/dynograph-summaries/${summaryId}`, { json: { generated_summary: generatedSummary } });
+  api.put(`dynograph/dynograph-summaries/${summaryId}`, { json: { generated_summary: generatedSummary }});
 
 export const apiPostStoreUploadUrl = () =>
   `${baseUrl}store/upload`;

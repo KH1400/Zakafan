@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTheme } from 'next-themes';
@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SearchComponent } from './search-component';
-import type { Language } from '@/lib/content-data';
+import type { Language } from '@/lib/content-types';
 import { cn } from '@/lib/utils';
 
 const languageOrder: Language[] = ['fa', 'ar', 'he', 'en'];
@@ -38,12 +38,12 @@ const translations = {
     ar: 'معلومات عنا',
     he: 'עלינו',
   },
-  adminPanel: {
-    en: 'Admin Panel',
-    fa: 'پنل مدیریت',
-    ar: 'لوحة الإدارة',
-    he: 'פאנל ניהול',
-  },
+  // adminPanel: {
+  //   en: 'Admin Panel',
+  //   fa: 'پنل مدیریت',
+  //   ar: 'لوحة الإدارة',
+  //   he: 'פאנל ניהול',
+  // },
   darkMode: {
     en: 'Dark Mode',
     fa: 'حالت تیره',
@@ -96,6 +96,11 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
     
     router.push(newUrl);
   };
+
+  useEffect(() => {
+    handleLanguageChange('fa')
+  }, [])
+  
 
   // Function to toggle theme
   const toggleTheme = () => {
@@ -199,9 +204,9 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
               <Link href={`/about?lang=${currentLang}`}>{translations.about[currentLang]}</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
+            {/* <DropdownMenuItem asChild>
               <Link href="/admin">{translations.adminPanel[currentLang]}</Link>
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

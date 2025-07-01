@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useRef, useState } from 'react';
-import { Dyno } from '../../../lib/content-data';
+import { Dyno } from '../../../lib/content-types';
 import { useLanguage } from '../../../lib/language-context';
 import HtmlRenderer from '../../../components/htmlviewer';
 import { Button } from '../../../components/ui/button';
@@ -118,16 +118,19 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
     ws.onopen = () => {
       console.log('WebSocket connected');
     };
+    let message = "";
 
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
         console.log('WebSocket message received:', data);
         console.log(data)
+        message += data.content;
+        console.log(message)
         // چک کردن اتمام پردازش
         if (data.is_complete === true) {
           console.log('Message generation completed');
-          
+          message = "";
           // بستن WebSocket
           closeWebSocket();
           
@@ -472,128 +475,130 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
 
         {/* Messages Card */}
         <Card 
-          className={`col-span-12 ${dyno?.infoFile ? 'md:col-span-6' : ''} flex flex-col min-h-[400px] p-6 max-h-[50rem]`}
+          className={`col-span-12 ${dyno?.infoFile ? 'md:col-span-6' : ''} flex flex-col min-h-[400px] py-6 px-6 max-h-[50rem]`}
           title={t.messages}
           description={t.messagesDesc}
         >
-          {/* Generate New Button */}
-          <div className="mb-4">
-            <button
-              onClick={handleGenerateNew}
-              disabled={isGeneratingSummary}
-              className={`px-4 py-2 rounded-md font-medium text-sm transition-all duration-200 shadow-sm hover:shadow-md 
-                        transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-ring
-                        ${isGeneratingSummary 
-                          ? 'bg-secondary text-secondary-foreground cursor-not-allowed opacity-70' 
-                          : 'bg-primary text-primary-foreground hover:bg-primary/90'
-                        }`}
-            >
-              {isGeneratingSummary ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                  {t.generating}
-                </div>
-              ) : (
-                t.generateNew
-              )}
-            </button>
-          </div>
-
-          {isGeneratingSummary && (
-            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <div className="flex items-center gap-2 text-blue-700">
-                <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                <span className="text-sm">{t.generating}</span>
-                {/* {currentSessionId && (
-                  <span className="text-xs text-blue-500">({currentSessionId.slice(0, 8)}...)</span>
-                )} */}
-              </div>
-            </div>
-          )}
-
-          {/* Messages Container with Scroll */}
-          <div className="flex-1 overflow-y-auto pr-2 space-y-3 min-h-[300px]">
-            {dyno?.summaries.map((summary) => (
-              <div
-                key={summary.id}
-                className="group relative p-3 bg-muted/50 border border-border rounded-lg 
-                          hover:bg-muted/70 transition-all duration-200 hover:shadow-sm"
+            {/* Generate New Button */}
+            <div className="mb-4">
+              <button
+                onClick={handleGenerateNew}
+                disabled={isGeneratingSummary}
+                className={`px-4 py-2 rounded-md font-medium text-sm transition-all duration-200 shadow-sm hover:shadow-md 
+                          transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-ring
+                          ${isGeneratingSummary 
+                            ? 'bg-secondary text-secondary-foreground cursor-not-allowed opacity-70' 
+                            : 'bg-primary text-primary-foreground hover:bg-primary/90'
+                          }`}
               >
-                {editingId === summary.id ? (
-                  /* Edit Mode */
-                  <div className="space-y-2">
-                    <textarea
-                      value={editText}
-                      onChange={(e) => setEditText(e.target.value)}
-                      className="w-full p-2 text-sm border border-input rounded-md bg-background 
-                                text-foreground focus:ring-2 focus:ring-ring focus:border-ring 
-                                resize-none"
-                      rows={3}
-                    />
-                    <div className="flex gap-2">
-                      <button
-                        onClick={handleSaveEdit}
-                        className="px-3 py-1 bg-primary text-primary-foreground text-xs rounded-sm 
-                                  hover:bg-primary/90 transition-colors"
-                      >
-                        ✓ Save
-                      </button>
-                      <button
-                        onClick={handleCancelEdit}
-                        className="px-3 py-1 bg-secondary text-secondary-foreground text-xs rounded-sm 
-                                  hover:bg-secondary/90 transition-colors"
-                      >
-                        ✕ Cancel
-                      </button>
-                    </div>
+                {isGeneratingSummary ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                    {t.generating}
                   </div>
                 ) : (
-                  /* Display Mode */
-                  <>
-                    <p className="text-sm text-card-foreground pr-16 leading-relaxed">
-                      {summary.content}
-                    </p>
-                    
-                    {/* Action Buttons */}
-                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 
-                                    transition-opacity duration-200 flex gap-1">
-                      <button
-                        onClick={() => handleEdit(summary)}
-                        className="p-1.5 bg-primary text-primary-foreground rounded-sm hover:bg-primary/90 
-                                  transition-colors text-xs focus:outline-none focus:ring-1 focus:ring-ring"
-                        title={t.edit}
-                      >
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                      </button>
+                  t.generateNew
+                )}
+              </button>
+            </div>
+          <div className="h-[40rem] flex flex-col overflow-y-auto px-1">
+
+            {isGeneratingSummary && (
+              <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-center gap-2 text-blue-700">
+                  <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-sm">{t.generating}</span>
+                  {/* {currentSessionId && (
+                    <span className="text-xs text-blue-500">({currentSessionId.slice(0, 8)}...)</span>
+                  )} */}
+                </div>
+              </div>
+            )}
+
+            {/* Messages Container with Scroll */}
+            <div className="flex-1 pr-2 space-y-3 flex-grow">
+              {dyno?.summaries.map((summary) => (
+                <div
+                  key={summary.id}
+                  className="group relative p-3 bg-muted/50 border border-border rounded-lg 
+                            hover:bg-muted/70 transition-all duration-200 hover:shadow-sm"
+                >
+                  {editingId === summary.id ? (
+                    /* Edit Mode */
+                    <div className="space-y-2">
+                      <textarea
+                        value={editText}
+                        onChange={(e) => setEditText(e.target.value)}
+                        className="w-full p-2 text-sm border border-input rounded-md bg-background 
+                                  text-foreground focus:ring-2 focus:ring-ring focus:border-ring 
+                                  resize-none"
+                        rows={3}
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={handleSaveEdit}
+                          className="px-3 py-1 bg-primary text-primary-foreground text-xs rounded-sm 
+                                    hover:bg-primary/90 transition-colors"
+                        >
+                          ✓ Save
+                        </button>
+                        <button
+                          onClick={handleCancelEdit}
+                          className="px-3 py-1 bg-secondary text-secondary-foreground text-xs rounded-sm 
+                                    hover:bg-secondary/90 transition-colors"
+                        >
+                          ✕ Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Display Mode */
+                    <>
+                      <p className="text-sm text-card-foreground pr-16 leading-relaxed">
+                        {summary.content}
+                      </p>
                       
-                      <button
-                        onClick={() => handleCopy(summary.content, summary.id)}
-                        className={`p-1.5 rounded-sm transition-all text-xs focus:outline-none focus:ring-1 focus:ring-ring ${
-                          copiedId === summary.id 
-                            ? 'bg-primary text-primary-foreground' 
-                            : 'bg-secondary text-secondary-foreground hover:bg-secondary/90'
-                        }`}
-                        title={copiedId === summary.id ? t.copied : t.copy}
-                      >
-                        {copiedId === summary.id ? (
-                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                        ) : (
+                      {/* Action Buttons */}
+                      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 
+                                      transition-opacity duration-200 flex gap-1">
+                        <button
+                          onClick={() => handleEdit(summary)}
+                          className="p-1.5 bg-primary text-primary-foreground rounded-sm hover:bg-primary/90 
+                                    transition-colors text-xs focus:outline-none focus:ring-1 focus:ring-ring"
+                          title={t.edit}
+                        >
                           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                           </svg>
-                        )}
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
-            ))}
+                        </button>
+                        
+                        <button
+                          onClick={() => handleCopy(summary.content, summary.id)}
+                          className={`p-1.5 rounded-sm transition-all text-xs focus:outline-none focus:ring-1 focus:ring-ring ${
+                            copiedId === summary.id 
+                              ? 'bg-primary text-primary-foreground' 
+                              : 'bg-secondary text-secondary-foreground hover:bg-secondary/90'
+                          }`}
+                          title={copiedId === summary.id ? t.copied : t.copy}
+                        >
+                          {copiedId === summary.id ? (
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                          ) : (
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                          )}
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </Card>
 

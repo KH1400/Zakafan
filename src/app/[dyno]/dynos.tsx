@@ -9,7 +9,7 @@ import {
   DynoCategory,
   type Language,
   Dyno
-} from "@/lib/content-data";
+} from "@/lib/content-types";
 import { useEffect, useRef, useState } from "react";
 import { fetchCategory, fetchDynos } from "../../lib/api";
 import { useLanguage } from "../../lib/language-context";

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { type Language, type Dyno, type DynoCategory } from "@/lib/content-data";
+import { type Language, type Dyno, type DynoCategory } from "@/lib/content-types";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "../../lib/language-context";
 

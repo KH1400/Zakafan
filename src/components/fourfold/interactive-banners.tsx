@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Shield, BarChart3, Trophy, MessageSquareQuote } from "lucide-react";
 import { BannerPanel } from "@/components/fourfold/banner-panel";
 import { cn } from "@/lib/utils";
-import { DynoCategory, type Language } from "@/lib/content-data";
+import { DynoCategory, type Language } from "@/lib/content-types";
 import { fetchCategories } from "../../lib/api";
 import Loding from "./loading";
 

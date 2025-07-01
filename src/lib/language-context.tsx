@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useSearchParams } from 'next/navigation';
-import type { Language } from '@/lib/content-data';
+import type { Language } from '@/lib/content-types';
 
 const languageOptions: Record<Language, { dir: 'rtl' | 'ltr'; font: string }> = {
   fa: { dir: 'rtl', font: 'font-persian' },

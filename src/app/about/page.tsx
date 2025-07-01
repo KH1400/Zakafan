@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { type Language } from '@/lib/content-data';
+import { type Language } from '@/lib/content-types';
 import { useLanguage } from '../../lib/language-context';
 
 const goBackTranslations = {
