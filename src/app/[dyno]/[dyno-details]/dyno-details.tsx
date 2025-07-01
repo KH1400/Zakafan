@@ -117,6 +117,15 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
 
     ws.onopen = () => {
       console.log('WebSocket connected');
+      setTimeout(() => {
+        closeWebSocket();
+        // خواندن پیام‌های جدید
+        fetchMessages();
+
+        // تغییر وضعیت loading
+        setIsGeneratingSummary(false);
+        setCurrentSessionId(null);
+      }, 10000);
     };
     let message = "";
 
