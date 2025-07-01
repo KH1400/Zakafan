@@ -2,6 +2,7 @@ import { DynoCategory } from "./content-data";
 import ky from 'ky';
 
 export const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+console.log(baseUrl)
 export const api = ky.create({
   prefixUrl: baseUrl,
   timeout: false,
