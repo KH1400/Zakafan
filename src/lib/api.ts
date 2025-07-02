@@ -81,16 +81,19 @@ export const generateSummary = ({dynoId}) =>
   api.post('chatbot/prompts/stream', {json: {
     prompt_template_id: 1,
     dynograph_id: dynoId,
-    processing_model_name: "openrouter:deepseek-chat"
-    // processing_model_name: "openrouter:gemini-2.5-flash-lite-preview-06-17"
+    // processing_model_name: "openrouter:deepseek-chat"
+    processing_model_name: "openrouter:gemini-2.5-flash-lite-preview-06-17"
   }
 });
 
 export const fetchDynoBySlug = ({slug}) => 
   api.get(`dynograph/dynographs/slug/${slug}`);
 
-export const fetchSummarys = ({dynoId}) => 
+export const fetchSummaries = ({dynoId}) => 
   api.get(`dynograph/dynographs/${dynoId}`);
+
+export const deleteSummary = ({summaryId}) => 
+  api.delete(`dynograph/dynograph-summaries/${summaryId}`);
 
 export const updateSummary = ({summaryId, generatedSummary}) => 
   api.put(`dynograph/dynograph-summaries/${summaryId}`, { json: { generated_summary: generatedSummary }});

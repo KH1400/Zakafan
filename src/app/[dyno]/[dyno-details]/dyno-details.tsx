@@ -4,9 +4,9 @@ import { Dyno } from '../../../lib/content-types';
 import { useLanguage } from '../../../lib/language-context';
 import HtmlRenderer from '../../../components/htmlviewer';
 import { Button } from '../../../components/ui/button';
-import { ArrowLeft, ArrowLeftRight, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowLeftRight, ArrowRight, Check, CheckCheck, Copy, Edit2, Trash2 } from 'lucide-react';
 import Loding from '../../../components/fourfold/loading';
-import { fetchDynoBySlug, fetchSummarys, generateSummary, updateSummary } from '../../../lib/api';
+import { deleteSummary, fetchDynoBySlug, fetchSummaries, generateSummary, updateSummary } from '../../../lib/api';
 import { useNavigation } from 'react-day-picker';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -15,17 +15,17 @@ import Image from 'next/image';
 const translations = {
   fa: {
     mainContent: "محتوای اصلی",
-    mainContentDesc: "نمایش محتوای HTML",
+    mainContentDesc: "",
     infoImage: "اینفوگرافیک",
     messages: "پیام‌ها",
-    messagesDesc: "مجموعه پیام‌های مرتبط",
+    messagesDesc: "با کلیک بر روی «تولید توئیت جدید»، به‌صورت هوشمند از محتوای بالای صفحه استفاده شده و پیام‌های کوتاه و مؤثر برای انتشار در شبکه‌های اجتماعی تولید می‌شود.",
     textImages: "تصاویر متنی",
     textImagesDesc: "گالری تصاویر با متن",
     imageGallery: "گالری تصاویر",
     imageGalleryDesc: "مجموعه تصاویر اصلی",
     edit: "ویرایش",
     copy: "کپی",
-    generateNew: "تولید محتوای جدید",
+    generateNew: "تولید توئیت جدید",
     generating: "در حال تولید...",
     copied: "کپی شد!",
     download: "دانلود تصویر",
@@ -33,17 +33,17 @@ const translations = {
   },
   ar: {
     mainContent: "المحتوى الرئيسي",
-    mainContentDesc: "عرض محتوى HTML",
+    mainContentDesc: "",
     infoImage: "رسم بياني",
     messages: "الرسائل",
-    messagesDesc: "مجموعة الرسائل ذات الصلة",
+    messagesDesc: "عند النقر على 'توليد تغريدة جديدة'، يتم استخدام المحتوى أعلاه بذكاء لإنتاج رسائل قصيرة مناسبة للنشر على وسائل التواصل الاجتماعي.",
     textImages: "صور النص",
     textImagesDesc: "معرض الصور مع النص",
     imageGallery: "معرض الصور",
     imageGalleryDesc: "مجموعة الصور الرئيسية",
     edit: "تحرير",
     copy: "نسخ",
-    generateNew: "إنتاج محتوى جديد",
+    generateNew: "توليد تغريدة جديدة",
     generating: "إنتاج...",
     copied: "تم النسخ!",
     download: "تحميل الصورة",
@@ -51,17 +51,17 @@ const translations = {
   },
   en: {
     mainContent: "Main Content",
-    mainContentDesc: "Display HTML content",
+    mainContentDesc: "",
     infoImage: "Infographic",
     messages: "Messages",
-    messagesDesc: "Collection of related messages",
+    messagesDesc: "By clicking on 'Generate New Tweet', smart short messages are automatically created using the above content, ready for social media sharing.",
     textImages: "Text Images",
     textImagesDesc: "Image gallery with text",
     imageGallery: "Image Gallery",
     imageGalleryDesc: "Main image collection",
     edit: "Edit",
     copy: "Copy",
-    generateNew: "Generate New Content",
+    generateNew: "Generate New Tweet",
     generating: "Generating...",
     copied: "Copied!",
     download: "Download Image",
@@ -69,17 +69,17 @@ const translations = {
   },
   he: {
     mainContent: "תוכן ראשי",
-    mainContentDesc: "הצגת תוכן HTML",
+    mainContentDesc: "",
     infoImage: "אינפוגרפיקה",
     messages: "הודעות",
-    messagesDesc: "אוסף הודעות קשורות",
+    messagesDesc: "בלחיצה על 'יצירת ציוץ חדש', נוצרים אוטומטית מסרים קצרים וחכמים מהתוכן שמעל לצורך פרסום ברשתות החברתיות.",
     textImages: "תמונות טקסט",
     textImagesDesc: "גלריית תמונות עם טקסט",
     imageGallery: "גלריית תמונות",
     imageGalleryDesc: "אוסף תמונות ראשי",
     edit: "עריכה",
     copy: "העתק",
-    generateNew: "יצירת תוכן חדש",
+    generateNew: "יצירת ציוץ חדש",
     generating: "יצירת תוכן חדש...",
     copied: "הועתק!",
     download: "הורד תמונה",
@@ -191,7 +191,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
     
     try {
       // فرض می‌کنیم تابع fetchMessages وجود دارد
-      const newMessages: Dyno = await fetchSummarys({dynoId: dyno.id}).json();
+      const newMessages: Dyno = await fetchSummaries({dynoId: dyno.id}).json();
       // به‌روزرسانی state
       setDyno(prevDyno => {
         if (!prevDyno) return prevDyno;
@@ -200,6 +200,20 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
           summaries: newMessages.summaries.map((s: any) => ({id: s.id, content: s.generated_summary, createdAt: s.updated_at}))
         };
       });
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!id) return;
+    
+    try {
+      // فرض می‌کنیم تابع fetchMessages وجود دارد
+      const dd = await deleteSummary({summaryId: id}).json();
+      console.log(dd)
+      // به‌روزرسانی state
+      fetchMessages();
     } catch (error) {
       console.error('Error fetching messages:', error);
     }
@@ -248,7 +262,6 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
   
     const handleScroll = () => {
       const scrollTop = scrollContainer.scrollTop;
-     console.log(scrollTop)
       // تغییر threshold برای تست آسان‌تر
       const shouldBeScrolled = scrollTop > 20;
       
@@ -452,7 +465,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
           title={t.mainContent}
           description={t.mainContentDesc}
         >
-          <Link className='absolute top-2 end-2' href={dyno.pdfFile}><Button variant='outline'>{t.pdfDownload}</Button></Link>
+          <Link className={`absolute ${t.mainContentDesc.length === 0?"top-0":"top-2"} end-2`} href={dyno.pdfFile}><Button variant='default' className='bg-slate-800 hover:bg-amber-500'>{t.pdfDownload}</Button></Link>
           <HtmlRenderer className='w-full' htmlContent={dyno.html} />
         </Card>}        
 
@@ -574,38 +587,43 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
                       {/* Action Buttons */}
                       <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 
                                       transition-opacity duration-200 flex gap-1">
-                        <button
+                        <Button
                           onClick={() => handleEdit(summary)}
-                          className="p-1.5 bg-primary text-primary-foreground rounded-sm hover:bg-primary/90 
-                                    transition-colors text-xs focus:outline-none focus:ring-1 focus:ring-ring"
+                          className="p-1.5 text-primary-foreground rounded-sm 
+                                    transition-colors text-xs focus:outline-none focus:ring-1 focus:ring-ring h-4 w-4"
+                          title={t.edit}
+                          variant='ghost'
+                          type='button'
+                          size='icon'
+                        >
+                          <Edit2 />
+                        </Button>
+                        <Button
+                          onClick={() => handleDelete(summary.id)}
+                          className="p-1.5 text-primary-foreground rounded-sm 
+                                    transition-colors text-xs focus:outline-none focus:ring-1 focus:ring-ring h-4 w-4"
+                          variant='ghost'
+                          type='button'
+                          size='icon'
                           title={t.edit}
                         >
-                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                          </svg>
-                        </button>
-                        
-                        <button
+                          <Trash2 />
+                        </Button>
+                        <Button
                           onClick={() => handleCopy(summary.content, summary.id)}
-                          className={`p-1.5 rounded-sm transition-all text-xs focus:outline-none focus:ring-1 focus:ring-ring ${
-                            copiedId === summary.id 
-                              ? 'bg-primary text-primary-foreground' 
-                              : 'bg-secondary text-secondary-foreground hover:bg-secondary/90'
-                          }`}
+                          className={`p-1.5 text-primary-foreground rounded-sm 
+                                    transition-colors text-xs focus:outline-none h-4 w-4 ${copiedId === summary.id && "bg-amber-500"}`}
+                          variant='ghost'
+                          type='button'
+                          size='icon'
                           title={copiedId === summary.id ? t.copied : t.copy}
                         >
                           {copiedId === summary.id ? (
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
+                            <Check />
                           ) : (
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                            </svg>
+                            <Copy/>
                           )}
-                        </button>
+                        </Button>
                       </div>
                     </>
                   )}
@@ -698,8 +716,8 @@ const Card = ({children, className, title, description}:{
 }) => {
   return (
     <div className={`group relative w-full rounded-lg border border-border/60 
-                    bg-card/60 backdrop-blur-sm text-card-foreground shadow-md 
-                    hover:shadow-xl hover:bg-card/90 hover:border-border
+                    bg-background/60 dark:bg-[#161b22]/60 backdrop-blur-sm text-card-foreground shadow-md 
+                    hover:shadow-xl hover:bg-background/90 hover:dark:bg-[#161b22]/90 hover:border-border
                     transition-all duration-300 ease-out ${className}`}>
       
       {/* Base subtle overlay for visibility */}
@@ -719,11 +737,11 @@ const Card = ({children, className, title, description}:{
       </div>
       
       {/* Hover accent overlay */}
-      <div className="absolute inset-0 bg-accent/10 rounded-lg opacity-0 
+      <div className="absolute inset-0 bg-slate-700/10 rounded-lg opacity-0 
                       group-hover:opacity-100 transition-opacity duration-300" />
       
       {/* Glass effect border */}
-      <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-accent/20 via-transparent to-primary/10 
+      <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-slate-600/20 via-transparent to-slate/10 
                       opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
     </div>
   )
