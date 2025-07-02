@@ -426,7 +426,6 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
                   }
                 `}>
                   {dyno.description[language]}
-                  {isScrolled.toString()}
                 </p>
               </div>
               
