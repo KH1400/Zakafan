@@ -323,7 +323,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
   const handleSaveEdit = async () => {
     if (dyno && editingId) {
       try {
-        const res: {id: number,generated_summary: string, created_at: string } = await updateSummary({summaryId: editingId, generatedSummary: editText}).json();
+        const res: {id: number, generated_summary: string, created_at: string } = await updateSummary({summaryId: editingId, generatedSummary: editText}).json();
         setDyno({ ...dyno, summaries: dyno.summaries.map(s => {if(s.id === editingId){return {id: res.id, content: res.generated_summary, createdAt: res.created_at}}else{return s}}) });
         setEditingId(null);
         setEditText('');
