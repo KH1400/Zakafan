@@ -10,7 +10,7 @@ import {
   type Language,
   Dyno
 } from "@/lib/content-types";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchCategory, fetchDynos } from "../../lib/api";
 import { useLanguage } from "../../lib/language-context";
 import Loding from "../../components/fourfold/loading";
@@ -26,48 +26,49 @@ export default function DynosPage({ slug }: { slug: string }) {
   const { language, selectedLang } = useLanguage();
   const [dynos, setDynos] = useState<MosaicPanelData[]>([]);
   const [category, setCategory] = useState<DynoCategory>();
-  
-  const categoryHrefRef = useRef<string>("");
+  const [loading, setLoading] = useState(true);
+
+  // حذف ref و استفاده مستقیم از slug
   useEffect(() => {
-    categoryHrefRef.current = slug;
-  }, [slug])
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        // همزمان fetch کردن دو تا API
+        const [dynosResult, categoryResult] = await Promise.all([
+          fetchDynos({ categoryHref: slug }),
+          fetchCategory(slug)
+        ]);
 
-  useEffect(() => {
-    getDynos(categoryHrefRef.current);
-    getCategoryDetails();
-  }, [categoryHrefRef, language]);
+        // Process dynos
+        const dyns: any = await dynosResult.json();
+        const panelData = dyns.dynographs.map((item: any, index: number) => ({
+          id: item.id,
+          title: item.title,
+          description: item.description[language] || item.description['fa'],
+          image: item.image_file || `/categories/c${item.categories[0].id}.jpg`,
+          slug: item.slug.toLocaleLowerCase(),
+          imageHint: item.image_hint,
+          categories: item.categories.map((c: any) => c.id),
+          categoryHref: item.categories.map((c: any) => c.href),
+          createdAt: item.created_at
+        }));
 
-  const getDynos = async (categoryHref: string) => {
-    try {
-      const dyns: any = await fetchDynos({categoryHref}).json();
-      const panelData = dyns.dynographs.map((item: any, index: number) => ({
-        id: item.id,
-        title: item.title,
-        description: item.description[language] || item.description['fa'],
-        image: item.image_file || `/categories/c${item.categories[0].id}.jpg`,
-        slug: item.slug.toLocaleLowerCase(),
-        imageHint: item.image_hint,
-        // Remove hardcoded size - let the smart layout handle it
-        categories: item.categories.map((c: any) => c.id),
-        createdAt: item.created_at
-      }));
-      console.log(panelData.map(p => ({id: p.id, title: p.title['fa']})))
-      setDynos(panelData);
-    } catch (error) {
-      console.log(error)
+        console.log(panelData);
+        setDynos(panelData);
+        setCategory(categoryResult);
+      } catch (error) {
+        console.log('Error loading data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (slug) {
+      loadData();
     }
-  }
+  }, [slug, language]); // فقط slug و language را dependency قرار دادیم
 
-  const getCategoryDetails = async() => {
-    try {
-      const data = await fetchCategory(categoryHrefRef.current);
-      setCategory(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  if(!category || !categoryHrefRef.current){
+  if (loading || !category) {
     return <Loding />
   }
 

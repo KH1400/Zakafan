@@ -28,7 +28,8 @@ const translations = {
     generateNew: "تولید محتوای جدید",
     generating: "در حال تولید...",
     copied: "کپی شد!",
-    download: "دانلود تصویر"
+    download: "دانلود تصویر",
+    pdfDownload: "دانلود خلاصه فایل پژوهشی",
   },
   ar: {
     mainContent: "المحتوى الرئيسي",
@@ -45,7 +46,8 @@ const translations = {
     generateNew: "إنتاج محتوى جديد",
     generating: "إنتاج...",
     copied: "تم النسخ!",
-    download: "تحميل الصورة"
+    download: "تحميل الصورة",
+    pdfDownload: "تحميل ملخص الملف البحثي"
   },
   en: {
     mainContent: "Main Content",
@@ -62,7 +64,8 @@ const translations = {
     generateNew: "Generate New Content",
     generating: "Generating...",
     copied: "Copied!",
-    download: "Download Image"
+    download: "Download Image",
+    pdfDownload: "Download research summary file"
   },
   he: {
     mainContent: "תוכן ראשי",
@@ -79,7 +82,8 @@ const translations = {
     generateNew: "יצירת תוכן חדש",
     generating: "יצירת תוכן חדש...",
     copied: "הועתק!",
-    download: "הורד תמונה"
+    download: "הורד תמונה",
+    pdfDownload: "הורדת קובץ סיכום המחקר"
   }
 };
 
@@ -244,7 +248,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
   
     const handleScroll = () => {
       const scrollTop = scrollContainer.scrollTop;
-     
+     console.log(scrollTop)
       // تغییر threshold برای تست آسان‌تر
       const shouldBeScrolled = scrollTop > 20;
       
@@ -259,7 +263,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
       
       // چک کردن موقعیت اولیه
       handleScroll();
-    }, 100);
+    }, 500);
   
     return () => {
       clearTimeout(timeoutId);
@@ -444,10 +448,11 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
         
         {/* Main Content Card */}
         {dyno.html && <Card 
-          className='col-span-12 p-6' 
+          className='col-span-12 p-6 relative' 
           title={t.mainContent}
           description={t.mainContentDesc}
         >
+          <Link className='absolute top-2 end-2' href={dyno.pdfFile}><Button variant='outline'>{t.pdfDownload}</Button></Link>
           <HtmlRenderer className='w-full' htmlContent={dyno.html} />
         </Card>}        
 

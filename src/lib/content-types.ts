@@ -43,12 +43,14 @@ export type Summary = {
 }
 
 export type MosaicPanelData = {
+    id: string;
     title: Record<Language, string>;
     slug: string;
     image: string;
     imageHint: string;
     size: number;
     categories: number[];
+    categoryHref: string[];
 };
 
 const html = `<!DOCTYPE html>

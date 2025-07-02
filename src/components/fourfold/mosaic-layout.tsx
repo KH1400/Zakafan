@@ -4,6 +4,7 @@ import Image from "next/image";
 import { MosaicPanelData } from "../../lib/content-types";
 import { useLanguage } from "../../lib/language-context";
 import { Languages } from "lucide-react";
+import { useMemo } from "react";
 
 type MosaicLayoutProps = {
   panels: MosaicPanelData[];
@@ -13,87 +14,42 @@ type MosaicLayoutProps = {
 
 // Define size configurations
 const SIZES = [
-  { width: 1, height: 1, class: 'col-span-1 row-span-1' }, // Size 1: 1x1
-  { width: 2, height: 1, class: 'col-span-2 row-span-1' }, // Size 2: 2x1
-  { width: 1, height: 2, class: 'col-span-1 row-span-2' }, // Size 3: 1x2
-  { width: 2, height: 2, class: 'col-span-2 row-span-2' }, // Size 4: 2x2
+  { width: 1, height: 1, class: 'col-span-1 row-span-1' }, // Size 0: 1x1
+  { width: 2, height: 1, class: 'col-span-2 row-span-1' }, // Size 1: 2x1
+  { width: 1, height: 2, class: 'col-span-1 row-span-2' }, // Size 2: 1x2
+  { width: 2, height: 2, class: 'col-span-2 row-span-2' }, // Size 3: 2x2
 ];
 
-// Advanced smart layout algorithm to minimize gaps with more size variety
-function generateSmartLayout(panels: MosaicPanelData[]) {
+// Fixed patterns based on panel count
+function generateFixedLayout(panels: MosaicPanelData[]) {
   if (panels.length === 0) return [];
   
-  // Enhanced patterns with more variety and interesting combinations
-  const patterns = [
-    // Pattern 1: Big statement piece with small accents
-    [3, 0, 0, 0, 1, 2, 0, 1, 0, 0, 2, 0], // 2x2, 1x1, 1x1, 1x1, 2x1, 1x2, 1x1, 2x1, 1x1, 1x1, 1x2, 1x1
-    
-    // Pattern 2: Alternating rhythm
-    [0, 2, 0, 1, 0, 0, 3, 0, 2, 1, 0, 0], // 1x1, 1x2, 1x1, 2x1, 1x1, 1x1, 2x2, 1x1, 1x2, 2x1, 1x1, 1x1
-    
-    // Pattern 3: Vertical emphasis
-    [2, 0, 2, 1, 0, 0, 0, 2, 3, 0, 1, 0], // 1x2, 1x1, 1x2, 2x1, 1x1, 1x1, 1x1, 1x2, 2x2, 1x1, 2x1, 1x1
-    
-    // Pattern 4: Horizontal flow
-    [1, 0, 0, 2, 1, 0, 2, 0, 0, 3, 0, 1], // 2x1, 1x1, 1x1, 1x2, 2x1, 1x1, 1x2, 1x1, 1x1, 2x2, 1x1, 2x1
-    
-    // Pattern 5: Mixed large pieces
-    [3, 1, 0, 0, 0, 2, 3, 0, 1, 0, 2, 0], // 2x2, 2x1, 1x1, 1x1, 1x1, 1x2, 2x2, 1x1, 2x1, 1x1, 1x2, 1x1
-    
-    // Pattern 6: Compact clusters
-    [0, 0, 1, 2, 0, 2, 0, 0, 1, 3, 0, 0], // 1x1, 1x1, 2x1, 1x2, 1x1, 1x2, 1x1, 1x1, 2x1, 2x2, 1x1, 1x1
-  ];
+  const patterns: { [key: number]: number[] } = {
+    3: [3, 1, 1],
+    4: [3, 2, 0, 0],
+    5: [2, 1, 1, 0, 0],
+    6: [2, 1, 0, 0, 0, 0],
+    7: [3, 1, 1, 2, 3, 0, 0],
+    8: [3, 1, 1, 2, 1, 1, 0, 0], // Combination of 3 and 5 patterns
+    9: [3, 2, 0, 0, 2, 1, 1, 0, 0], // Combination of 4 and 5 patterns
+    10: [3, 2, 0, 0, 2, 1, 0, 0, 0, 0], // Combination of 4 and 6 patterns
+  };
+
+  const pattern = patterns[panels.length];
   
-  const layoutPanels = panels.map((panel, index) => {
-    // Choose pattern based on total number of panels with more variety
-    const patternIndex = Math.floor(index / 12) % patterns.length;
-    const positionInPattern = index % 12;
-    const sizeIndex = patterns[patternIndex][positionInPattern];
+  // If no specific pattern defined, use default 1x1 for all
+  const defaultPattern = new Array(panels.length).fill(0);
+  const finalPattern = pattern || defaultPattern;
+
+  return panels.map((panel, index) => {
+    const sizeIndex = finalPattern[index] || 0; // Default to 1x1 if pattern is shorter
     
     return {
       ...panel,
       layoutSize: SIZES[sizeIndex],
       originalIndex: index,
-      patternGroup: Math.floor(index / 12)
     };
   });
-
-  // Group panels by pattern groups and arrange them
-  const groupedPanels: any[] = [];
-  const groups = layoutPanels.reduce((acc: any, panel) => {
-    if (!acc[panel.patternGroup]) acc[panel.patternGroup] = [];
-    acc[panel.patternGroup].push(panel);
-    return acc;
-  }, {});
-
-  // Process each group with enhanced sorting for better visual flow
-  Object.keys(groups).forEach(groupKey => {
-    const group = groups[groupKey];
-    
-    // More sophisticated sorting: create visual rhythm
-    const sortedGroup = group.sort((a: any, b: any) => {
-      const aArea = a.layoutSize.width * a.layoutSize.height;
-      const bArea = b.layoutSize.width * b.layoutSize.height;
-      
-      // Create clusters: big pieces first, then medium, then small
-      if (aArea === 4 && bArea !== 4) return -1; // 2x2 first
-      if (bArea === 4 && aArea !== 4) return 1;
-      
-      if (aArea === 2 && bArea === 1) return -1; // 2x1 and 1x2 before 1x1
-      if (bArea === 2 && aArea === 1) return 1;
-      
-      // Within same area, vary the dimensions for better fit
-      if (aArea === bArea) {
-        return Math.random() - 0.5; // Add some randomness for natural feel
-      }
-      
-      return bArea - aArea;
-    });
-    
-    groupedPanels.push(...sortedGroup);
-  });
-
-  return groupedPanels;
 }
 
 function MosaicPanel({ 
@@ -153,18 +109,6 @@ function MosaicPanel({
           {panel.title[language]}
         </h3>
       </div>
-
-      {/* Title overlay that appears on scroll - positioned at top */}
-      {/* <div className="absolute top-0 left-0 right-0 p-4 md:p-6 lg:p-8 transform -translate-y-full transition-all duration-500 group-hover:translate-y-0 bg-gradient-to-b from-black/80 to-transparent">
-        <h3 className={`
-          ${selectedLang.font} 
-          ${layoutSize.width === 2 ? 'text-lg md:text-xl lg:text-2xl' : 'text-base md:text-lg lg:text-xl'} 
-          font-bold text-white drop-shadow-lg font-headline
-          opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-200
-        `}>
-          {panel.title[language]}
-        </h3>
-      </div> */}
     </Link>
   );
 }
@@ -172,8 +116,10 @@ function MosaicPanel({
 export function MosaicLayout({ panels, baseHref, lang }: MosaicLayoutProps) {
   const { language } = useLanguage();
   
-  // Generate smart layout
-  const layoutPanels = generateSmartLayout(panels);
+  // Use useMemo to prevent regenerating layout on every render
+  const layoutPanels = useMemo(() => {
+    return generateFixedLayout(panels);
+  }, [panels]); // Only regenerate when panels actually change
  
   return (
     <div className="w-full h-full">

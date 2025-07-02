@@ -81,7 +81,8 @@ export const generateSummary = ({dynoId}) =>
   api.post('chatbot/prompts/stream', {json: {
     prompt_template_id: 1,
     dynograph_id: dynoId,
-    processing_model_name: "openrouter:gemini-2.5-flash-lite-preview-06-17"
+    processing_model_name: "openrouter:deepseek-chat"
+    // processing_model_name: "openrouter:gemini-2.5-flash-lite-preview-06-17"
   }
 });
 
