@@ -102,7 +102,7 @@ function MosaicPanel({
       <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 lg:p-8 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
       <h3 className={`
           ${selectedLang.font} 
-          ${layoutSize.width === 2 ? 'text-xl md:text-2xl lg:text-3xl xl:text-4xl' : 'text-lg md:text-xl lg:text-2xl xl:text-3xl'} 
+          ${layoutSize.width === 2 ? 'text-xl md:text-2xl lg:text-3xl' : 'text-lg md:text-xl'} 
           font-bold text-white drop-shadow-lg font-headline
           transition-all duration-300
         `}>

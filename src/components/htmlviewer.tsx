@@ -18,6 +18,7 @@ const HtmlRenderer: React.FC<HtmlRendererProps> = ({ htmlContent, className }) =
       // ایجاد iframe برای رندر ایمن HTML
       const iframe = document.createElement('iframe');
       iframe.style.width = '100%';
+      iframe.style.minHeight = '70vh';
       iframe.style.border = 'none';
       iframe.style.backgroundColor = '#E7EFF6';
       iframe.style.display = 'block';
