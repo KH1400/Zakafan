@@ -41,6 +41,7 @@ export default function DynosPage({ slug }: { slug: string }) {
 
         // Process dynos
         const dyns: any = await dynosResult.json();
+        console.log(dyns.dynographs[0]);
         const panelData = dyns.dynographs.map((item: any, index: number) => ({
           id: item.id,
           title: item.title,
@@ -53,7 +54,6 @@ export default function DynosPage({ slug }: { slug: string }) {
           createdAt: item.created_at
         }));
 
-        console.log(panelData);
         setDynos(panelData);
         setCategory(categoryResult);
       } catch (error) {
@@ -89,7 +89,7 @@ export default function DynosPage({ slug }: { slug: string }) {
       </header>
       
       {/* Main content */}
-      <div className="flex-grow w-full overflow-y-auto">
+      <div className="flex-grow h-full w-full overflow-y-auto">
         <MosaicLayout
           panels={dynos}
           baseHref={category.href}

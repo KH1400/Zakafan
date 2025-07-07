@@ -4,12 +4,13 @@ import { Dyno } from '../../../lib/content-types';
 import { useLanguage } from '../../../lib/language-context';
 import HtmlRenderer from '../../../components/htmlviewer';
 import { Button } from '../../../components/ui/button';
-import { ArrowLeft, ArrowLeftRight, ArrowRight, Check, CheckCheck, Copy, Edit2, Trash2 } from 'lucide-react';
+import { ArrowLeft, ArrowLeftRight, ArrowRight, Check, CheckCheck, Copy, DownloadIcon, Edit2, Trash2 } from 'lucide-react';
 import Loding from '../../../components/fourfold/loading';
 import { deleteSummary, fetchDynoBySlug, fetchSummaries, generateSummary, updateSummary } from '../../../lib/api';
 import { useNavigation } from 'react-day-picker';
 import Link from 'next/link';
 import Image from 'next/image';
+import VideoPlayer from '../../../components/video-player';
 
 // ترجمه‌های متن‌ها
 const translations = {
@@ -23,6 +24,8 @@ const translations = {
     textImagesDesc: "گالری تصاویر با متن",
     imageGallery: "گالری تصاویر",
     imageGalleryDesc: "مجموعه تصاویر اصلی",
+    videoGallery: "گالری فیلم",
+    videoGalleryDesc: "مجموعه ویدئوهای تولیدی",
     edit: "ویرایش",
     copy: "کپی",
     generateNew: "تولید توئیت جدید",
@@ -41,6 +44,8 @@ const translations = {
     textImagesDesc: "معرض الصور مع النص",
     imageGallery: "معرض الصور",
     imageGalleryDesc: "مجموعة الصور الرئيسية",
+    videoGallery: "معرض الفيديو",
+    videoGalleryDesc: "سلسلة الفيديوهات المنتجة",
     edit: "تحرير",
     copy: "نسخ",
     generateNew: "توليد تغريدة جديدة",
@@ -59,6 +64,8 @@ const translations = {
     textImagesDesc: "Image gallery with text",
     imageGallery: "Image Gallery",
     imageGalleryDesc: "Main image collection",
+    videoGallery: "Video Gallery",
+    videoGalleryDesc: "Produced Video Series",
     edit: "Edit",
     copy: "Copy",
     generateNew: "Generate New Tweet",
@@ -77,6 +84,8 @@ const translations = {
     textImagesDesc: "גלריית תמונות עם טקסט",
     imageGallery: "גלריית תמונות",
     imageGalleryDesc: "אוסף תמונות ראשי",
+    videoGallery: "גלריית וידאו",
+    videoGalleryDesc: "סדרת סרטונים מופקים",
     edit: "עריכה",
     copy: "העתק",
     generateNew: "יצירת ציוץ חדש",
@@ -197,7 +206,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
         if (!prevDyno) return prevDyno;
         return {
           ...prevDyno,
-          summaries: newMessages.summaries.map((s: any) => ({id: s.id, content: s.generated_summary, createdAt: s.updated_at}))
+          summaries: newMessages.summaries.map((s: any) => ({id: s.id, content: s.generated_summary, language: s.language, createdAt: s.updated_at}))
         };
       });
     } catch (error) {
@@ -225,8 +234,8 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
     
     try {
       setIsGeneratingSummary(true);
-      const response: any = await generateSummary({dynoId: dyno.id}).json();
-      
+      const response: any = await generateSummary({dynoId: dyno.id, language}).json();
+
       if (response.websocket_url && response.session_id) {
         setCurrentSessionId(response.session_id);
         
@@ -323,8 +332,8 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
   const handleSaveEdit = async () => {
     if (dyno && editingId) {
       try {
-        const res: {id: number, generated_summary: string, created_at: string } = await updateSummary({summaryId: editingId, generatedSummary: editText}).json();
-        setDyno({ ...dyno, summaries: dyno.summaries.map(s => {if(s.id === editingId){return {id: res.id, content: res.generated_summary, createdAt: res.created_at}}else{return s}}) });
+        const res: {id: number, generated_summary: string, language: string, created_at: string } = await updateSummary({summaryId: editingId, generatedSummary: editText}).json();
+        setDyno({ ...dyno, summaries: dyno.summaries.map(s => {if(s.id === editingId){return {id: res.id, content: res.generated_summary, language: res.language, createdAt: res.created_at}}else{return s}}) });
         setEditingId(null);
         setEditText('');
       } catch (error) {
@@ -339,6 +348,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
   };
 
   const dynoSlugRef = useRef<string>("");
+
   useEffect(() => {
     dynoSlugRef.current = slug;
     getDyno();
@@ -347,7 +357,6 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
   const getDyno = async () => {
     try {
       const dyns: any = await fetchDynoBySlug({slug}).json();
-      console.log('dyno: 11 ', dyns)
       const mappedDyno: Dyno = {
         id: dyns.id,
         title: dyns.title,
@@ -366,6 +375,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
         images: dyns.image_files,
         textimages: dyns.input_image_files,
       };
+      console.log(mappedDyno.id);
       setDyno(mappedDyno);
     } catch (error) {
       
@@ -382,7 +392,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
       ref={scrollContainerRef}
       className="w-full h-full overflow-y-auto bg-background"
     >
-      <div className="grid grid-cols-12 gap-6 px-12 mx-auto">
+      <div className="grid grid-cols-12 gap-6 px-1 md:px-12 mx-auto">
         {/* Enhanced Header Content Card with Scroll Animation */}
         <div className={`
           col-span-12 sticky top-0 z-50 
@@ -472,28 +482,23 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
         {/* Info File Card */}
         {dyno?.infoFile && (
           <Card 
-            className='col-span-12 md:col-span-6 p-6 max-h-[50rem]' 
+            className='col-span-12 md:col-span-6 p-1 md:p-6 max-h-[100vh] md:max-h-[50rem]' 
             title={t.infoImage}
           >
-            <div className="relative w-full h-[43rem] flex-grow rounded-lg overflow-hidden">
+            <div className="relative w-full md:h-[43rem] flex-grow rounded-lg overflow-hidden">
               <img 
                 src={dyno?.infoFile} 
                 alt="info image"
                 className='w-full h-full object-contain transition-transform duration-300'
               />
               {/* Download Button Overlay */}
-              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                <button
-                  onClick={() => handleDownload(dyno.infoFile, 'info-image')}
-                  className="p-2 bg-primary/90 text-primary-foreground rounded-md hover:bg-primary 
-                            transition-colors shadow-lg backdrop-blur-sm"
-                  title={t.download}
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                </button>
+              <div className="absolute top-2 start-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <a
+                href={dyno.infoFile}
+                download
+                className='h-6 w-6'>
+                <DownloadIcon className='text-white hover:text-blue-400 transition-colors p-1 hover:bg-white/10 rounded-full h-8 w-8' />
+              </a>
               </div>
             </div>
           </Card>
@@ -501,7 +506,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
 
         {/* Messages Card */}
         <Card 
-          className={`col-span-12 ${dyno?.infoFile ? 'md:col-span-6' : ''} flex flex-col min-h-[400px] py-6 px-6 max-h-[50rem]`}
+          className={`col-span-12 ${dyno?.infoFile ? 'md:col-span-6' : ''} flex flex-col md:min-h-[400px] p-1 md:p-6 max-h-[100vh] md:max-h-[50rem]`}
           title={t.messages}
           description={t.messagesDesc}
         >
@@ -543,7 +548,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
 
             {/* Messages Container with Scroll */}
             <div className="flex-1 pr-2 space-y-3 flex-grow">
-              {dyno?.summaries.map((summary) => (
+              {dyno?.summaries.filter(s => s.language === language).map((summary) => (
                 <div
                   key={summary.id}
                   className="group relative p-3 bg-muted/50 border border-border rounded-lg 
@@ -636,7 +641,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
         {/* Text Images Card */}
         {dyno?.textimages && dyno?.textimages.length > 0 && (
           <Card 
-            className='col-span-12 p-6' 
+            className='col-span-12 p-1 md:p-6' 
             title={t.textImages}
             description={t.textImagesDesc}
           >
@@ -650,17 +655,12 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
                   />
                   {/* Download Button Overlay */}
                   <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <button
-                      onClick={() => handleDownload(image, `text-image-${index}`)}
-                      className="p-2 bg-primary/90 text-primary-foreground rounded-md hover:bg-primary 
-                                transition-colors shadow-lg backdrop-blur-sm"
-                      title={t.download}
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                    </button>
+                    <a
+                      href={dyno.infoFile}
+                      download
+                      className='h-6 w-6'>
+                      <DownloadIcon className='text-white hover:text-blue-400 transition-colors p-1 hover:bg-white/10 rounded-full h-8 w-8' />
+                    </a>
                   </div>
                 </div>
               ))}
@@ -671,7 +671,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
         {/* Images Gallery Card */}
         {dyno?.images && dyno?.images.length > 0 && (
           <Card 
-            className='col-span-12 p-6' 
+            className='col-span-12 p-1 md:p-6' 
             title={t.imageGallery}
             description={t.imageGalleryDesc}
           >
@@ -685,24 +685,35 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
                   />
                   {/* Download Button Overlay */}
                   <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <button
-                      onClick={() => handleDownload(image.toLowerCase(), `gallery-image-${index}`)}
-                      className="p-2 bg-primary/90 text-primary-foreground rounded-md hover:bg-primary 
-                                transition-colors shadow-lg backdrop-blur-sm"
-                      title={t.download}
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                    </button>
+                    <a
+                      href={dyno.infoFile}
+                      download
+                      className='h-6 w-6'>
+                      <DownloadIcon className='text-white hover:text-blue-400 transition-colors p-1 hover:bg-white/10 rounded-full h-8 w-8' />
+                    </a>
                   </div>
                 </div>
               ))}
             </div>
           </Card>
         )}
-        
+
+        {/* Video Gallery Card */}
+        {(
+          <Card 
+            className='col-span-12 p-1 md:p-6' 
+            title={t.videoGallery}
+            description={t.videoGalleryDesc}
+          >
+            <div className="flex justify-start gap-4 overflow-x-auto pb-2 h-full">
+              {[1].map((image, index) => (
+                <div key={index} className="group relative flex-shrink-0 rounded-md overflow-hidden border border-border hover:shadow-lg transition-shadow duration-300">
+                  <VideoPlayer className="w-[90vw] md:w-[40vw]" title=''/>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
       </div>
     </div>
   );

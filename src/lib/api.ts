@@ -77,12 +77,15 @@ export const fetchCategories = () =>
 export const fetchDynos = ({categoryHref}) => 
   api.get(`dynograph/dynographs${categoryHref?`?category_href=${categoryHref}`:''}`);
 
-export const generateSummary = ({dynoId}) => 
+export const generateSummary = ({dynoId, language}) => 
   api.post('chatbot/prompts/stream', {json: {
-    prompt_template_id: 1,
+    prompt_info: {
+      prompt_template_id: 1,
+      language: language
+    },
     dynograph_id: dynoId,
     // processing_model_name: "openrouter:deepseek-chat"
-    processing_model_name: "openrouter:gemini-2.5-flash-lite-preview-06-17"
+    processing_model_name: "openrouter:gemini-2.5-flash-lite-preview-06-17",
   }
 });
 

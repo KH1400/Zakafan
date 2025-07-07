@@ -14,17 +14,17 @@ type MosaicLayoutProps = {
 
 // Define size configurations
 const SIZES = [
-  { width: 1, height: 1, class: 'col-span-1 row-span-1' }, // Size 0: 1x1
-  { width: 2, height: 1, class: 'col-span-2 row-span-1' }, // Size 1: 2x1
-  { width: 1, height: 2, class: 'col-span-1 row-span-2' }, // Size 2: 1x2
-  { width: 2, height: 2, class: 'col-span-2 row-span-2' }, // Size 3: 2x2
+  { width: 1, height: 1, class: 'md:col-span-1 md:row-span-1' }, // Size 0: 1x1
+  { width: 2, height: 1, class: 'md:col-span-2 md:row-span-1' }, // Size 1: 2x1
+  { width: 1, height: 2, class: 'md:col-span-1 md:row-span-2' }, // Size 2: 1x2
+  { width: 2, height: 2, class: 'md:col-span-2 md:row-span-2' }, // Size 3: 2x2
 ];
 
 // Fixed patterns based on panel count
 function generateFixedLayout(panels: MosaicPanelData[]) {
   if (panels.length === 0) return [];
   
-  const patterns: { [key: number]: number[] } = {
+  const basePatterns: { [key: number]: number[] } = {
     3: [3, 1, 1],
     4: [3, 2, 0, 0],
     5: [2, 1, 1, 0, 0],
@@ -35,11 +35,15 @@ function generateFixedLayout(panels: MosaicPanelData[]) {
     10: [3, 2, 0, 0, 2, 1, 0, 0, 0, 0], // Combination of 4 and 6 patterns
   };
 
-  const pattern = patterns[panels.length];
-  
-  // If no specific pattern defined, use default 1x1 for all
-  const defaultPattern = new Array(panels.length).fill(0);
-  const finalPattern = pattern || defaultPattern;
+  let finalPattern: number[];
+
+  if (panels.length <= 10) {
+    // Use predefined patterns for 10 or fewer panels
+    finalPattern = basePatterns[panels.length] || new Array(panels.length).fill(0);
+  } else {
+    // Smart combination for more than 10 panels
+    finalPattern = generateSmartCombination(panels.length, basePatterns);
+  }
 
   return panels.map((panel, index) => {
     const sizeIndex = finalPattern[index] || 0; // Default to 1x1 if pattern is shorter
@@ -50,6 +54,38 @@ function generateFixedLayout(panels: MosaicPanelData[]) {
       originalIndex: index,
     };
   });
+}
+
+// Smart combination function for panels > 10
+function generateSmartCombination(totalPanels: number, basePatterns: { [key: number]: number[] }): number[] {
+  const result: number[] = [];
+  let remaining = totalPanels;
+  
+  // Available pattern sizes (prioritize larger, more interesting patterns)
+  const patternSizes = [10, 9, 8, 7, 6, 5, 4, 3];
+  
+  while (remaining > 0) {
+    // Find the largest pattern that fits
+    let selectedSize = 0;
+    for (const size of patternSizes) {
+      if (size <= remaining && basePatterns[size]) {
+        selectedSize = size;
+        break;
+      }
+    }
+    
+    // If no pattern fits, fill with 1x1 (size 0)
+    if (selectedSize === 0) {
+      result.push(...new Array(remaining).fill(0));
+      break;
+    }
+    
+    // Add the selected pattern
+    result.push(...basePatterns[selectedSize]);
+    remaining -= selectedSize;
+  }
+  
+  return result;
 }
 
 function MosaicPanel({ 
@@ -77,7 +113,7 @@ function MosaicPanel({
         group relative block overflow-hidden 
         transition-transform duration-300 ease-in-out 
         hover:scale-[1.02] hover:z-10 
-        h-60 md:h-auto
+        h-96 md:h-auto
         ${layoutSize.class}
       `}
       aria-label={panel.title[language]}
@@ -102,9 +138,9 @@ function MosaicPanel({
       <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 lg:p-8 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
       <h3 className={`
           ${selectedLang.font} 
-          ${layoutSize.width === 2 ? 'text-xl md:text-2xl lg:text-3xl' : 'text-lg md:text-xl'} 
-          font-bold text-white drop-shadow-lg font-headline
-          transition-all duration-300
+          text-lg md:text-xl lg:text-2xl 
+          text-white/50 drop-shadow-lg font-headline
+          transition-all duration-300  group-hover:text-white
         `}>
           {panel.title[language]}
         </h3>
@@ -123,7 +159,7 @@ export function MosaicLayout({ panels, baseHref, lang }: MosaicLayoutProps) {
  
   return (
     <div className="w-full h-full">
-      <div className="grid w-full h-full grid-cols-2 md:grid-cols-3 lg:grid-cols-4 auto-rows-[50vw] md:auto-rows-[20vw] gap-2 overflow-y-auto overflow-x-hidden" style={{gridAutoFlow: 'row dense'}}>
+      <div className="w-full h-full flex flex-col md:grid md:grid-cols-3 lg:grid-cols-4 md:auto-rows-[20vw] gap-2 overflow-y-auto overflow-x-hidden" style={{gridAutoFlow: 'row dense'}}>
         {layoutPanels.map((panel, index) => (
           <MosaicPanel 
             key={`${panel.title[language]}-${panel.originalIndex}`}

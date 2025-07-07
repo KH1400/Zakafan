@@ -39,6 +39,7 @@ export type DynoCategory = {
 export type Summary = {
     id: number;
     content: string;
+    language: string;
     createdAt: string;
 }
 
