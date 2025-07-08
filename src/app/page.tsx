@@ -6,7 +6,7 @@ import { useLanguage } from '@/lib/language-context';
 
 export default function Home() {
   const { language } = useLanguage();
-
+  console.log(language)
   return (
     <div className="flex flex-col h-full">
       <div className="flex-grow overflow-hidden">
