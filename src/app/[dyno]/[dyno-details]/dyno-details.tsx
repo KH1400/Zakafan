@@ -371,7 +371,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
         infoFile: dyns.info_file,
         htmlFile: dyns.html_file,
         html: dyns.html_text,
-        summaries: dyns.summaries?.map((s: any) => ({id: s.id, content: s.generated_summary, createdAt: s.updated_at})) || [],
+        summaries: dyns.summaries?.map((s: any) => ({id: s.id, content: s.generated_summary, language: s.language, createdAt: s.updated_at})) || [],
         images: dyns.image_files,
         textimages: dyns.input_image_files,
       };
