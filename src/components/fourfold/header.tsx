@@ -19,6 +19,10 @@ import {
 import { SearchComponent } from './search-component';
 import type { Language } from '@/lib/content-types';
 import { cn } from '@/lib/utils';
+import logoFa from "@public/logo/Dynograph fa.svg"
+import logoEn from "@public/logo/Dynograph en.svg"
+import logoAr from "@public/logo/Dynograph ar.svg"
+import logoHe from "@public/logo/Dynograph he.svg"
 
 const languageOrder: Language[] = ['fa', 'ar', 'he', 'en'];
 
@@ -113,7 +117,12 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
   const iconX = 30;
   const textX = 60;
   const textAnchor = "start";
-  
+  const logos = {
+    en: logoEn,
+    fa: logoFa,
+    ar: logoAr,
+    he: logoHe,
+  }
   return (
     <header 
       dir="ltr" // Force LTR for header layout
@@ -130,6 +139,10 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
           className="h-10 w-auto drop-shadow-[0_4px_4px_rgba(245,158,11,0.6)]"
           src={`/logo/Dynograph ${currentLang}.svg`}
         />
+        {/* <img
+          className="h-10 w-auto drop-shadow-[0_4px_4px_rgba(245,158,11,0.6)]"
+          src={logos[currentLang] ?? logoFa}
+        /> */}
       </Link>
 
       <div className="flex flex-1 items-center justify-end gap-2 min-w-0">
