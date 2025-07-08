@@ -103,3 +103,70 @@ export const updateSummary = ({summaryId, generatedSummary}) =>
 
 export const apiPostStoreUploadUrl = () =>
   `${baseUrl}store/upload`;
+
+async function uploadFile(file, fileName, dataType, processDocument = false) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('file_name', fileName);
+  formData.append('process_document', processDocument.toString());
+  formData.append('data_type', dataType);
+  formData.append('is_public', 'true');
+
+  try {
+    const result: any = await ky.post(`${baseUrl}store/upload`, {
+      body: formData, // ky handles FormData correctly
+    }).json(); // ky automatically parses the response as JSON
+
+    return result.id; // Assuming the API returns the file ID in the 'id' field
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    // ky throws an error for non-2xx responses, which includes response data in error.response
+    if (error.response) {
+       console.error('Response status:', error.response.status);
+       // You can also read the response body if needed:
+       // const errorBody = await error.response.json();
+       // console.error('Response body:', errorBody);
+    }
+    throw error; // Re-throw the error to be handled by the caller
+  }
+}
+
+async function createDynograph(dynographData) {
+  try {
+    const result: any = await ky.post(`${baseUrl}dynograph/dynographs`, {
+      json: dynographData, // ky automatically sets Content-Type to application/json
+    }).json();
+
+    return result.id; // Assuming the API returns the dynograph ID
+  } catch (error) {
+    console.error('Error creating dynograph:', error);
+     if (error.response) {
+       console.error('Response status:', error.response.status);
+    }
+    throw error;
+  }
+}
+
+async function createMasterDynograph(slug, dynographIds) {
+  const masterDynographData = {
+    slug: slug,
+    dynograph_ids: dynographIds,
+  };
+
+  try {
+    const result = await ky.post(`${baseUrl}dynograph/dynograph-masters`, {
+      json: masterDynographData,
+    }).json();
+
+    return result;
+  } catch (error) {
+    console.error('Error creating master dynograph:', error);
+     if (error.response) {
+       console.error('Response status:', error.response.status);
+    }
+    throw error;
+  }
+}
+
+
+
