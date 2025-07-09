@@ -1,16 +1,20 @@
 import React, { useCallback, useState } from "react";
-import { Upload, X, FileText, Image, Video, Music, Archive, File, Check, AlertCircle, Loader2 } from "lucide-react";
+import { Upload, X, FileText, Image, Video, Music, Archive, File, Check, AlertCircle, Loader2, CloudUpload, Trophy, UploadIcon } from "lucide-react";
+
 import { FileMeta, useMultiFileUpload } from "../../hooks/use-uploader";
+import { DataType } from "../../lib/content-types";
+import { Button } from "../ui/button";
 
 // File Upload Component
 interface FileUploadComponentProps {
-  dataType: 'pdf' | 'html' | 'image' | 'textimage' | 'cover' | 'info';
+  dataType: DataType;
   multiple?: boolean;
   accept?: string;
   maxSize?: number; // in MB
   onUploadComplete?: (meta: FileMeta) => void;
   onError?: (file: File, error: any) => void;
   className?: string;
+  uploadedId?: number;
   title?: string;
   description?: string;
   processDocument?: boolean;
@@ -18,12 +22,12 @@ interface FileUploadComponentProps {
 
 const getFileIcon = (file: File) => {
   const type = file.type;
-  if (type.startsWith('image/')) return <Image className="w-6 h-6" />;
-  if (type.startsWith('video/')) return <Video className="w-6 h-6" />;
-  if (type.startsWith('audio/')) return <Music className="w-6 h-6" />;
-  if (type === 'application/pdf') return <FileText className="w-6 h-6" />;
-  if (type.includes('zip') || type.includes('rar')) return <Archive className="w-6 h-6" />;
-  return <File className="w-6 h-6" />;
+  if (type.startsWith('image/')) return <Image className="w-4 h-4" />;
+  if (type.startsWith('video/')) return <Video className="w-4 h-4" />;
+  if (type.startsWith('audio/')) return <Music className="w-4 h-4" />;
+  if (type === 'application/pdf') return <FileText className="w-4 h-4" />;
+  if (type.includes('zip') || type.includes('rar')) return <Archive className="w-4 h-4" />;
+  return <File className="w-4 h-4" />;
 };
 
 const formatFileSize = (bytes: number) => {
@@ -42,6 +46,7 @@ export default function FileUploadComponent({
   onUploadComplete,
   onError,
   className = "",
+  uploadedId,
   title = "آپلود فایل",
   description = "فایل‌های خود را انتخاب کنید یا اینجا بکشید",
   processDocument = false
@@ -61,7 +66,7 @@ export default function FileUploadComponent({
     validateFile,
     onUploadComplete,
     onError,
-    autoUpload: true,
+    autoUpload: false,
     uploadOptions: {
       processDocument: processDocument
     }
@@ -98,14 +103,18 @@ export default function FileUploadComponent({
     fileUploader.fileInputRef.current?.click();
   };
 
+  const pendingFiles = fileUploader.files.filter(f => f.status === 'idle');
+  const uploadingFiles = fileUploader.files.filter(f => f.status === 'uploading');
+  const successFiles = fileUploader.files.filter(f => f.status === 'success');
+
   return (
-    <div className={`w-full max-w-4xl mx-auto p-6 ${className}`}>
+    <div className={`w-full bg-gray-900 rounded-lg border border-gray-700 ${className}`}>
       {/* Upload Area */}
       <div
-        className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer
+        className={`relative border-2 border-dashed rounded-lg p-4 text-center transition-all duration-300 cursor-pointer
           ${dragActive 
-            ? 'border-blue-500 bg-blue-50 scale-105' 
-            : 'border-gray-300 hover:border-blue-400 hover:bg-gray-50'
+            ? 'border-blue-500 bg-blue-950/30' 
+            : 'border-gray-600 hover:border-blue-400 hover:bg-gray-800/50'
           }`}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
@@ -122,105 +131,153 @@ export default function FileUploadComponent({
           className="hidden"
         />
         
-        <div className="flex flex-col items-center justify-center space-y-4">
-          <div className={`p-4 rounded-full transition-colors ${dragActive ? 'bg-blue-100' : 'bg-gray-100'}`}>
-            <Upload className={`w-12 h-12 ${dragActive ? 'text-blue-600' : 'text-gray-500'}`} />
+        <div className="flex items-center justify-center space-x-3 space-x-reverse">
+          <div className={`p-2 rounded-full transition-colors ${dragActive ? 'bg-blue-900/50' : 'bg-gray-800'}`}>
+            <Upload className={`w-6 h-6 ${dragActive ? 'text-blue-400' : 'text-gray-400'}`} />
           </div>
           
-          <div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">{title}</h3>
-            <p className="text-gray-600 mb-4">{description}</p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-sm text-gray-500">
-              <span>حداکثر حجم: {maxSize}MB</span>
-              <span className="hidden sm:block">•</span>
-              <span>نوع داده: {dataType}</span>
-            </div>
+          <div className="text-right">
+            <h3 className="text-sm font-medium text-gray-200">{title}</h3>
+            <p className="text-xs text-gray-500 mt-1">{description}</p>
           </div>
           
           <button
             type="button"
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm font-medium"
           >
             انتخاب فایل
           </button>
+        </div>
+        
+        <div className="flex items-center justify-center gap-4 mt-2 text-xs text-gray-500">
+          <span>حداکثر: {maxSize}MB</span>
+          <span>•</span>
+          <span>{dataType}</span>
         </div>
       </div>
 
       {/* File List */}
       {fileUploader.files.length > 0 && (
-        <div className="mt-8 space-y-4">
-          <h4 className="text-lg font-semibold text-gray-800">فایل‌های انتخاب شده</h4>
-          
-          <div className="space-y-3">
-            {fileUploader.files.map((fileMeta) => (
+        <div className="mt-4 p-4 border-t border-gray-700">
+          <div className="space-y-2">
+            {fileUploader.files.map((fileMeta: FileMeta) => (
               <div
                 key={fileMeta.id}
-                className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                className="flex items-center justify-between p-3 bg-gray-800 border border-gray-700 rounded-md hover:bg-gray-750 transition-colors"
               >
-                <div className="flex items-center space-x-4 space-x-reverse flex-1">
-                  <div className="flex-shrink-0 text-gray-500">
-                    {getFileIcon(fileMeta.file)}
-                  </div>
+                <div className="flex items-center space-x-3 space-x-reverse flex-1">
+                  {/* Preview Image */}
+                  {fileMeta.previewUrl && (
+                    <div className="flex-shrink-0">
+                      <img 
+                        src={fileMeta.previewUrl} 
+                        alt="Preview" 
+                        className="w-8 h-8 rounded object-cover"
+                      />
+                    </div>
+                  )}
                   
+                  {/* File Icon */}
+                  {!fileMeta.previewUrl && (
+                    <div className="flex-shrink-0 text-gray-400">
+                      {getFileIcon(fileMeta.file)}
+                    </div>
+                  )}
+                  
+                  {<p>{uploadedId}</p>}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">
+                    <p className="text-sm font-medium text-gray-200 truncate">
                       {fileMeta.file.name}
                     </p>
-                    <p className="text-sm text-gray-500">
-                      {formatFileSize(fileMeta.file.size)} • {fileMeta.dataType}
+                    <p className="text-xs text-gray-500">
+                      {formatFileSize(fileMeta.file.size)}
                     </p>
                   </div>
                   
                   {/* Progress Bar */}
                   {fileMeta.status === 'uploading' && (
                     <div className="flex-1 mx-4">
-                      <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="w-full bg-gray-700 rounded-full h-1.5">
                         <div
-                          className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                          className="bg-blue-500 h-1.5 rounded-full transition-all duration-300"
                           style={{ width: `${fileMeta.progress}%` }}
                         />
                       </div>
-                      <p className="text-xs text-gray-500 mt-1">{fileMeta.progress}%</p>
+                      <p className="text-xs text-gray-400 mt-1 text-center">{fileMeta.progress}%</p>
                     </div>
                   )}
                 </div>
                 
                 <div className="flex items-center space-x-2 space-x-reverse">
                   {/* Status Icon */}
+                  {fileMeta.status === 'idle' && (
+                    <div className="w-5 h-5 rounded-full bg-gray-600 flex items-center justify-center">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                    </div>
+                  )}
                   {fileMeta.status === 'uploading' && (
-                    <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
+                    <Loader2 className="w-5 h-5 text-blue-500 animate-spin" />
                   )}
                   {fileMeta.status === 'success' && (
-                    <Check className="w-5 h-5 text-green-600" />
+                    <Check className="w-5 h-5 text-green-500" />
                   )}
+
                   {fileMeta.status === 'error' && (
-                    <AlertCircle className="w-5 h-5 text-red-600" />
+                    <div className="flex justify-start items-center gap-2">
+                      <AlertCircle className="w-5 h-5 text-red-500" />
+                    </div>
+                  )}
+                  
+                  {(fileMeta.status === 'idle' || fileMeta.status === 'error') && (
+                    <button
+                      onClick={() => fileUploader.uploadFile(fileMeta)}
+                      className="p-1 text-gray-500 hover:text-blue-400 transition-colors"
+                      title="بارگذاری"
+                    >
+                      <UploadIcon className="w-4 h-4" />
+                    </button>
                   )}
                   
                   {/* Remove Button */}
-                  <button
-                    onClick={() => fileUploader.removeFile(fileMeta.id)}
-                    className="p-1 text-gray-400 hover:text-red-600 transition-colors"
-                    title="حذف فایل"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
+                  {fileMeta.status !== 'uploading' && (
+                    <button
+                      onClick={() => fileUploader.removeFile(fileMeta.id)}
+                      className="p-1 text-gray-500 hover:text-red-400 transition-colors"
+                      title="حذف فایل"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
           </div>
           
           {/* Action Buttons */}
-          <div className="flex justify-between items-center pt-4">
+          <div className="flex justify-between items-center pt-3 mt-3 border-t border-gray-700">
             <button
               onClick={fileUploader.resetFiles}
-              className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-3 py-1.5 text-sm text-gray-400 border border-gray-600 rounded-md hover:bg-gray-800 transition-colors"
+              disabled={uploadingFiles.length > 0}
             >
               پاک کردن همه
             </button>
             
-            <div className="text-sm text-gray-500">
-              {fileUploader.files.filter(f => f.status === 'success').length} از {fileUploader.files.length} فایل آپلود شده
+            <div className="flex items-center space-x-4 space-x-reverse">
+              <div className="text-xs text-gray-500">
+                {successFiles.length} از {fileUploader.files.length} فایل آپلود شده
+              </div>
+              
+              {pendingFiles.length > 0 && (
+                <button
+                  onClick={() => fileUploader.uploadAll()}
+                  className="px-4 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm font-medium flex items-center space-x-2 space-x-reverse"
+                  disabled={uploadingFiles.length > 0}
+                >
+                  <CloudUpload className="w-4 h-4" />
+                  <span>آپلود ({pendingFiles.length})</span>
+                </button>
+              )}
             </div>
           </div>
         </div>

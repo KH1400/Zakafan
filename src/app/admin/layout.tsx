@@ -54,8 +54,8 @@ export default function AdminLayout({
   const pathname = usePathname();
   const {language, selectedLang} = useLanguage();
   return (
-    <SidebarProvider dir={selectedLang.dir}>
-      <Sidebar collapsible="icon">
+    <SidebarProvider dir={'rtl'}>
+      <Sidebar dir="rtl" collapsible="icon">
         <SidebarHeader>
           <h2 className="text-xl font-semibold p-2 group-data-[collapsible=icon]:hidden">
             پنل مدیریت
@@ -66,7 +66,7 @@ export default function AdminLayout({
               <SidebarMenuItem>
                   <SidebarMenuButton
                       asChild
-                      tooltip={{ children: "مشاهده سایت", side: "left" }}
+                      tooltip={{ children: "مشاهده سایت", side: "right" }}
                   >
                       <Link href="/" target="_blank" rel="noopener noreferrer">
                           <ExternalLink />

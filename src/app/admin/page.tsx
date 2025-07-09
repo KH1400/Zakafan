@@ -78,16 +78,6 @@ export default function AdminDashboardPage() {
     <div dir={selectedLang.dir} className="flex flex-col min-h-full p-4 md:p-6 bg-muted/40 font-persian">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold">داشبورد</h1>
-        <FileUploadComponent
-          dataType="image"
-          multiple={true}
-          processDocument={false}
-          maxSize={10}
-          accept="image/*"
-          title="آپلود تصاویر"
-          onError={(error) => console.log('Error:', error)}
-          onUploadComplete={(meta) => console.log('Uploaded:', meta)}
-        />
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline">

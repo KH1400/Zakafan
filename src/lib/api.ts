@@ -1,8 +1,7 @@
-import { DynoCategory } from "./content-types";
+import { DynoCategory, DynoDtoIn } from "./content-types";
 import ky from 'ky';
 
 export const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-console.log(baseUrl)
 export const api = ky.create({
   prefixUrl: baseUrl,
   timeout: false,
@@ -61,8 +60,6 @@ export async function fetchCategory(categoryHref: string) {
   return cates.categories.find((s: DynoCategory) => s.href === categoryHref);
 }
 
-const token ="Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyNCwidXNlcm5hbWUiOiJtZXRpZjEyQGdtYWlsLmNvbSIsImVtYWlsIjoibWV0aWYxMkBnbWFpbC5jb20iLCJyb2xlcyI6WyJhZG1pbiIsImVkaXRvciIsImF1dGhvciJdLCJleHAiOjE3NTE4MDM5NTYsImlhdCI6MTc1MTE5OTE1NiwidHlwZSI6ImFjY2VzcyJ9.GNu7hQ2GiaDuqKeh7qsSzFhqK-SmpbJL4mzbKRE8fTo"
-
 export const fetchCategories = () => 
   api.get(`dynograph/categories`, {
     retry: {
@@ -74,7 +71,7 @@ export const fetchCategories = () =>
     cache: 'no-store'
   });
 
-export const fetchDynos = ({categoryHref}) => 
+export const fetchDynos = ({categoryHref}:{categoryHref?:string}) => 
   api.get(`dynograph/dynographs${categoryHref?`?category_href=${categoryHref}`:''}`);
 
 export const generateSummary = ({dynoId, language}) => 
@@ -92,6 +89,9 @@ export const generateSummary = ({dynoId, language}) =>
 export const fetchDynoBySlug = ({slug}) => 
   api.get(`dynograph/dynographs/slug/${slug}`);
 
+export const deleteDyno = ({id}: {id: string}) => 
+  api.delete(`dynograph/dynographs/${id}`,{headers: withBearer(process.env.NEXT_PUBLIC_TOKEN)});
+
 export const fetchSummaries = ({dynoId}) => 
   api.get(`dynograph/dynographs/${dynoId}`);
 
@@ -104,21 +104,11 @@ export const updateSummary = ({summaryId, generatedSummary}) =>
 export const apiPostStoreUploadUrl = () =>
   `${baseUrl}store/upload`;
 
-async function createDynograph(dynographData) {
-  try {
-    const result: any = await ky.post(`${baseUrl}dynograph/dynographs`, {
-      json: dynographData, // ky automatically sets Content-Type to application/json
-    }).json();
-
-    return result.id; // Assuming the API returns the dynograph ID
-  } catch (error) {
-    console.error('Error creating dynograph:', error);
-     if (error.response) {
-       console.error('Response status:', error.response.status);
-    }
-    throw error;
-  }
-}
+export const createDynograph = (dynographData) => 
+  api.post(`dynograph/dynographs`, {
+      json: dynographData,
+      headers: withBearer(process.env.NEXT_PUBLIC_TOKEN)
+    });
 
 async function createMasterDynograph(slug, dynographIds) {
   const masterDynographData = {

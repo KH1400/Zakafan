@@ -41,7 +41,7 @@ export default function DynosPage({ slug }: { slug: string }) {
 
         // Process dynos
         const dyns: any = await dynosResult.json();
-        console.log(dyns.dynographs[0]);
+
         const panelData = dyns.dynographs.map((item: any, index: number) => ({
           id: item.id,
           title: item.title,

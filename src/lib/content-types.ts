@@ -1,4 +1,5 @@
 export type Language = 'fa' | 'en' | 'ar' | 'he';
+export type DataType = 'pdf' | 'html' | 'image' | 'textimage' | 'cover' | 'info' | 'video';
 
 export type MosaicPanel = {
     title: string;
@@ -6,6 +7,21 @@ export type MosaicPanel = {
     imageHint: string;
     gridArea: string;
 };
+
+export type DynoDtoIn = {
+    slug: string;
+    title: Record<Language, string>;
+    description: Record<Language, string>;
+    image: number;
+    imageHint: string;
+    htmlFile: number,
+    pdfFile: number,
+    infoFile: number,
+    images: number[],
+    textimages: number[],
+    videos: number[],
+    categories: number[],
+}
 
 export type Dyno = {
     id: string;
@@ -19,6 +35,7 @@ export type Dyno = {
     infoFile: string,
     images: string[],
     textimages: string[],
+    videos: string[],
     summaries: Summary[],
     html: string,
     size: number,

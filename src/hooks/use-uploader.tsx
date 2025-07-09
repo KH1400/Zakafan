@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { apiPostStoreUploadUrl } from "../lib/api";
+import { DataType } from "../lib/content-types";
 
 export type UploadStatus = "idle" | "uploading" | "success" | "error";
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyNCwidXNlcm5hbWUiOiJtZXRpZjEyQGdtYWlsLmNvbSIsImVtYWlsIjoibWV0aWYxMkBnbWFpbC5jb20iLCJyb2xlcyI6WyJhZG1pbiIsImVkaXRvciIsImF1dGhvciJdLCJleHAiOjE3NTE4MDM5NTYsImlhdCI6MTc1MTE5OTE1NiwidHlwZSI6ImFjY2VzcyJ9.GNu7hQ2GiaDuqKeh7qsSzFhqK-SmpbJL4mzbKRE8fTo"
 
 export interface UploadOptions {
   bucketName?: string;
@@ -17,7 +17,7 @@ export interface FileMeta {
   previewUrl?: string;
   progress: number;
   status: UploadStatus;
-  dataType: 'pdf' | 'html' | 'image' | 'textimage' | 'cover' | 'info';
+  dataType: DataType;
   error?: any;
   controller?: AbortController;
   uploadedData?: any;
@@ -46,7 +46,7 @@ export function useMultiFileUpload({
   const [files, setFiles] = useState<FileMeta[]>([]);
 
   const handleFileSelect = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>, dataType: 'pdf' | 'html' | 'image' | 'textimage' | 'cover' | 'info') => {
+    (e: React.ChangeEvent<HTMLInputElement>, dataType: DataType) => {
 
       // console.log("handleFileSelect", e.target.files);
 
@@ -90,14 +90,13 @@ export function useMultiFileUpload({
         mergedOptions.generateFileName?.(meta.file) ??
         `${uuidv4()}.${meta.file.name.split(".").pop()}`;
 
-      formData.append("file_name", "");
+      formData.append("file_name", fileName);
       // formData.append("bucket_name", mergedOptions.bucketName || "");
-      console.log(mergedOptions.processDocument)
       formData.append("process_document", mergedOptions.processDocument ? "true" : "false");
       formData.append("file", meta.file);
       formData.append("data_type", meta.dataType);
       formData.append("is_public", "true");
-
+      // console.log("uploading", meta);
       setFiles((prev) =>
         prev.map((f) =>
           f.id === meta.id
@@ -109,7 +108,7 @@ export function useMultiFileUpload({
       try {
         const xhr = new XMLHttpRequest();
         xhr.open("POST", apiPostStoreUploadUrl());
-        xhr.setRequestHeader("Authorization", `Bearer ${token || ""}`);
+        xhr.setRequestHeader("Authorization", `Bearer ${process.env.NEXT_PUBLIC_TOKEN || ""}`);
 
         xhr.upload.onprogress = (event) => {
           if (event.lengthComputable) {
@@ -123,6 +122,10 @@ export function useMultiFileUpload({
         xhr.onload = () => {
           try {
             const response = JSON.parse(xhr.responseText);
+            console.log(response)
+            if (!response?.id) {
+              throw new Error("Invalid response: missing ID");
+            }
             setFiles((prev) =>
               prev.map((f) =>
                 f.id === meta.id
@@ -132,6 +135,7 @@ export function useMultiFileUpload({
             );
             onUploadComplete?.({ ...meta, uploadedData: response });
           } catch (err) {
+            console.log('test', err)
             setFiles((prev) =>
               prev.map((f) =>
                 f.id === meta.id ? { ...f, status: "error", error: err } : f
@@ -142,6 +146,7 @@ export function useMultiFileUpload({
         };
 
         xhr.onerror = () => {
+          console.log('error')
           setFiles((prev) =>
             prev.map((f) =>
               f.id === meta.id ? { ...f, status: "error", error: xhr.statusText } : f
@@ -169,7 +174,7 @@ export function useMultiFileUpload({
         onError?.(meta.file, err);
       }
     },
-    [token, onUploadComplete, onError, uploadOptions]
+    [process.env.NEXT_PUBLIC_TOKEN, onUploadComplete, onError, uploadOptions]
   );
 
   const uploadAll = useCallback((options?: UploadOptions) => {
