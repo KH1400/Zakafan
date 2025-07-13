@@ -146,12 +146,10 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
       try {
         const data = JSON.parse(event.data);
         console.log('WebSocket message received:', data);
-        console.log(data)
         message += data.content;
         console.log(message)
         // چک کردن اتمام پردازش
         if (data.is_complete === true) {
-          console.log('Message generation completed');
           message = "";
           // بستن WebSocket
           closeWebSocket();
@@ -357,6 +355,14 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
   const getDyno = async () => {
     try {
       const dyns: any = await fetchDynoBySlug({slug}).json();
+      let htmlText = dyns.html_text;
+      await fetch(dyns.html_file)
+        .then(response => response.text())
+        .then(data => {
+          htmlText = data
+        })
+        .catch(error => console.error('Error:', error));
+
       const mappedDyno: Dyno = {
         id: dyns.id,
         title: dyns.title,
@@ -370,12 +376,13 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
         pdfFile: dyns.pdf_file,
         infoFile: dyns.info_file,
         htmlFile: dyns.html_file,
-        html: dyns.html_text,
+        html: htmlText,
         summaries: dyns.summaries?.map((s: any) => ({id: s.id, content: s.generated_summary, language: s.language, createdAt: s.updated_at})) || [],
         images: dyns.image_files,
         textimages: dyns.input_image_files,
+        videos: dyns.video_files,
       };
-      console.log(mappedDyno.id);
+      console.log(mappedDyno);
       setDyno(mappedDyno);
     } catch (error) {
       
@@ -477,6 +484,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
         >
           <Link className={`absolute ${t.mainContentDesc.length === 0?"top-0":"top-2"} end-2`} href={dyno.pdfFile}><Button variant='default' className='bg-slate-800 hover:bg-amber-500'>{t.pdfDownload}</Button></Link>
           <HtmlRenderer className='w-full' htmlContent={dyno.html} />
+          {/* <HtmlRenderer className='w-full' htmlFileUrl={dyno.htmlFile} /> */}
         </Card>}        
 
         {/* Info File Card */}
@@ -699,16 +707,16 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
         )}
 
         {/* Video Gallery Card */}
-        {(
+        {dyno?.videos && (
           <Card 
             className='col-span-12 p-1 md:p-6' 
             title={t.videoGallery}
             description={t.videoGalleryDesc}
           >
             <div className="flex justify-start gap-4 overflow-x-auto pb-2 h-full">
-              {[1].map((image, index) => (
+              {dyno?.videos.map((video, index) => (
                 <div key={index} className="group relative flex-shrink-0 rounded-md overflow-hidden border border-border hover:shadow-lg transition-shadow duration-300">
-                  <VideoPlayer className="w-[90vw] md:w-[40vw]" title=''/>
+                  <VideoPlayer src={video} className="w-[90vw] md:w-[40vw]" title=''/>
                 </div>
               ))}
             </div>

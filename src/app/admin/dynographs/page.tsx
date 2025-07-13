@@ -5,6 +5,7 @@ import { deleteDyno, fetchCategories, createDynograph, fetchDynos } from '../../
 import { Dyno, DynoCategory, DynoDtoIn } from '../../../lib/content-types';
 import { Button } from '../../../components/ui/button';
 import { NewDynographModal } from './new-dynograph-modal';
+import { useToast } from '../../../hooks/use-toast';
 
 function slugify(text: string) {
   return text
@@ -18,12 +19,14 @@ function slugify(text: string) {
     .replace(/-+$/, '');             // Trim dash from end
 }
 
-
 const DynographListPage = () => {
   const [dynos, setDynos] = useState<Dyno[]>([]);
+  const [dyno, setDyno] = useState<DynoDtoIn>({slug: "", title: {fa: null, ar: null, en: null, he: null}, description: {fa: null, ar: null, en: null, he: null}, image: null, imageHint: null, pdfFile: null, htmlFile: null, infoFile: null, images:[], textimages: [], videos: [], categories: [] });
   const [categories, setCategories] = useState<DynoCategory[]>([]);
   const [loading, setLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
   const [showNewDynoModal, setShowNewDynoModal] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     getDynos();
@@ -43,7 +46,7 @@ const DynographListPage = () => {
         id: dyns.id,
         title: dyns.title,
         description: dyns.description,
-        slug: dyns.slug.toLocaleLowerCase(),
+        slug: dyns.slug,
         image: dyns.image_file,
         imageHint: dyns.image_hint,
         size: dyns.size,
@@ -56,6 +59,7 @@ const DynographListPage = () => {
         summaries: dyns.summaries?.map((s: any) => ({id: s.id, content: s.generated_summary, language: s.language, createdAt: s.updated_at})) || [],
         images: dyns.image_files,
         textimages: dyns.input_image_files,
+        videos: dyns.video_files
       }));
       setDynos(dynosData);
     } catch (error) {
@@ -64,6 +68,7 @@ const DynographListPage = () => {
       setLoading(false);
     }
   };
+  
   const getCategories = async () => {
     setLoading(true);
     try {
@@ -97,6 +102,25 @@ const DynographListPage = () => {
   };
 
   const handleInsertDyno = async(dyno: DynoDtoIn) => {
+    setSubmitLoading(true);
+    if(dyno.title["fa"] === null){
+      toast({
+        variant: "error",
+        title: "اطلاعات ناقص",
+        description: `عنوان نباید خالی باشد.`,
+      });
+      setSubmitLoading(false);
+      return
+    }
+    if(dyno.categories.length === 0){
+      toast({
+        variant: "error",
+        title: "اطلاعات ناقص",
+        description: `دسته موضوعی را انتخاب کنید.`,
+      });
+      setSubmitLoading(false);
+      return
+    }
     const ddd = {
       slug: slugify(dyno?.title['en']),
       title: dyno?.title,
@@ -114,10 +138,21 @@ const DynographListPage = () => {
     }
 
     try {
-      const response = await createDynograph(ddd).json();
+      const response: any = await createDynograph(ddd).json();
+      if(response.data.id){
+        toast({
+          variant: "success",
+          title: "موفق",
+          description: `محتوا با موفقیت بارگذاری شد.`,
+        });
+        setDyno({slug: "", title: {fa: null, ar: null, en: null, he: null}, description: {fa: null, ar: null, en: null, he: null}, image: null, imageHint: null, pdfFile: null, htmlFile: null, infoFile: null, images:[], textimages: [], videos: [], categories: [] })
+        setShowNewDynoModal(false)
+        setSubmitLoading(false);
+        getDynos();
+      }
       console.log(response) 
     } catch (error) {
-      
+      setSubmitLoading(false);
     }
   };
   
@@ -142,52 +177,60 @@ const DynographListPage = () => {
   }
 
   return (
-    <div className="relative flex flex-col h-full max-h-[60rem] px-6 py-6 overflow-y-auto">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+    <div className="h-[90vh] flex flex-col">
+      {showNewDynoModal && <NewDynographModal categories={categories} loading={submitLoading} dyno={dyno} onChange={(d: DynoDtoIn) => setDyno(d)} onSubmit={(d: DynoDtoIn) => handleInsertDyno(d)} onClose={() => {setShowNewDynoModal(false)}} />}
+      
+      {/* Header - Fixed */}
+      <div className="flex-shrink-0 p-6 pb-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <h1 className="text-3xl font-bold text-white">لیست داینوگراف‌ها</h1>
           <Button onClick={() => setShowNewDynoModal(true)} variant='default'>
             <Plus className="w-4 h-4" />
             اضافه کردن داینو جدید
           </Button>
         </div>
-        {showNewDynoModal && <NewDynographModal categories={categories} onSubmit={(d: DynoDtoIn) => handleInsertDyno(d)} onClose={() => {setShowNewDynoModal(false)}} className="fixed top-1/2 end-1/2 -translate-x-1/2 -translate-y-1/2 max-w-5xl w-full space-y-4 bg-muted rounded-2xl p-6 max-h-[45rem] overflow-y-auto" />}
+      </div>
+
+      {/* Content - Scrollable */}
+      <div className="flex-1 px-6 pb-6 min-h-0">
         {/* Desktop Table */}
-        <div className="hidden flex-grow lg:flex flex-col w-full bg-gray-800 rounded-xl shadow-2xl">
-          {/* Fixed Header */}
-          <div className="bg-gray-750">
-            <table className="min-w-full">
-              <thead>
-                <tr>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    عنوان
-                  </th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    شناسه
-                  </th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    فایل‌ها
-                  </th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    تصاویر
-                  </th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    دسته‌بندی
-                  </th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    توئیت‌ها
-                  </th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    عملیات
-                  </th>
-                </tr>
-              </thead>
-            </table>
-          </div>
-          
-          {/* Scrollable Body */}
-          <div className="flex-grow h-full overflow-y-auto">
-            <table className="min-w-full h-full divide-y divide-gray-700">
-              <tbody className="bg-gray-800 h-full">
+        <div className="hidden 2xl:block h-full">
+          <div className="flex flex-col h-full bg-gray-800 rounded-xl shadow-2xl">
+            {/* Fixed Header */}
+            <div className="flex-shrink-0 bg-gray-700 rounded-t-xl">
+              <table className="min-w-full">
+                <thead>
+                  <tr>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      عنوان
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      شناسه
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      فایل‌ها
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      تصاویر
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      دسته‌بندی
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      توئیت‌ها
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      عملیات
+                    </th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+            
+            {/* Scrollable Body */}
+            <div className="flex-1 overflow-y-auto min-h-0">
+              <table className="min-w-full">
+                <tbody className="bg-gray-800 divide-y divide-gray-700">
                 {dynos.map((dyno) => (
                   <tr key={dyno.id} className="hover:bg-gray-700 transition-colors duration-150">
                     <td className="px-4 py-4">
@@ -201,7 +244,7 @@ const DynographListPage = () => {
                       </div>
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap">
-                      <div className="text-xs text-gray-300 font-mono bg-gray-700 px-2 py-1 rounded">
+                      <div className="text-xs text-gray-300 font-mono bg-gray-700 px-2 py-1 rounded truncate max-w-xs">
                         {dyno.slug}
                       </div>
                     </td>
@@ -240,6 +283,15 @@ const DynographListPage = () => {
                             </span>
                           </div>
                           <span className="text-xs text-gray-400">تصویرنوشته</span>
+                        </div>
+                        <div className="flex flex-col items-center">
+                          <div className="flex items-center gap-1">
+                            <FileText className="w-4 h-4 text-green-400" />
+                            <span className="text-sm font-medium text-white">
+                              {dyno.videos?.length || 0}
+                            </span>
+                          </div>
+                          <span className="text-xs text-gray-400">ویدئوها</span>
                         </div>
                       </div>
                     </td>
@@ -285,119 +337,138 @@ const DynographListPage = () => {
                 ))}
               </tbody>
             </table>
+            
+            {dynos.length === 0 && (
+              <div className="text-center py-12">
+                <Globe className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-400 text-lg">هیچ داینویی یافت نشد</p>
+              </div>
+            )}
           </div>
-          
-          {dynos.length === 0 && (
-            <div className="text-center py-12">
-              <Globe className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-400 text-lg">هیچ داینویی یافت نشد</p>
-            </div>
-          )}
         </div>
+      </div>
 
         {/* Mobile Cards */}
-        <div className="lg:hidden space-y-4">
-          {dynos.map((dyno) => (
-            <div key={dyno.id} className="bg-gray-800 rounded-xl shadow-xl p-4 border border-gray-700">
-              <div className="flex justify-between items-start mb-3">
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-white mb-1">
-                    {dyno.title?.fa || dyno.title?.en || 'بدون عنوان'}
-                  </h3>
-                  <p className="text-sm text-gray-400">
-                    {dyno.description?.fa || dyno.description?.en || 'بدون توضیحات'}
-                  </p>
+        <div className="xl:hidden h-full overflow-y-auto">
+          <div className="space-y-4 pb-4">
+            {dynos.map((dyno) => (
+              <div key={dyno.id} className="bg-gray-800 rounded-xl shadow-xl p-4 border border-gray-700">
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-white mb-1">
+                      {dyno.title?.fa || dyno.title?.en || 'بدون عنوان'}
+                    </h3>
+                    <p className="text-sm text-gray-400">
+                      {dyno.description?.fa || dyno.description?.en || 'بدون توضیحات'}
+                    </p>
+                  </div>
+                  <div className="flex gap-2 ml-2">
+                    <button
+                      onClick={() => handleEdit(dyno.id)}
+                      className="p-2 text-blue-400 hover:bg-blue-600 hover:text-white rounded-lg transition-colors"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(dyno.id)}
+                      className="p-2 text-red-400 hover:bg-red-600 hover:text-white rounded-lg transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex gap-2 ml-2">
-                  <button
-                    onClick={() => handleEdit(dyno.id)}
-                    className="p-2 text-blue-400 hover:bg-blue-600 hover:text-white rounded-lg transition-colors"
-                  >
-                    <Edit className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(dyno.id)}
-                    className="p-2 text-red-400 hover:bg-red-600 hover:text-white rounded-lg transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                
+                <div className="text-xs text-gray-300 font-mono bg-gray-700 px-2 py-1 rounded mb-3 inline-block">
+                  {dyno.slug}
                 </div>
-              </div>
-              
-              <div className="text-xs text-gray-300 font-mono bg-gray-700 px-2 py-1 rounded mb-3 inline-block">
-                {dyno.slug}
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
-                <div className="bg-gray-700 rounded-lg p-3">
-                  <div className="text-xs text-gray-400 mb-2">فایل‌ها</div>
-                  <div className="flex justify-around">
-                    <div className="flex flex-col items-center">
-                      <StatusIcon condition={!!dyno.pdfFile} />
-                      <span className="text-xs text-gray-400 mt-1">PDF</span>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
+                  <div className="bg-gray-700 rounded-lg p-3">
+                    <div className="text-xs text-gray-400 mb-2">فایل‌ها</div>
+                    <div className="flex justify-around">
+                      <div className="flex flex-col items-center">
+                        <StatusIcon condition={!!dyno.pdfFile} />
+                        <span className="text-xs text-gray-400 mt-1">PDF</span>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <StatusIcon condition={!!dyno.htmlFile} />
+                        <span className="text-xs text-gray-400 mt-1">HTML</span>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <StatusIcon condition={!!dyno.image} />
+                        <span className="text-xs text-gray-400 mt-1">کاور</span>
+                      </div>
                     </div>
-                    <div className="flex flex-col items-center">
-                      <StatusIcon condition={!!dyno.htmlFile} />
-                      <span className="text-xs text-gray-400 mt-1">HTML</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <StatusIcon condition={!!dyno.image} />
-                      <span className="text-xs text-gray-400 mt-1">کاور</span>
+                  </div>
+                  
+                  <div className="bg-gray-700 rounded-lg p-3">
+                    <div className="text-xs text-gray-400 mb-2">تصاویر</div>
+                    <div className="flex justify-around">
+                      <div className="flex flex-col items-center">
+                        <div className="flex items-center gap-1">
+                          <Image className="w-4 h-4 text-blue-400" />
+                          <span className="text-sm font-medium text-white">
+                            {dyno.images?.length || 0}
+                          </span>
+                        </div>
+                        <span className="text-xs text-gray-400">تصاویر</span>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <div className="flex items-center gap-1">
+                          <FileText className="w-4 h-4 text-green-400" />
+                          <span className="text-sm font-medium text-white">
+                            {dyno.textimages?.length || 0}
+                          </span>
+                        </div>
+                        <span className="text-xs text-gray-400">تصویرنوشته</span>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <div className="flex items-center gap-1">
+                          <FileText className="w-4 h-4 text-green-400" />
+                          <span className="text-sm font-medium text-white">
+                            {dyno.videos?.length || 0}
+                          </span>
+                        </div>
+                        <span className="text-xs text-gray-400">ویدئوها</span>
+                      </div>
                     </div>
                   </div>
                 </div>
                 
-                <div className="bg-gray-700 rounded-lg p-3">
-                  <div className="text-xs text-gray-400 mb-2">تصاویر</div>
-                  <div className="flex justify-around">
-                    <div className="flex flex-col items-center">
-                      <div className="flex items-center gap-1">
-                        <Image className="w-4 h-4 text-blue-400" />
-                        <span className="text-sm font-medium text-white">
-                          {dyno.images?.length || 0}
-                        </span>
-                      </div>
-                      <span className="text-xs text-gray-400">تصاویر</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="flex items-center gap-1">
-                        <FileText className="w-4 h-4 text-green-400" />
-                        <span className="text-sm font-medium text-white">
-                          {dyno.textimages?.length || 0}
-                        </span>
-                      </div>
-                      <span className="text-xs text-gray-400">تصویرنوشته</span>
-                    </div>
+                <div className="flex justify-between items-center">
+                  <div className="flex flex-wrap gap-1">
+                    {dyno.categories?.map((category) => (
+                      <span
+                        key={category.id}
+                        className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-600 text-blue-100"
+                      >
+                        {category.title?.fa || category.title?.en}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-blue-400">
+                      {dyno.summaries?.length || 0} توئیت
+                    </span>
                   </div>
                 </div>
               </div>
-              
-              <div className="flex justify-between items-center">
-                <div className="flex flex-wrap gap-1">
-                  {dyno.categories?.map((category) => (
-                    <span
-                      key={category.id}
-                      className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-600 text-blue-100"
-                    >
-                      {category.title?.fa || category.title?.en}
-                    </span>
-                  ))}
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-blue-400">
-                    {dyno.summaries?.length || 0} توئیت
-                  </span>
-                </div>
+            ))}
+            
+            {dynos.length === 0 && (
+              <div className="text-center py-12">
+                <Globe className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-400 text-lg">هیچ داینویی یافت نشد</p>
               </div>
-            </div>
-          ))}
+            )}
+          </div>
         </div>
 
         {/* Tablet View */}
-        <div className="hidden md:block lg:hidden">
-          <div className="bg-gray-800 rounded-xl shadow-2xl overflow-hidden">
+        <div className="hidden xl:block 2xl:hidden lg:hidden h-full">
+          <div className="bg-gray-800 rounded-xl shadow-2xl h-full flex flex-col">
             {/* Fixed Header */}
-            <div className="bg-gray-700">
+            <div className="flex-shrink-0 bg-gray-700 rounded-t-xl">
               <table className="min-w-full">
                 <thead>
                   <tr>
@@ -419,9 +490,9 @@ const DynographListPage = () => {
             </div>
             
             {/* Scrollable Body */}
-            <div className="overflow-y-auto max-h-96">
-              <table className="min-w-full divide-y divide-gray-700">
-                <tbody className="bg-gray-800">
+            <div className="flex-1 overflow-y-auto min-h-0">
+              <table className="min-w-full">
+                <tbody className="bg-gray-800 divide-y divide-gray-700">
                   {dynos.map((dyno) => (
                     <tr key={dyno.id} className="hover:bg-gray-700 transition-colors duration-150">
                       <td className="px-4 py-4">
@@ -479,9 +550,17 @@ const DynographListPage = () => {
                   ))}
                 </tbody>
               </table>
+              
+              {dynos.length === 0 && (
+                <div className="text-center py-12">
+                  <Globe className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-400 text-lg">هیچ داینویی یافت نشد</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
+      </div>
     </div>
   );
 };

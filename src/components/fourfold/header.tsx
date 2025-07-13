@@ -70,9 +70,10 @@ const fontFamily = "Inter, sans-serif";
 type HeaderProps = {
   currentLang: Language;
   onLanguageChange: (lang: Language) => void;
+  font: string;
 };
 
-export function Header({ currentLang, onLanguageChange }: HeaderProps) {
+export function Header({ currentLang, onLanguageChange, font }: HeaderProps) {
   const [isSearchExpanded, setSearchExpanded] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -173,7 +174,7 @@ export function Header({ currentLang, onLanguageChange }: HeaderProps) {
               <Menu className="h-5 w-5" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent className={`ms-8 ${font}`} side='bottom' sideOffset={0} align="end">
             <DropdownMenuSub>
               <DropdownMenuSubTrigger>{languageOptions[currentLang].name}</DropdownMenuSubTrigger>
               <DropdownMenuSubContent>

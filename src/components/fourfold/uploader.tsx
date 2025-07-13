@@ -14,7 +14,6 @@ interface FileUploadComponentProps {
   onUploadComplete?: (meta: FileMeta) => void;
   onError?: (file: File, error: any) => void;
   className?: string;
-  uploadedId?: number;
   title?: string;
   description?: string;
   processDocument?: boolean;
@@ -46,7 +45,6 @@ export default function FileUploadComponent({
   onUploadComplete,
   onError,
   className = "",
-  uploadedId,
   title = "آپلود فایل",
   description = "فایل‌های خود را انتخاب کنید یا اینجا بکشید",
   processDocument = false
@@ -151,7 +149,7 @@ export default function FileUploadComponent({
         
         <div className="flex items-center justify-center gap-4 mt-2 text-xs text-gray-500">
           <span>حداکثر: {maxSize}MB</span>
-          <span>•</span>
+          <span>نوع</span>
           <span>{dataType}</span>
         </div>
       </div>
@@ -183,11 +181,16 @@ export default function FileUploadComponent({
                       {getFileIcon(fileMeta.file)}
                     </div>
                   )}
-                  
-                  {<p>{uploadedId}</p>}
+                  <p className="text-md font-medium text-gray-200 truncate">
+                      {fileMeta?.file.name}
+                  </p>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-200 truncate">
-                      {fileMeta.file.name}
+                    {fileMeta?.uploadedData?.id && <p className="text-xs font-medium text-gray-200 truncate">
+                      <span>ID: </span>
+                      {fileMeta?.uploadedData?.id}
+                    </p>}
+                    <p className="text-xs font-medium text-gray-200 truncate">
+                      اندازه فایل
                     </p>
                     <p className="text-xs text-gray-500">
                       {formatFileSize(fileMeta.file.size)}

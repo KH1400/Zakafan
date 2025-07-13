@@ -31,7 +31,7 @@ export function InteractiveBanners({ lang = 'en' }: { lang: Language }) {
   
   return (
     <div
-      className={cn("flex h-full w-full", isRtl && "flex-row-reverse")}
+      className={cn("flex flex-col md:flex-row h-full w-full", isRtl && "flex-row-reverse")}
       onMouseLeave={() => setHoveredIndex(null)}
     >
       {categories.map((banner, index) => {

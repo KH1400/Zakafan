@@ -113,7 +113,7 @@ function MosaicPanel({
         group relative block overflow-hidden 
         transition-transform duration-300 ease-in-out 
         hover:scale-[1.02] hover:z-10 
-        h-96 md:h-auto
+        h-44 md:h-auto
         ${layoutSize.class}
       `}
       aria-label={panel.title[language]}
@@ -159,7 +159,7 @@ export function MosaicLayout({ panels, baseHref, lang }: MosaicLayoutProps) {
  
   return (
     <div className="w-full h-full">
-      <div className="w-full h-full flex flex-col md:grid md:grid-cols-3 lg:grid-cols-4 md:auto-rows-[20vw] gap-2 overflow-y-auto overflow-x-hidden" style={{gridAutoFlow: 'row dense'}}>
+      <div className="w-full h-full flex flex-col md:grid md:grid-cols-3 lg:grid-cols-4 md:auto-rows-[20vw] gap-2 md:overflow-y-auto overflow-x-hidden" style={{gridAutoFlow: 'row dense'}}>
         {layoutPanels.map((panel, index) => (
           <MosaicPanel 
             key={`${panel.title[language]}-${panel.originalIndex}`}
