@@ -332,7 +332,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
     if (dyno && editingId) {
       try {
         const res: {id: number, generated_summary: string, language: string, created_at: string } = await updateSummary({summaryId: editingId, generatedSummary: editText}).json();
-        setDyno({ ...dyno, summaries: dyno.summaries.map(s => {if(s.id === editingId){return {id: res.id, content: res.generated_summary, language: res.language, createdAt: res.created_at}}else{return s}}) });
+        setDyno({ ...dyno, summaries: dyno.summaries.map(s => {if(s.id === editingId){return {...s, id: res.id, content: res.generated_summary}}else{return s}}) });
         setEditingId(null);
         setEditText('');
       } catch (error) {
@@ -594,7 +594,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
                   ) : (
                     /* Display Mode */
                     <>
-                      <p className="text-sm text-card-foreground pr-16 leading-relaxed">
+                      <p className="text-sm text-card-foreground pr-16 leading-relaxed whitespace-pre-wrap">
                         {summary.content}
                       </p>
                       

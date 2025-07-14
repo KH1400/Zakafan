@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { apiPostStoreUploadUrl } from "../lib/api";
 import { DataType } from "../lib/content-types";
+import { useAuth } from "../contexts/AuthContext";
 
 export type UploadStatus = "idle" | "uploading" | "success" | "error";
 
@@ -44,7 +45,7 @@ export function useMultiFileUpload({
 }: UseMultiFileUploadProps = {}) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [files, setFiles] = useState<FileMeta[]>([]);
-  
+  const {token} = useAuth();
   const handleFileSelect = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>, dataType: DataType) => {
 
@@ -108,7 +109,7 @@ export function useMultiFileUpload({
       try {
         const xhr = new XMLHttpRequest();
         xhr.open("POST", apiPostStoreUploadUrl());
-        xhr.setRequestHeader("Authorization", `Bearer ${process.env.NEXT_PUBLIC_TOKEN || ""}`);
+        xhr.setRequestHeader("Authorization", `Bearer ${token || ""}`);
 
         xhr.upload.onprogress = (event) => {
           if (event.lengthComputable) {
@@ -174,7 +175,7 @@ export function useMultiFileUpload({
         onError?.(meta.file, err);
       }
     },
-    [process.env.NEXT_PUBLIC_TOKEN, onUploadComplete, onError, uploadOptions]
+    [token, onUploadComplete, onError, uploadOptions]
   );
 
   const uploadAll = useCallback((options?: UploadOptions) => {

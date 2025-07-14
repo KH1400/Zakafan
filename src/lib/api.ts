@@ -137,7 +137,7 @@ export const fetchDynoBySlug = ({slug}) =>
   api.get(`dynograph/dynographs/slug/${slug}`);
 
 export const deleteDyno = ({id}: {id: string}) => 
-  api.delete(`dynograph/dynographs/${id}`,{headers: withBearer(process.env.NEXT_PUBLIC_TOKEN)});
+  api.delete(`dynograph/dynographs/${id}`);
 
 export const fetchSummaries = ({dynoId}) => 
   api.get(`dynograph/dynographs/${dynoId}`);
@@ -153,14 +153,12 @@ export const apiPostStoreUploadUrl = () =>
 
 export const createDynograph = (dynographData) => 
   api.post(`dynograph/dynographs`, {
-      json: dynographData,
-      headers: withBearer(process.env.NEXT_PUBLIC_TOKEN)
+      json: dynographData
     });
 
 export const updateDynograph = (dynographData) => 
   api.put(`dynograph/dynographs/${dynographData.id}`, {
-      json: dynographData,
-      headers: withBearer(process.env.NEXT_PUBLIC_TOKEN)
+      json: dynographData
     });
 
 async function createMasterDynograph(slug, dynographIds) {

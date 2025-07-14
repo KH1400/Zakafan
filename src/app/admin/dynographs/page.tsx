@@ -380,6 +380,10 @@ const DynographListPage = () => {
                             <StatusIcon condition={!!dyno.image} />
                             <span className="text-xs text-gray-400 mt-1">کاور</span>
                           </div>
+                          <div className="flex flex-col items-center">
+                            <StatusIcon condition={!!dyno.infoFile} />
+                            <span className="text-xs text-gray-400 mt-1">اینفو</span>
+                          </div>
                         </div>
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap text-center">
@@ -410,6 +414,15 @@ const DynographListPage = () => {
                               </span>
                             </div>
                             <span className="text-xs text-gray-400">ویدئوها</span>
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <div className="flex items-center gap-1">
+                              <FileText className="w-4 h-4 text-green-400" />
+                              <span className="text-sm font-medium text-white">
+                                {dyno.summaries?.length || 0}
+                              </span>
+                            </div>
+                            <span className="text-xs text-gray-400">توئیت</span>
                           </div>
                         </div>
                       </td>
