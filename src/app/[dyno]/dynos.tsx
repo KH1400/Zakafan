@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { fetchCategory, fetchDynos } from "../../lib/api";
 import { useLanguage } from "../../lib/language-context";
 import Loding from "../../components/fourfold/loading";
+import { Skeleton } from "../../components/ui/skeleton";
 
 const goBackTranslations = {
   en: "Go Back Home",
@@ -69,7 +70,7 @@ export default function DynosPage({ slug }: { slug: string }) {
   }, [slug, language]); // فقط slug و language را dependency قرار دادیم
 
   if (loading || !category) {
-    return <Loding />
+    return <LoadSkeleton />
   }
 
   return (
@@ -98,7 +99,25 @@ export default function DynosPage({ slug }: { slug: string }) {
       </div>
       
       {/* Footer */}
-      <Footer lang={language} />
+      {/* <Footer lang={language} /> */}
     </div>
   );
+}
+
+const LoadSkeleton = () => {
+  return <div className={`flex flex-col h-full overflow-y-auto`}>
+  {/* Header - now separate from layout header */}
+  <Skeleton className={`flex h-14 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0 sticky top-0 z-20`}/>
+  
+  {/* Main content */}
+  <div className="flex-grow w-full overflow-y-auto flex flex-col flex-shrink-0">
+  <div className="w-full h-full">
+      <div className="w-full h-full flex flex-col md:grid md:grid-cols-3 lg:grid-cols-4 md:auto-rows-[20vw] gap-2 md:overflow-y-auto overflow-x-hidden" style={{gridAutoFlow: 'row dense'}}>
+        {[...Array(8)].map((_, i) => (
+          <Skeleton key={i} className="w-full h-full bg-muted-foreground/10"/>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
 }

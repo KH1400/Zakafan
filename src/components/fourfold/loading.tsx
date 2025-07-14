@@ -8,7 +8,7 @@ const loadingTranslations = {
 };
 
 
-export default function Loding ({className}:{className?: string}) {
+export default function Loading ({className}:{className?: string}) {
   const { language, selectedLang } = useLanguage();
   return (
     <div className={`${selectedLang.font} flex flex-col items-center justify-center min-h-screen ${className}`}>

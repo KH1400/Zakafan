@@ -36,13 +36,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "../../lib/language-context";
+import { useAuth } from "../../contexts/AuthContext";
 
 const menuItems = [
     { href: '/admin', label: 'داشبورد', icon: LayoutDashboard },
     { href: '/admin/dynographs', label: 'داینوگراف‌ها', icon: FileText },
-    { href: '/admin/content', label: 'مدیریت محتوا', icon: FileText },
+    // { href: '/admin/content', label: 'مدیریت محتوا', icon: FileText },
     { href: '/admin/users', label: 'کاربران', icon: Users },
-    { href: '/admin/analytics', label: 'آمار و تحلیل', icon: BarChart3 },
+    // { href: '/admin/analytics', label: 'آمار و تحلیل', icon: BarChart3 },
     { href: '/admin/settings', label: 'تنظیمات', icon: Settings },
 ];
 
@@ -53,6 +54,7 @@ export default function AdminLayout({
 }) {
   const pathname = usePathname();
   const {language, selectedLang} = useLanguage();
+  const {user, signOut} = useAuth();
   return (
     <SidebarProvider dir={'rtl'}>
       <Sidebar dir="rtl" collapsible="icon">
@@ -116,16 +118,16 @@ export default function AdminLayout({
                   <AvatarFallback>AU</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col items-start group-data-[collapsible=icon]:hidden">
-                  <span className="text-sm font-medium">کاربر ادمین</span>
+                  <span className="text-sm font-medium">{user?.name}</span>
                 </div>
                 <ChevronDown className="mr-auto size-4 group-data-[collapsible=icon]:hidden" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent side="top" align="start" className="w-56">
+            <DropdownMenuContent side="top" align="start" className="font-persian w-56">
               <DropdownMenuLabel>حساب کاربری من</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>پروفایل</DropdownMenuItem>
-              <DropdownMenuItem>خروج</DropdownMenuItem>
+              <DropdownMenuItem className=" cursor-pointer">پروفایل</DropdownMenuItem>
+              <DropdownMenuItem className=" cursor-pointer" onClick={signOut}>خروج</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </SidebarFooter>

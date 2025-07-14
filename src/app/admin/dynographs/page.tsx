@@ -6,7 +6,9 @@ import { Dyno, DynoCategory, DynoDtoIn } from '../../../lib/content-types';
 import { Button } from '../../../components/ui/button';
 import { NewDynographModal } from './new-dynograph-modal';
 import { useToast } from '../../../hooks/use-toast';
-import ProtectedRoute from '../../../components/authinticated-page';
+import ProtectedRoute from '../../../components/protected-route';
+import Loading from '../../../components/fourfold/loading';
+import { Skeleton } from '../../../components/ui/skeleton';
 
 function slugify(text: string) {
   return text
@@ -167,12 +169,21 @@ const DynographListPage = () => {
 
   if (loading) {
     return (
-      <ProtectedRoute>
-        <div className="h-full">
-          <div className="container mx-auto py-8">
-            <div className="flex items-center justify-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400"></div>
+      <ProtectedRoute accessRoles={['admin', 'user']} isLoading={true}>
+        <div className="h-[90vh] flex flex-col">
+          <div className="p-6 pb-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <Skeleton className="h-8 w-48 bg-muted-foreground/10 rounded animate-pulse" />
+              <Skeleton className="h-10 w-40 bg-muted-foreground/10 rounded animate-pulse" />
             </div>
+          </div>  
+          <div className="flex-1 px-6 pb-6 space-y-4 overflow-y-auto">
+            {Array.from({ length: 6 }).map((_, idx) => (
+              <Skeleton
+                key={idx}
+                className="h-24 bg-muted-foreground/10 rounded-xl animate-pulse"
+              />
+            ))}
           </div>
         </div>
       </ProtectedRoute>
@@ -180,7 +191,7 @@ const DynographListPage = () => {
   }
 
   return (
-    <ProtectedRoute>
+    <ProtectedRoute accessRoles={['admin', 'user']}>
       <div className="h-[90vh] flex flex-col">
         {showNewDynoModal && <NewDynographModal categories={categories} loading={submitLoading} dyno={dyno} onChange={(d: DynoDtoIn) => setDyno(d)} onSubmit={(d: DynoDtoIn) => handleInsertDyno(d)} onClose={() => {setShowNewDynoModal(false)}} />}
         
@@ -342,13 +353,13 @@ const DynographListPage = () => {
                 </tbody>
               </table>
               
-              {dynos.length === 0 && (
-                <div className="text-center py-12">
-                  <Globe className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-400 text-lg">هیچ داینویی یافت نشد</p>
-                </div>
-              )}
             </div>
+            {dynos.length === 0 && (
+              <div className="h-full flex justify-center items-center">
+                {/* <Globe className="w-12 h-12 text-gray-400 mx-auto mb-4" /> */}
+                <Loading/>
+              </div>
+            )}
           </div>
         </div>
 

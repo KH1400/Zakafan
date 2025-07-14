@@ -65,6 +65,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import ProtectedRoute from "../../../components/protected-route";
 
 type User = {
   id: string;
@@ -192,156 +193,158 @@ export default function UsersPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-full p-4 md:p-6 bg-muted/40 font-persian" dir="rtl">
-      <Card>
-        <CardHeader>
-          <CardTitle>مدیریت کاربران</CardTitle>
-          <CardDescription>
-            کاربران سایت را مشاهده، اضافه یا مدیریت کنید.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-between gap-4 mb-4">
-            <div className="relative w-full md:w-1/3">
-              <Search className="absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="جستجوی کاربر..."
-                className="pr-8"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+    <ProtectedRoute accessRoles={['admin']}>
+      <div className="flex flex-col min-h-full p-4 md:p-6 bg-muted/40 font-persian" dir="rtl">
+        <Card>
+          <CardHeader>
+            <CardTitle>مدیریت کاربران</CardTitle>
+            <CardDescription>
+              کاربران سایت را مشاهده، اضافه یا مدیریت کنید.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between gap-4 mb-4">
+              <div className="relative w-full md:w-1/3">
+                <Search className="absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="جستجوی کاربر..."
+                  className="pr-8"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <Button className="gap-1" onClick={() => handleOpenFormDialog(null)}>
+                <PlusCircle className="h-3.5 w-3.5" />
+                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                  افزودن کاربر
+                </span>
+              </Button>
             </div>
-            <Button className="gap-1" onClick={() => handleOpenFormDialog(null)}>
-              <PlusCircle className="h-3.5 w-3.5" />
-              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                افزودن کاربر
-              </span>
-            </Button>
-          </div>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>کاربر</TableHead>
-                <TableHead>نقش</TableHead>
-                <TableHead>وضعیت</TableHead>
-                <TableHead>آخرین فعالیت</TableHead>
-                <TableHead>
-                  <span className="sr-only">Actions</span>
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredUsers.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Avatar className="h-9 w-9">
-                        <AvatarImage src={`https://placehold.co/40x40.png?text=${user.avatar}`} data-ai-hint="user avatar" />
-                        <AvatarFallback>{user.avatar}</AvatarFallback>
-                      </Avatar>
-                      <div className="grid gap-0.5">
-                        <p className="font-medium">{user.name}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {user.email}
-                        </p>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline">{user.role}</Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={user.status === "فعال" ? "default" : "secondary"}>
-                      {user.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{user.lastActive}</TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button aria-haspopup="true" size="icon" variant="ghost">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Toggle menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>عملیات</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => handleOpenFormDialog(user)}>ویرایش</DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive" onClick={() => openDeleteAlert(user)}>
-                          حذف
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>کاربر</TableHead>
+                  <TableHead>نقش</TableHead>
+                  <TableHead>وضعیت</TableHead>
+                  <TableHead>آخرین فعالیت</TableHead>
+                  <TableHead>
+                    <span className="sr-only">Actions</span>
+                  </TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {filteredUsers.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-9 w-9">
+                          <AvatarImage src={`https://placehold.co/40x40.png?text=${user.avatar}`} data-ai-hint="user avatar" />
+                          <AvatarFallback>{user.avatar}</AvatarFallback>
+                        </Avatar>
+                        <div className="grid gap-0.5">
+                          <p className="font-medium">{user.name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {user.email}
+                          </p>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline">{user.role}</Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={user.status === "فعال" ? "default" : "secondary"}>
+                        {user.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>{user.lastActive}</TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button aria-haspopup="true" size="icon" variant="ghost">
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Toggle menu</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>عملیات</DropdownMenuLabel>
+                          <DropdownMenuItem onClick={() => handleOpenFormDialog(user)}>ویرایش</DropdownMenuItem>
+                          <DropdownMenuItem className="text-destructive" onClick={() => openDeleteAlert(user)}>
+                            حذف
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
 
-      {/* Add/Edit User Dialog */}
-      <Dialog open={isFormDialogOpen} onOpenChange={setFormDialogOpen}>
-            <DialogContent className="sm:max-w-[425px] font-persian" dir="rtl">
-                <form onSubmit={handleSaveUser}>
-                    <DialogHeader>
-                        <DialogTitle>{userToEdit ? 'ویرایش کاربر' : 'افزودن کاربر جدید'}</DialogTitle>
-                        <DialogDescription>
-                           {userToEdit ? 'اطلاعات کاربر را ویرایش کنید.' : 'اطلاعات کاربر جدید را وارد کنید.'}
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="name" className="text-right">نام</Label>
-                            <Input id="name" name="name" defaultValue={userToEdit?.name || ''} className="col-span-3" required />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="email" className="text-right">ایمیل</Label>
-                            <Input id="email" name="email" type="email" defaultValue={userToEdit?.email || ''} className="col-span-3" required />
-                        </div>
-                         <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="role" className="text-right">نقش</Label>
-                            <Select name="role" defaultValue={userToEdit?.role || 'مشترک'} required>
-                                <SelectTrigger className="col-span-3">
-                                    <SelectValue placeholder="یک نقش انتخاب کنید" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="مدیر کل">مدیر کل</SelectItem>
-                                    <SelectItem value="نویسنده">نویسنده</SelectItem>
-                                    <SelectItem value="ویرایشگر">ویرایشگر</SelectItem>
-                                    <SelectItem value="مشترک">مشترک</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <DialogClose asChild>
-                            <Button type="button" variant="secondary">لغو</Button>
-                        </DialogClose>
-                        <Button type="submit">ذخیره</Button>
-                    </DialogFooter>
-                </form>
-            </DialogContent>
-        </Dialog>
-      
-      {/* Delete Confirmation Dialog */}
-       <AlertDialog open={isDeleteAlertOpen} onOpenChange={setDeleteAlertOpen}>
-            <AlertDialogContent dir="rtl" className="font-persian">
-                <AlertDialogHeader>
-                    <AlertDialogTitle>آیا از حذف کاربر مطمئن هستید؟</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        این عمل قابل بازگشت نیست. با این کار کاربر <span className="font-bold">{userToDelete?.name}</span> برای همیشه حذف خواهد شد.
-                    </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                    <AlertDialogCancel>لغو</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDeleteUser} className="bg-destructive hover:bg-destructive/90">
-                        بله، حذف کن
-                    </AlertDialogAction>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
-    </div>
+        {/* Add/Edit User Dialog */}
+        <Dialog open={isFormDialogOpen} onOpenChange={setFormDialogOpen}>
+              <DialogContent className="sm:max-w-[425px] font-persian" dir="rtl">
+                  <form onSubmit={handleSaveUser}>
+                      <DialogHeader>
+                          <DialogTitle>{userToEdit ? 'ویرایش کاربر' : 'افزودن کاربر جدید'}</DialogTitle>
+                          <DialogDescription>
+                            {userToEdit ? 'اطلاعات کاربر را ویرایش کنید.' : 'اطلاعات کاربر جدید را وارد کنید.'}
+                          </DialogDescription>
+                      </DialogHeader>
+                      <div className="grid gap-4 py-4">
+                          <div className="grid grid-cols-4 items-center gap-4">
+                              <Label htmlFor="name" className="text-right">نام</Label>
+                              <Input id="name" name="name" defaultValue={userToEdit?.name || ''} className="col-span-3" required />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                              <Label htmlFor="email" className="text-right">ایمیل</Label>
+                              <Input id="email" name="email" type="email" defaultValue={userToEdit?.email || ''} className="col-span-3" required />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                              <Label htmlFor="role" className="text-right">نقش</Label>
+                              <Select name="role" defaultValue={userToEdit?.role || 'مشترک'} required>
+                                  <SelectTrigger className="col-span-3">
+                                      <SelectValue placeholder="یک نقش انتخاب کنید" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                      <SelectItem value="مدیر کل">مدیر کل</SelectItem>
+                                      <SelectItem value="نویسنده">نویسنده</SelectItem>
+                                      <SelectItem value="ویرایشگر">ویرایشگر</SelectItem>
+                                      <SelectItem value="مشترک">مشترک</SelectItem>
+                                  </SelectContent>
+                              </Select>
+                          </div>
+                      </div>
+                      <DialogFooter>
+                          <DialogClose asChild>
+                              <Button type="button" variant="secondary">لغو</Button>
+                          </DialogClose>
+                          <Button type="submit">ذخیره</Button>
+                      </DialogFooter>
+                  </form>
+              </DialogContent>
+          </Dialog>
+        
+        {/* Delete Confirmation Dialog */}
+        <AlertDialog open={isDeleteAlertOpen} onOpenChange={setDeleteAlertOpen}>
+              <AlertDialogContent dir="rtl" className="font-persian">
+                  <AlertDialogHeader>
+                      <AlertDialogTitle>آیا از حذف کاربر مطمئن هستید؟</AlertDialogTitle>
+                      <AlertDialogDescription>
+                          این عمل قابل بازگشت نیست. با این کار کاربر <span className="font-bold">{userToDelete?.name}</span> برای همیشه حذف خواهد شد.
+                      </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                      <AlertDialogCancel>لغو</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDeleteUser} className="bg-destructive hover:bg-destructive/90">
+                          بله، حذف کن
+                      </AlertDialogAction>
+                  </AlertDialogFooter>
+              </AlertDialogContent>
+          </AlertDialog>
+      </div>
+    </ProtectedRoute>
   );
 }

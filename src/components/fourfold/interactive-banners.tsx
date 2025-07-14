@@ -19,7 +19,7 @@ export function InteractiveBanners({ lang = 'en' }: { lang: Language }) {
   const getCategories = async () => {
     try {
       const cates: any = await fetchCategories().json();
-      setCategories(cates.categories.map((c: any) => ({...c, image: c.image_file, imageHint: c.image_hint})));
+      setCategories(cates.categories.sort((a: any, b: any) => b.id - a.id).map((c: any) => ({...c, image: c.image_file, imageHint: c.image_hint})));
     } catch (error) {
       console.log(error)
     }

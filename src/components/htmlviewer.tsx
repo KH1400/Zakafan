@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import Loading from './fourfold/loading';
 
 interface HtmlRendererProps {
   htmlContent: string;
@@ -7,11 +8,12 @@ interface HtmlRendererProps {
 
 const HtmlRenderer: React.FC<HtmlRendererProps> = ({ htmlContent, className }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-
+  const [loading, setLoading] = useState(false)
   const htmlToRender = htmlContent;
 
   useEffect(() => {
     if (containerRef.current) {
+      setLoading(true)
       // پاک کردن محتوای قبلی
       containerRef.current.innerHTML = '';
       
@@ -82,10 +84,13 @@ const HtmlRenderer: React.FC<HtmlRendererProps> = ({ htmlContent, className }) =
             
             iframe.style.height = `${height}px`;
           }
-        }, 100);
+        }, 1);
       }
+      setLoading(false)
     }
   }, [htmlToRender]);
+
+  if(loading) { return null }
 
   return (
     <div className={className}>

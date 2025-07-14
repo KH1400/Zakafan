@@ -41,7 +41,7 @@ import FileUploadComponent from "../../components/fourfold/uploader";
 import '../../hooks/use-uploader';
 import { useAuth } from "../../contexts/AuthContext";
 import { useRouter } from "next/navigation";
-import ProtectedRoute from "../../components/authinticated-page";
+import ProtectedRoute from "../../components/protected-route";
 
 const chartData = [
   { month: "فروردین", thisMonth: 186, lastMonth: 80 },
@@ -74,7 +74,7 @@ export default function AdminDashboardPage() {
   const { language, selectedLang } = useLanguage();
 
   return (
-    <ProtectedRoute>
+    <ProtectedRoute accessRoles={['admin', 'user']}>
       <div dir={selectedLang.dir} className="flex flex-col min-h-full p-4 md:p-6 bg-muted/40 font-persian">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-semibold">داشبورد</h1>

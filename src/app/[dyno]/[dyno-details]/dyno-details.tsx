@@ -5,12 +5,13 @@ import { useLanguage } from '../../../lib/language-context';
 import HtmlRenderer from '../../../components/htmlviewer';
 import { Button } from '../../../components/ui/button';
 import { ArrowLeft, ArrowLeftRight, ArrowRight, Check, CheckCheck, Copy, DownloadIcon, Edit2, Trash2 } from 'lucide-react';
-import Loding from '../../../components/fourfold/loading';
 import { deleteSummary, fetchDynoBySlug, fetchSummaries, generateSummary, updateSummary } from '../../../lib/api';
 import { useNavigation } from 'react-day-picker';
 import Link from 'next/link';
 import Image from 'next/image';
 import VideoPlayer from '../../../components/video-player';
+import Loading from '../../../components/fourfold/loading';
+import { Skeleton } from '../../../components/ui/skeleton';
 
 // ترجمه‌های متن‌ها
 const translations = {
@@ -391,7 +392,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
   }
 
   if(!dyno){
-    return <Loding/>
+    return <LoadSkeleton/>
   }
   
   return (
@@ -764,4 +765,76 @@ const Card = ({children, className, title, description}:{
                       opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
     </div>
   )
+}
+
+const LoadSkeleton = () => {
+  return <div className="w-full h-full overflow-y-auto bg-background animate-pulse">
+  <div className="grid grid-cols-12 gap-6 px-1 md:px-12 mx-auto">
+    {/* Sticky Header Skeleton */}
+    <div className="col-span-12 sticky top-0 z-50 -mt-6">
+      <Skeleton className="p-4 bg-muted-foreground/10 backdrop-blur-md border rounded-lg shadow-md"/>
+    </div>
+
+    {/* Main Content Skeleton */}
+      <Skeleton className="col-span-12 h-96 p-6 border rounded-lg bg-muted-foreground/10"/>
+
+
+    {/* Info Image Skeleton */}
+    <div className="col-span-12 md:col-span-6">
+      <Skeleton className="p-6 border rounded-lg h-[50rem] bg-muted-foreground/10 "/>
+    </div>
+
+    {/* Messages Skeleton */}
+    <div className="col-span-12 md:col-span-6">
+      <div className="p-6 border rounded-lg bg-card h-[50rem] flex flex-col">
+        <div className="h-8 w-32 bg-muted rounded mb-4" />
+        <div className="space-y-4 flex-1 overflow-y-auto">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="p-4 bg-muted/40 rounded-lg space-y-2">
+              <Skeleton className="bg-muted-foreground/10 h-3 w-full rounded" />
+              <Skeleton className="bg-muted-foreground/10 h-3 w-3/4 rounded" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {/* Text Images Skeleton */}
+    <div className="col-span-12">
+      <div className="p-6 border rounded-lg bg-card">
+        <div className="h-4 w-32 bg-muted rounded mb-4" />
+        <div className="flex gap-4 overflow-x-auto">
+          {[...Array(3)].map((_, i) => (
+            <Skeleton key={i} className="bg-muted-foreground/10 w-60 h-96 rounded-md" />
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {/* Images Gallery Skeleton */}
+    <div className="col-span-12">
+      <div className="p-6 border rounded-lg bg-card">
+        <div className="h-4 w-32 bg-muted rounded mb-4" />
+        <div className="flex gap-4 overflow-x-auto">
+          {[...Array(4)].map((_, i) => (
+            <Skeleton key={i } className="bg-muted-foreground/10 w-40 h-40 rounded-md" />
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {/* Videos Gallery Skeleton */}
+    <div className="col-span-12">
+      <div className="p-6 border rounded-lg bg-card">
+        <div className="h-4 w-32 bg-muted rounded mb-4" />
+        <div className="flex gap-4 overflow-x-auto">
+          {[...Array(2)].map((_, i) => (
+            <Skeleton key={i} className="bg-muted-foreground/10 w-[90vw] md:w-[40vw] h-60 rounded-md" />
+          ))}
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 }

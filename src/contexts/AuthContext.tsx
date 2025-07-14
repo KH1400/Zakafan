@@ -6,7 +6,7 @@ interface User {
   id: string;
   email: string;
   name?: string;
-  // سایر فیلدهای کاربر که از API می‌آید
+  roles: string[]
 }
 
 interface AuthContextType {
@@ -33,11 +33,12 @@ export const useAuth = () => {
 const extractUserFromToken = (token: string): User | null => {
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
+    console.log('user:', payload)
     return {
       id: payload.user_id || payload.sub,
       email: payload.email,
       name: payload.name || payload.username,
-      // سایر فیلدهای موجود در JWT
+      roles: payload.roles
     };
   } catch (error) {
     console.error('خطا در استخراج اطلاعات کاربر از token:', error);
@@ -168,6 +169,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.removeItem('auth_token');
       localStorage.removeItem('refresh_token');
       localStorage.removeItem('auth_user');
+      
   };
 
   const value = {
@@ -177,7 +179,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signIn,
     signUp,
     signOut,
-    refreshToken,
+    refreshToken
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
