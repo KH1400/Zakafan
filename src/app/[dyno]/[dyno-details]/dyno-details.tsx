@@ -12,6 +12,7 @@ import Image from 'next/image';
 import VideoPlayer from '../../../components/video-player';
 import Loading from '../../../components/fourfold/loading';
 import { Skeleton } from '../../../components/ui/skeleton';
+import TextCard from './text-card';
 
 // ترجمه‌های متن‌ها
 const translations = {
@@ -100,9 +101,6 @@ const translations = {
 export default function DynoDetailsPage({ slug }: { slug: string }) {
   const { language, selectedLang } = useLanguage();
   const [dyno, setDyno] = useState<Dyno>();
-  const [copiedId, setCopiedId] = useState<number | null>(null);
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [editText, setEditText] = useState<string>('');
   
   // State for scroll animation
   const [isScrolled, setIsScrolled] = useState(false);
@@ -311,39 +309,15 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
     }
   };
 
-  // Handle copy functionality
-  const handleCopy = async (text: string, id: number) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedId(id);
-      setTimeout(() => setCopiedId(null), 2000);
-    } catch (err) {
-      console.error('Failed to copy text: ', err);
-    }
-  };
-
-  // Handle edit functionality
-  const handleEdit = (summary: any) => {
-    setEditingId(summary.id);
-    setEditText(summary.content);
-  };
-
-  const handleSaveEdit = async () => {
-    if (dyno && editingId) {
+  const handleSaveEdit = async (summ, editId) => {
+    if (dyno && editId) {
       try {
-        const res: {id: number, generated_summary: string, language: string, created_at: string } = await updateSummary({summaryId: editingId, generatedSummary: editText}).json();
-        setDyno({ ...dyno, summaries: dyno.summaries.map(s => {if(s.id === editingId){return {...s, id: res.id, content: res.generated_summary}}else{return s}}) });
-        setEditingId(null);
-        setEditText('');
+        const res: {id: number, generated_summary: string, language: string, created_at: string } = await updateSummary({summaryId: editId, generatedSummary: summ}).json();
+        setDyno({ ...dyno, summaries: dyno.summaries.map(s => {if(s.id === editId){return {...s, id: res.id, content: res.generated_summary}}else{return s}}) });
       } catch (error) {
         console.log(error)
       }
     }
-  };
-
-  const handleCancelEdit = () => {
-    setEditingId(null);
-    setEditText('');
   };
 
   const dynoSlugRef = useRef<string>("");
@@ -558,90 +532,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
             {/* Messages Container with Scroll */}
             <div className="flex-1 pr-2 space-y-3 flex-grow">
               {dyno?.summaries.filter(s => s.language === language).map((summary) => (
-                <div
-                  key={summary.id}
-                  className="group relative p-3 bg-muted/50 border border-border rounded-lg 
-                            hover:bg-muted/70 transition-all duration-200 hover:shadow-sm"
-                >
-                  {editingId === summary.id ? (
-                    /* Edit Mode */
-                    <div className="space-y-2">
-                      <textarea
-                        value={editText}
-                        onChange={(e) => setEditText(e.target.value)}
-                        className="w-full p-2 text-sm border border-input rounded-md bg-background 
-                                  text-foreground focus:ring-2 focus:ring-ring focus:border-ring 
-                                  resize-none"
-                        rows={3}
-                      />
-                      <div className="flex gap-2">
-                        <button
-                          onClick={handleSaveEdit}
-                          className="px-3 py-1 bg-primary text-primary-foreground text-xs rounded-sm 
-                                    hover:bg-primary/90 transition-colors"
-                        >
-                          ✓ Save
-                        </button>
-                        <button
-                          onClick={handleCancelEdit}
-                          className="px-3 py-1 bg-secondary text-secondary-foreground text-xs rounded-sm 
-                                    hover:bg-secondary/90 transition-colors"
-                        >
-                          ✕ Cancel
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    /* Display Mode */
-                    <>
-                      <p className="text-sm text-card-foreground pr-16 leading-relaxed whitespace-pre-wrap">
-                        {summary.content}
-                      </p>
-                      
-                      {/* Action Buttons */}
-                      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 
-                                      transition-opacity duration-200 flex gap-1">
-                        <Button
-                          onClick={() => handleEdit(summary)}
-                          className="p-1.5 text-primary-foreground rounded-sm 
-                                    transition-colors text-xs focus:outline-none focus:ring-1 focus:ring-ring h-4 w-4"
-                          title={t.edit}
-                          variant='ghost'
-                          type='button'
-                          size='icon'
-                        >
-                          <Edit2 />
-                        </Button>
-                        <Button
-                          onClick={() => handleDelete(summary.id)}
-                          className="p-1.5 text-primary-foreground rounded-sm 
-                                    transition-colors text-xs focus:outline-none focus:ring-1 focus:ring-ring h-4 w-4"
-                          variant='ghost'
-                          type='button'
-                          size='icon'
-                          title={t.edit}
-                        >
-                          <Trash2 />
-                        </Button>
-                        <Button
-                          onClick={() => handleCopy(summary.content, summary.id)}
-                          className={`p-1.5 text-primary-foreground rounded-sm 
-                                    transition-colors text-xs focus:outline-none h-4 w-4 ${copiedId === summary.id && "bg-amber-500"}`}
-                          variant='ghost'
-                          type='button'
-                          size='icon'
-                          title={copiedId === summary.id ? t.copied : t.copy}
-                        >
-                          {copiedId === summary.id ? (
-                            <Check />
-                          ) : (
-                            <Copy/>
-                          )}
-                        </Button>
-                      </div>
-                    </>
-                  )}
-                </div>
+                <TextCard key={summary.id} content={summary.content} onEdit={(ee) => handleSaveEdit(ee, summary.id)} onDelete={() => handleDelete(summary.id)} />
               ))}
             </div>
           </div>
