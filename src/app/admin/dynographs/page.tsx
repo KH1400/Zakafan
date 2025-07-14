@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import { Edit, Trash2, FileText, Image, Globe, CheckCircle, XCircle, Plus, Eye, EyeIcon } from 'lucide-react';
+import { Edit, Trash2, FileText, Image, Globe, CheckCircle, XCircle, Plus, Eye, Video, MessageSquareText } from 'lucide-react';
 import { deleteDyno, fetchCategories, createDynograph, fetchDynos, updateDynograph } from '../../../lib/api';
 import { Dyno, DynoCategory, DynoDtoIn } from '../../../lib/content-types';
 import { Button } from '../../../components/ui/button';
@@ -316,26 +316,9 @@ const DynographListPage = () => {
                   <thead>
                     <tr>
                       <th className="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider flex justify-center items-center gap-2">
-                        <p>عنوان</p>
+                        <p>فیلتر</p>
                         <Input value={filterText} onChange={(e) => setFilterText(e.target.value)} className="bg-transparent focus:outline-none " />
-                      </th>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
-                        شناسه
-                      </th>
-                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                        فایل‌ها
-                      </th>
-                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                        تصاویر
-                      </th>
-                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                        دسته‌بندی
-                      </th>
-                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                        توئیت‌ها
-                      </th>
-                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                        عملیات
+                        <p>{dynos.filter(d => d.title["fa"].indexOf(filterText) > -1).length}</p>
                       </th>
                     </tr>
                   </thead>
@@ -358,6 +341,23 @@ const DynographListPage = () => {
                           </div>
                         </div>
                       </td>
+                      <td className="px-4 py-4">
+                        <Link href={`/${dyno.categories[0].href}/${dyno.slug}`} className="flex flex-col items-center" target='_blank'>
+                          <Eye className='text-gray-400 hover:text-blue-500'/>
+                        </Link> 
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="flex flex-wrap gap-1 justify-center">
+                          {dyno.categories?.map((category) => (
+                            <span
+                              key={category.id}
+                              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-600 text-blue-100"
+                            >
+                              {category.title?.fa || category.title?.en}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
                       <td className="px-4 py-4 whitespace-nowrap">
                         <div className="text-xs text-gray-300 font-mono bg-gray-700 px-2 py-1 rounded truncate max-w-xs">
                           {dyno.slug}
@@ -365,9 +365,6 @@ const DynographListPage = () => {
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap">
                         <div className="flex justify-center gap-2">
-                          <Link href={`/${dyno.categories[0].href}/${dyno.slug}`} className="flex flex-col items-center" target='_blank'>
-                            <Eye className='text-gray-400 hover:text-blue-500'/>
-                          </Link>
                           <div className="flex flex-col items-center">
                             <StatusIcon condition={!!dyno.pdfFile} />
                             <span className="text-xs text-gray-400 mt-1">PDF</span>
@@ -408,7 +405,7 @@ const DynographListPage = () => {
                           </div>
                           <div className="flex flex-col items-center">
                             <div className="flex items-center gap-1">
-                              <FileText className="w-4 h-4 text-green-400" />
+                              <Video className="w-4 h-4 text-green-400" />
                               <span className="text-sm font-medium text-white">
                                 {dyno.videos?.length || 0}
                               </span>
@@ -417,33 +414,13 @@ const DynographListPage = () => {
                           </div>
                           <div className="flex flex-col items-center">
                             <div className="flex items-center gap-1">
-                              <FileText className="w-4 h-4 text-green-400" />
+                              <MessageSquareText className="w-4 h-4 text-green-400" />
                               <span className="text-sm font-medium text-white">
                                 {dyno.summaries?.length || 0}
                               </span>
                             </div>
                             <span className="text-xs text-gray-400">توئیت</span>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-4">
-                        <div className="flex flex-wrap gap-1 justify-center">
-                          {dyno.categories?.map((category) => (
-                            <span
-                              key={category.id}
-                              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-600 text-blue-100"
-                            >
-                              {category.title?.fa || category.title?.en}
-                            </span>
-                          ))}
-                        </div>
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-center">
-                        <div className="flex flex-col items-center">
-                          <div className="text-lg font-bold text-blue-400">
-                            {dyno.summaries?.length || 0}
-                          </div>
-                          <span className="text-xs text-gray-400">توئیت</span>
                         </div>
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap text-center">
@@ -482,7 +459,7 @@ const DynographListPage = () => {
           {/* Mobile Cards */}
           <div className="xl:hidden h-full overflow-y-auto">
             <div className="space-y-4 pb-4">
-              {dynos.map((dyno) => (
+              {dynos.filter(d => d.title["fa"].indexOf(filterText) > -1).map((dyno) => (
                 <div key={dyno.id} className="bg-gray-800 rounded-xl shadow-xl p-4 border border-gray-700">
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex-1">
@@ -529,11 +506,15 @@ const DynographListPage = () => {
                           <StatusIcon condition={!!dyno.image} />
                           <span className="text-xs text-gray-400 mt-1">کاور</span>
                         </div>
+                        <div className="flex flex-col items-center">
+                          <StatusIcon condition={!!dyno.infoFile} />
+                          <span className="text-xs text-gray-400 mt-1">اینفو</span>
+                        </div>
                       </div>
                     </div>
                     
                     <div className="bg-gray-700 rounded-lg p-3">
-                      <div className="text-xs text-gray-400 mb-2">تصاویر</div>
+                      <div className="text-xs text-gray-400 mb-2">چند رسانه‌ای</div>
                       <div className="flex justify-around">
                         <div className="flex flex-col items-center">
                           <div className="flex items-center gap-1">
@@ -555,7 +536,7 @@ const DynographListPage = () => {
                         </div>
                         <div className="flex flex-col items-center">
                           <div className="flex items-center gap-1">
-                            <FileText className="w-4 h-4 text-green-400" />
+                            <Video className="w-4 h-4 text-green-400" />
                             <span className="text-sm font-medium text-white">
                               {dyno.videos?.length || 0}
                             </span>
@@ -603,17 +584,10 @@ const DynographListPage = () => {
                 <table className="min-w-full">
                   <thead>
                     <tr>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
-                        عنوان
-                      </th>
-                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                        وضعیت
-                      </th>
-                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                        دسته‌بندی
-                      </th>
-                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
-                        عملیات
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider flex justify-center items-center gap-2">
+                        <p>فیلتر</p>
+                        <Input value={filterText} onChange={(e) => setFilterText(e.target.value)} className="bg-transparent focus:outline-none " />
+                        <p>{dynos.filter(d => d.title["fa"].indexOf(filterText) > -1).length}</p>
                       </th>
                     </tr>
                   </thead>
@@ -624,7 +598,7 @@ const DynographListPage = () => {
               <div className="flex-1 overflow-y-auto min-h-0">
                 <table className="min-w-full">
                   <tbody className="bg-gray-800 divide-y divide-gray-700">
-                    {dynos.map((dyno) => (
+                    {dynos.filter(d => d.title["fa"].indexOf(filterText) > -1).map((dyno) => (
                       <tr key={dyno.id} className="hover:bg-gray-700 transition-colors duration-150">
                         <td className="px-4 py-4">
                           <div className="flex flex-col">
@@ -639,14 +613,67 @@ const DynographListPage = () => {
                             </div>
                           </div>
                         </td>
+                        <td className="px-4 py-4">
+                        <Link href={`/${dyno.categories[0].href}/${dyno.slug}`} className="flex flex-col items-center" target='_blank'>
+                          <Eye className='text-gray-400 hover:text-blue-500'/>
+                        </Link> 
+                      </td>
                         <td className="px-4 py-4 text-center">
                           <div className="flex justify-center gap-2 mb-2">
-                            <StatusIcon condition={!!dyno.pdfFile} />
-                            <StatusIcon condition={!!dyno.htmlFile} />
-                            <StatusIcon condition={!!dyno.image} />
+                            <div className="flex flex-col items-center">
+                              <StatusIcon condition={!!dyno.pdfFile} />
+                              <span className="text-xs text-gray-400 mt-1">PDF</span>
+                            </div>
+                            <div className="flex flex-col items-center">
+                              <StatusIcon condition={!!dyno.htmlFile} />
+                              <span className="text-xs text-gray-400 mt-1">HTML</span>
+                            </div>
+                            <div className="flex flex-col items-center">
+                              <StatusIcon condition={!!dyno.image} />
+                              <span className="text-xs text-gray-400 mt-1">کاور</span>
+                            </div>
+                            <div className="flex flex-col items-center">
+                              <StatusIcon condition={!!dyno.infoFile} />
+                              <span className="text-xs text-gray-400 mt-1">اینفو</span>
+                            </div>
                           </div>
-                          <div className="text-xs text-gray-400">
-                            {dyno.images?.length || 0} تصاویر | {dyno.summaries?.length || 0} توئیت
+                          <div className="text-xs text-gray-400 flex justify-center items-center gap-2">
+                          <div className="flex flex-col items-center">
+                            <div className="flex items-center gap-1">
+                              <Image className="w-4 h-4 text-blue-400" />
+                              <span className="text-sm font-medium text-white">
+                                {dyno.images?.length || 0}
+                              </span>
+                            </div>
+                            <span className="text-xs text-gray-400">تصاویر</span>
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <div className="flex items-center gap-1">
+                              <FileText className="w-4 h-4 text-green-400" />
+                              <span className="text-sm font-medium text-white">
+                                {dyno.textimages?.length || 0}
+                              </span>
+                            </div>
+                            <span className="text-xs text-gray-400">تصویرنوشته</span>
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <div className="flex items-center gap-1">
+                              <Video className="w-4 h-4 text-green-400" />
+                              <span className="text-sm font-medium text-white">
+                                {dyno.videos?.length || 0}
+                              </span>
+                            </div>
+                            <span className="text-xs text-gray-400">ویدئوها</span>
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <div className="flex items-center gap-1">
+                              <MessageSquareText className="w-4 h-4 text-green-400" />
+                              <span className="text-sm font-medium text-white">
+                                {dyno.summaries?.length || 0}
+                              </span>
+                            </div>
+                            <span className="text-xs text-gray-400">توئیت</span>
+                          </div>
                           </div>
                         </td>
                         <td className="px-4 py-4 text-center">
