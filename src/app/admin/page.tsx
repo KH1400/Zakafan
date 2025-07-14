@@ -1,7 +1,7 @@
 
 "use client";
 
-import {useContext, createContext} from "react";
+import {useContext, createContext, useEffect} from "react";
 import {
   Card,
   CardContent,
@@ -39,6 +39,9 @@ import { useLanguage } from "../../lib/language-context";
 import FileUploadComponent from "../../components/fourfold/uploader";
 
 import '../../hooks/use-uploader';
+import { useAuth } from "../../contexts/AuthContext";
+import { useRouter } from "next/navigation";
+import ProtectedRoute from "../../components/authinticated-page";
 
 const chartData = [
   { month: "فروردین", thisMonth: 186, lastMonth: 80 },
@@ -69,169 +72,167 @@ const recentActivities = [
 
 export default function AdminDashboardPage() {
   const { language, selectedLang } = useLanguage();
-  // const [date, setDate] = React.useState<DateRange | undefined>({
-  //   from: new Date(),
-  //   to: new Date(new Date().setDate(new Date().getDate() + 7)),
-  // });
 
   return (
-    <div dir={selectedLang.dir} className="flex flex-col min-h-full p-4 md:p-6 bg-muted/40 font-persian">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold">داشبورد</h1>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline">
-              <CalendarIcon className="ml-2 h-4 w-4" />
-              <span>
-                {/* {date?.from ? (
-                  date.to ? (
-                    <>
-                      {format(date.from, "dd LLL, y")} -{" "}
-                      {format(date.to, "dd LLL, y")}
-                    </>
+    <ProtectedRoute>
+      <div dir={selectedLang.dir} className="flex flex-col min-h-full p-4 md:p-6 bg-muted/40 font-persian">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-semibold">داشبورد</h1>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline">
+                <CalendarIcon className="ml-2 h-4 w-4" />
+                <span>
+                  {/* {date?.from ? (
+                    date.to ? (
+                      <>
+                        {format(date.from, "dd LLL, y")} -{" "}
+                        {format(date.to, "dd LLL, y")}
+                      </>
+                    ) : (
+                      format(date.from, "dd LLL, y")
+                    )
                   ) : (
-                    format(date.from, "dd LLL, y")
-                  )
-                ) : (
-                  <span>محدوده زمانی</span>
-                )} */}
-              </span>
-            </Button>
-          </PopoverTrigger>
-          {/* <PopoverContent className="w-auto p-0" align="end">
-            <Calendar
-              initialFocus
-              mode="range"
-              defaultMonth={date?.from}
-              selected={date}
-              onSelect={setDate}
-              numberOfMonths={2}
-            />
-          </PopoverContent> */}
-        </Popover>
-      </div>
+                    <span>محدوده زمانی</span>
+                  )} */}
+                </span>
+              </Button>
+            </PopoverTrigger>
+            {/* <PopoverContent className="w-auto p-0" align="end">
+              <Calendar
+                initialFocus
+                mode="range"
+                defaultMonth={date?.from}
+                selected={date}
+                onSelect={setDate}
+                numberOfMonths={2}
+              />
+            </PopoverContent> */}
+          </Popover>
+        </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">مجموع بازدیدها</CardTitle>
-            <Eye className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">۱۲,۳۴۵</div>
-            <p className="text-xs text-muted-foreground">+۲۰.۱٪ نسبت به ماه گذشته</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">کاربران آنلاین</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">۷۳</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">مجموع دانلودها</CardTitle>
-            <Download className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">۴,۵۶۷</div>
-            <p className="text-xs text-muted-foreground">+۱۲.۵٪ نسبت به ماه گذشته</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">محتوای جدید</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+۵</div>
-            <p className="text-xs text-muted-foreground">در این هفته</p>
-          </CardContent>
-        </Card>
-      </div>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">مجموع بازدیدها</CardTitle>
+              <Eye className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">۱۲,۳۴۵</div>
+              <p className="text-xs text-muted-foreground">+۲۰.۱٪ نسبت به ماه گذشته</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">کاربران آنلاین</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">۷۳</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">مجموع دانلودها</CardTitle>
+              <Download className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">۴,۵۶۷</div>
+              <p className="text-xs text-muted-foreground">+۱۲.۵٪ نسبت به ماه گذشته</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">محتوای جدید</CardTitle>
+              <FileText className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">+۵</div>
+              <p className="text-xs text-muted-foreground">در این هفته</p>
+            </CardContent>
+          </Card>
+        </div>
 
-      <div className="grid gap-6 md:grid-cols-5">
-        <Card className="md:col-span-3">
-          <CardHeader>
-            <CardTitle>تحلیل بازدیدکنندگان</CardTitle>
-            <CardDescription>نمودار بازدیدکنندگان در ۶ ماه اخیر.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig} className="h-[300px] w-full">
-              <LineChart data={chartData}>
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="month"
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                />
-                <YAxis
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                  tickFormatter={(value) => `${value}`}
-                />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <ChartLegend content={<ChartLegendContent />} />
-                <Line
-                  dataKey="thisMonth"
-                  type="monotone"
-                  stroke="var(--color-thisMonth)"
-                  strokeWidth={2}
-                  dot={false}
-                />
-                <Line
-                  dataKey="lastMonth"
-                  type="monotone"
-                  stroke="var(--color-lastMonth)"
-                  strokeWidth={2}
-                  dot={false}
-                  strokeDasharray="5 5"
-                />
-              </LineChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
+        <div className="grid gap-6 md:grid-cols-5">
+          <Card className="md:col-span-3">
+            <CardHeader>
+              <CardTitle>تحلیل بازدیدکنندگان</CardTitle>
+              <CardDescription>نمودار بازدیدکنندگان در ۶ ماه اخیر.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={chartConfig} className="h-[300px] w-full">
+                <LineChart data={chartData}>
+                  <CartesianGrid vertical={false} />
+                  <XAxis
+                    dataKey="month"
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
+                  />
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
+                    tickFormatter={(value) => `${value}`}
+                  />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Line
+                    dataKey="thisMonth"
+                    type="monotone"
+                    stroke="var(--color-thisMonth)"
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                  <Line
+                    dataKey="lastMonth"
+                    type="monotone"
+                    stroke="var(--color-lastMonth)"
+                    strokeWidth={2}
+                    dot={false}
+                    strokeDasharray="5 5"
+                  />
+                </LineChart>
+              </ChartContainer>
+            </CardContent>
+          </Card>
 
-        <Card className="md:col-span-2">
-          <CardHeader>
-            <CardTitle>فعالیت‌های اخیر</CardTitle>
-            <CardDescription>آخرین کارهایی که توسط مدیران انجام شده است.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>کاربر</TableHead>
-                  <TableHead>فعالیت</TableHead>
-                  <TableHead>تاریخ</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {recentActivities.map((activity, index) => (
-                    <TableRow key={index}>
-                    <TableCell>
-                        <div className="flex items-center gap-2">
-                            <Avatar className="h-8 w-8">
-                                <AvatarImage src={`https://placehold.co/40x40.png?text=${activity.avatar}`} data-ai-hint="user avatar" />
-                                <AvatarFallback>{activity.avatar}</AvatarFallback>
-                            </Avatar>
-                            <span className="font-medium">{activity.user}</span>
-                        </div>
-                    </TableCell>
-                    <TableCell>{activity.activity}</TableCell>
-                    <TableCell className="text-muted-foreground text-xs">{activity.date}</TableCell>
-                    </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+          <Card className="md:col-span-2">
+            <CardHeader>
+              <CardTitle>فعالیت‌های اخیر</CardTitle>
+              <CardDescription>آخرین کارهایی که توسط مدیران انجام شده است.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>کاربر</TableHead>
+                    <TableHead>فعالیت</TableHead>
+                    <TableHead>تاریخ</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {recentActivities.map((activity, index) => (
+                      <TableRow key={index}>
+                      <TableCell>
+                          <div className="flex items-center gap-2">
+                              <Avatar className="h-8 w-8">
+                                  <AvatarImage src={`https://placehold.co/40x40.png?text=${activity.avatar}`} data-ai-hint="user avatar" />
+                                  <AvatarFallback>{activity.avatar}</AvatarFallback>
+                              </Avatar>
+                              <span className="font-medium">{activity.user}</span>
+                          </div>
+                      </TableCell>
+                      <TableCell>{activity.activity}</TableCell>
+                      <TableCell className="text-muted-foreground text-xs">{activity.date}</TableCell>
+                      </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-    </div>
+    </ProtectedRoute>
   );
 }

@@ -5,6 +5,7 @@ import { yekanBakh } from '../lib/fonts';
 import { LanguageProvider } from '@/lib/language-context';
 import { LayoutBody } from './layout-body'; // فایل client جداگانه
 import { Suspense } from 'react';
+import { AuthProvider, useAutoRefreshToken } from '../contexts/AuthContext';
 
 export const metadata = {
   title: 'War Dynograph',
@@ -24,9 +25,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <Suspense fallback={null}>
-          <LanguageProvider>
-            <LayoutBody>{children}</LayoutBody>
-          </LanguageProvider>
+          <AuthProvider>
+            <LanguageProvider>
+              <LayoutBody>{children}</LayoutBody>
+            </LanguageProvider>
+          </AuthProvider>
         </Suspense>
       </body>
     </html>

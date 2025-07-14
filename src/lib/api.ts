@@ -2,31 +2,78 @@ import { DynoCategory, DynoDtoIn } from "./content-types";
 import ky from 'ky';
 
 export const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+// export const api = ky.create({
+//   prefixUrl: baseUrl,
+//   timeout: false,
+//   // credentials: 'include',
+  
+//   hooks: {
+//     // beforeRequest: [
+//     //   (req) => {
+//     //     const original = new URL(req.url);
+//     //     const searchParams = new URLSearchParams(original.searchParams.entries().filter((k, v) => Boolean(v)));
+//     //     const url = new URL(`${original.pathname}${searchParams}`);
+
+//     //     req.url = url;
+//     //   },
+//     // ]
+//   }
+// });
+
 export const api = ky.create({
   prefixUrl: baseUrl,
   timeout: false,
-  // credentials: 'include',
-  
   hooks: {
-    // beforeRequest: [
-    //   (req) => {
-    //     const original = new URL(req.url);
-    //     const searchParams = new URLSearchParams(original.searchParams.entries().filter((k, v) => Boolean(v)));
-    //     const url = new URL(`${original.pathname}${searchParams}`);
-
-    //     req.url = url;
-    //   },
-    // ]
+    beforeRequest: [
+      async (request) => {
+        // اگر نیاز به token دارید، از localStorage بگیرید
+        const token = localStorage.getItem('auth_token');
+        if (token) {
+          request.headers.set('Authorization', `Bearer ${token}`);
+        }
+      }
+    ],
+    afterResponse: [
+      async (request, options, response) => {
+        // اگر 401 گرفتید، refresh token کنید
+        if (response.status === 401) {
+          const refreshToken = localStorage.getItem('refresh_token');
+          if (refreshToken) {
+            try {
+              const refreshResponse:any = await ky.post(`${baseUrl}/auth/token/refresh`, {
+                json: { refresh: refreshToken }
+              });
+              const { access } = await refreshResponse.json();
+              
+              // token جدید را ذخیره کنید
+              localStorage.setItem('auth_token', access);
+              
+              // درخواست اصلی را دوباره بفرستید
+              request.headers.set('Authorization', `Bearer ${access}`);
+              return ky(request);
+            } catch (error) {
+              // refresh token هم expire شده، logout کنید
+              localStorage.clear();
+              window.location.href = '/auth/signin';
+            }
+          }
+        }
+        return response;
+      }
+    ]
   }
 });
 
 export const withBearer = (token: string) => !!token ? ({ Authorization: `Bearer ${token}` }) : {};
 
-export const apiPostLogin = ({ email, password, captcha_token, remember_me }:{ email?: string, password?: string, captcha_token?: string, remember_me?: string } = {}) =>
+export const apiPostSignin = ({ email, password, captcha_token, remember_me }:{ email?: string, password?: string, captcha_token?: string, remember_me?: boolean }) =>
   api.post("auth/login/", { json: { email, password, captcha_token, remember_me } });
 
-// export const apiPostRefreshToken = ({ refresh } = {}) =>
-//   api.post("auth/token/refresh/", { json: { refresh } });
+export const apiPostRefreshToken = ({ refresh }: {refresh: string}) =>
+  api.post("auth/token/refresh/", { json: { refresh } });
+
+export const apiPostSignup = ({ email, password }:{ email?: string, password?: string } = {}) =>
+  api.post("auth/register/", { json: { email, password } });
 
 export async function fetchCategories2() {
   const maxRetries = 4;

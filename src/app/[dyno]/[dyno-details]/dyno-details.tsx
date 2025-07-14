@@ -485,7 +485,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
           {dyno.pdfFile && <Link className={`absolute ${t.mainContentDesc.length === 0?"top-0":"top-2"} end-2`} href={dyno.pdfFile}><Button variant='default' className='bg-slate-800 hover:bg-amber-500'>{t.pdfDownload}</Button></Link>}
           <HtmlRenderer className='w-full' htmlContent={dyno.html} />
           {/* <HtmlRenderer className='w-full' htmlFileUrl={dyno.htmlFile} /> */}
-        </Card>}        
+        </Card>}
 
         {/* Info File Card */}
         {dyno?.infoFile && (
