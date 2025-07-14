@@ -398,7 +398,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
   return (
     <div 
       ref={scrollContainerRef}
-      className="w-full h-full overflow-y-auto bg-background"
+      className="w-full h-full overflow-y-auto bg-background outline-none"
     >
       <div className="grid grid-cols-12 gap-6 px-1 md:px-12 mx-auto">
         {/* Enhanced Header Content Card with Scroll Animation */}

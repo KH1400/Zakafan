@@ -9,7 +9,7 @@ export default function Home() {
   const { language } = useLanguage();
   useAutoRefreshToken();
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full outline-none">
       <div className="flex-grow overflow-hidden">
         <InteractiveBanners lang={language} />
       </div>

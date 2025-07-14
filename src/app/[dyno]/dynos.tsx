@@ -74,7 +74,7 @@ export default function DynosPage({ slug }: { slug: string }) {
   }
 
   return (
-    <div className={`${selectedLang.font} flex flex-col h-full overflow-y-auto`}>
+    <div className={`${selectedLang.font} flex flex-col h-full overflow-y-auto outline-none`}>
       {/* Header - now separate from layout header */}
       <header className={`${selectedLang.font} flex h-14 items-center justify-between px-6 md:px-8 bg-background border-b border-border/50 shrink-0 sticky top-0 z-20`}>
         <Button asChild variant="outline">
