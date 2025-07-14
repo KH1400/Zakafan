@@ -131,19 +131,19 @@ export const MultiLangInput = ({id, text, onChange, className}: MultiLangInputpr
     <div id={id} className={`w-full flex justify-start items-center flex-wrap gap-4 ${className}`}>
       <div className="w-56">
         <Label htmlFor='fa'>فارسی:</Label>
-        <Input id='fa' onChange={(e) => onChange({...text, fa: e.target.value})}/>
+        <Input id='fa' value={text['fa']} onChange={(e) => onChange({...text, fa: e.target.value})}/>
       </div>
       <div className="w-56">
         <Label htmlFor='en'>انگلیسی:</Label>
-        <Input id='en' onChange={(e) => onChange({...text, en: e.target.value})}/>
+        <Input id='en' value={text['en']} onChange={(e) => onChange({...text, en: e.target.value})}/>
       </div>
       <div className="w-56">
         <Label htmlFor='ar'>عربی:</Label>
-        <Input id='ar' onChange={(e) => onChange({...text, ar: e.target.value})}/>
+        <Input id='ar' value={text['ar']} onChange={(e) => onChange({...text, ar: e.target.value})}/>
       </div>
       <div className="w-56">
         <Label htmlFor='he'>عبری:</Label>
-        <Input id='he' onChange={(e) => onChange({...text, he: e.target.value})}/>
+        <Input id='he' value={text['he']} onChange={(e) => onChange({...text, he: e.target.value})}/>
       </div>
     </div>
   )

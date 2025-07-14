@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import { Edit, Trash2, FileText, Image, Globe, CheckCircle, XCircle, Plus } from 'lucide-react';
-import { deleteDyno, fetchCategories, createDynograph, fetchDynos } from '../../../lib/api';
+import { Edit, Trash2, FileText, Image, Globe, CheckCircle, XCircle, Plus, Eye, EyeIcon } from 'lucide-react';
+import { deleteDyno, fetchCategories, createDynograph, fetchDynos, updateDynograph } from '../../../lib/api';
 import { Dyno, DynoCategory, DynoDtoIn } from '../../../lib/content-types';
 import { Button } from '../../../components/ui/button';
 import { NewDynographModal } from './new-dynograph-modal';
@@ -9,6 +9,9 @@ import { useToast } from '../../../hooks/use-toast';
 import ProtectedRoute from '../../../components/protected-route';
 import Loading from '../../../components/fourfold/loading';
 import { Skeleton } from '../../../components/ui/skeleton';
+import { describe } from 'node:test';
+import Link from 'next/link';
+import { Input } from '../../../components/ui/input';
 
 function slugify(text: string) {
   return text
@@ -25,10 +28,12 @@ function slugify(text: string) {
 const DynographListPage = () => {
   const [dynos, setDynos] = useState<Dyno[]>([]);
   const [dyno, setDyno] = useState<DynoDtoIn>({slug: "", title: {fa: null, ar: null, en: null, he: null}, description: {fa: null, ar: null, en: null, he: null}, image: null, imageHint: null, pdfFile: null, htmlFile: null, infoFile: null, images:[], textimages: [], videos: [], categories: [] });
+  const [edittingDynoId, setEdittingDynoId] = useState<string>();
   const [categories, setCategories] = useState<DynoCategory[]>([]);
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [showNewDynoModal, setShowNewDynoModal] = useState(false);
+  const [filterText, setFilterText] = useState<string>("");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -86,9 +91,84 @@ const DynographListPage = () => {
     }
   };
 
-  const handleEdit = (id) => {
-    console.log('Edit dyno:', id);
-    // Add your edit logic here
+  const handleEditDyno = async() => {
+    setSubmitLoading(true);
+    if(!edittingDynoId) return
+    if(dyno.title["fa"] === null){
+      toast({
+        variant: "error",
+        title: "اطلاعات ناقص",
+        description: `عنوان نباید خالی باشد.`,
+      });
+      setSubmitLoading(false);
+      return
+    }
+    if(dyno.categories.length === 0){
+      toast({
+        variant: "error",
+        title: "اطلاعات ناقص",
+        description: `دسته موضوعی را انتخاب کنید.`,
+      });
+      setSubmitLoading(false);
+      return
+    }
+
+    const ddd: {
+      id?: string;
+      slug?: string;
+      title?: any;
+      description?: any;
+      image_file_id?: number;
+      image_hint?: string;
+      html_file_id?: number;
+      pdf_file_id?: number;
+      info_file_id?: number;
+      image_file_ids?: number[];
+      input_image_file_ids?: number[];
+      video_file_ids?: number[];
+      size?: number;
+      category_ids?: number[];
+    } = {};
+
+    if (edittingDynoId !== undefined && edittingDynoId !== null) {
+      ddd.id = edittingDynoId;
+    }
+
+    if (dyno?.title?.en) {
+      ddd.slug = slugify(dyno.title.en);
+      ddd.image_hint = slugify(dyno.title.en);
+    }
+
+    if (dyno?.title) ddd.title = dyno.title;
+    if (dyno?.description) ddd.description = dyno.description;
+    if (dyno?.image) ddd.image_file_id = dyno.image;
+    if (dyno?.htmlFile) ddd.html_file_id = dyno.htmlFile;
+    if (dyno?.pdfFile) ddd.pdf_file_id = dyno.pdfFile;
+    if (dyno?.infoFile) ddd.info_file_id = dyno.infoFile;
+    if (dyno?.images?.length) ddd.image_file_ids = dyno.images;
+    if (dyno?.textimages?.length) ddd.input_image_file_ids = dyno.textimages;
+    if (dyno?.videos?.length) ddd.video_file_ids = dyno.videos;
+    if (dyno?.categories?.length) ddd.category_ids = dyno.categories;
+
+    try {
+      const response: any = await updateDynograph(ddd).json();
+      console.log(response)
+      if(response.id){
+        toast({
+          variant: "success",
+          title: "موفق",
+          description: `محتوا با موفقیت بروزرسانی شد.`,
+        });
+        setDyno({slug: "", title: {fa: null, ar: null, en: null, he: null}, description: {fa: null, ar: null, en: null, he: null}, image: null, imageHint: null, pdfFile: null, htmlFile: null, infoFile: null, images:[], textimages: [], videos: [], categories: [] })
+        setShowNewDynoModal(false)
+        setEdittingDynoId(null)
+        setSubmitLoading(false);
+        getDynos();
+      }
+      console.log(response) 
+    } catch (error) {
+      setSubmitLoading(false);
+    }
   };
 
   const handleDelete = async(id: string) => {
@@ -190,10 +270,29 @@ const DynographListPage = () => {
     );
   }
 
+  const mapDynoToDynoDTO = (dynoId: string) => {
+    const edyno = dynos.filter(d => d.id === dynoId)[0]
+    return {
+      title: edyno.title,
+      description: edyno.description,
+      slug: edyno.slug,
+      image: null,
+      imageHint: edyno.imageHint,
+      htmlFile: null,
+      pdfFile: null,
+      infoFile: null,
+      images: [],
+      textimages: [],
+      videos: [],
+      categories: edyno.categories.map(c => c.id),
+    }
+  }
+
   return (
     <ProtectedRoute accessRoles={['admin', 'user']}>
       <div className="h-[90vh] flex flex-col">
-        {showNewDynoModal && <NewDynographModal categories={categories} loading={submitLoading} dyno={dyno} onChange={(d: DynoDtoIn) => setDyno(d)} onSubmit={(d: DynoDtoIn) => handleInsertDyno(d)} onClose={() => {setShowNewDynoModal(false)}} />}
+        {showNewDynoModal && <NewDynographModal categories={categories} loading={submitLoading} dyno={dyno} onChange={(d: DynoDtoIn) => setDyno(d)} onSubmit={(d: DynoDtoIn) => {edittingDynoId?handleEditDyno():handleInsertDyno(d)}} onClose={() => {setShowNewDynoModal(false)}} />}
+        {/* {edittingDynoId && <NewDynographModal categories={categories} loading={submitLoading} dyno={mapDynoToDynoDTO()} onChange={(d: DynoDtoIn) => setDyno(d)} onSubmit={(d: DynoDtoIn) => handleInsertDyno(d)} onClose={() => {setEdittingDynoId(null)}} />} */}
         
         {/* Header - Fixed */}
         <div className="flex-shrink-0 p-6 pb-4">
@@ -216,8 +315,9 @@ const DynographListPage = () => {
                 <table className="min-w-full">
                   <thead>
                     <tr>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
-                        عنوان
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider flex justify-center items-center gap-2">
+                        <p>عنوان</p>
+                        <Input value={filterText} onChange={(e) => setFilterText(e.target.value)} className="bg-transparent focus:outline-none " />
                       </th>
                       <th className="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
                         شناسه
@@ -246,7 +346,7 @@ const DynographListPage = () => {
               <div className="flex-1 overflow-y-auto min-h-0">
                 <table className="min-w-full">
                   <tbody className="bg-gray-800 divide-y divide-gray-700">
-                  {dynos.map((dyno) => (
+                  {dynos.filter(d => d.title["fa"].indexOf(filterText) > -1).map((dyno) => (
                     <tr key={dyno.id} className="hover:bg-gray-700 transition-colors duration-150">
                       <td className="px-4 py-4">
                         <div className="flex flex-col">
@@ -265,6 +365,9 @@ const DynographListPage = () => {
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap">
                         <div className="flex justify-center gap-2">
+                          <Link href={`/${dyno.categories[0].href}/${dyno.slug}`} className="flex flex-col items-center" target='_blank'>
+                            <Eye className='text-gray-400 hover:text-blue-500'/>
+                          </Link>
                           <div className="flex flex-col items-center">
                             <StatusIcon condition={!!dyno.pdfFile} />
                             <span className="text-xs text-gray-400 mt-1">PDF</span>
@@ -333,7 +436,7 @@ const DynographListPage = () => {
                       <td className="px-4 py-4 whitespace-nowrap text-center">
                         <div className="flex justify-center gap-2">
                           <button
-                            onClick={() => handleEdit(dyno.id)}
+                            onClick={() => {setEdittingDynoId(dyno.id); setDyno(mapDynoToDynoDTO(dyno.id)); setShowNewDynoModal(true)}}
                             className="p-2 text-blue-400 hover:bg-blue-600 hover:text-white rounded-lg transition-colors duration-150"
                             title="ویرایش"
                           >
@@ -379,7 +482,7 @@ const DynographListPage = () => {
                     </div>
                     <div className="flex gap-2 ml-2">
                       <button
-                        onClick={() => handleEdit(dyno.id)}
+                        onClick={() => {setEdittingDynoId(dyno.id); setDyno(mapDynoToDynoDTO(dyno.id)); setShowNewDynoModal(true)}}
                         className="p-2 text-blue-400 hover:bg-blue-600 hover:text-white rounded-lg transition-colors"
                       >
                         <Edit className="w-4 h-4" />
@@ -548,7 +651,7 @@ const DynographListPage = () => {
                         <td className="px-4 py-4 text-center">
                           <div className="flex justify-center gap-2">
                             <button
-                              onClick={() => handleEdit(dyno.id)}
+                              onClick={() => {setEdittingDynoId(dyno.id); setDyno(mapDynoToDynoDTO(dyno.id)); setShowNewDynoModal(true)}}
                               className="p-2 text-blue-400 hover:bg-blue-600 hover:text-white rounded-lg transition-colors"
                             >
                               <Edit className="w-4 h-4" />

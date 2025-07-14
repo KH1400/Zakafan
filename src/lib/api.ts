@@ -157,6 +157,12 @@ export const createDynograph = (dynographData) =>
       headers: withBearer(process.env.NEXT_PUBLIC_TOKEN)
     });
 
+export const updateDynograph = (dynographData) => 
+  api.put(`dynograph/dynographs/${dynographData.id}`, {
+      json: dynographData,
+      headers: withBearer(process.env.NEXT_PUBLIC_TOKEN)
+    });
+
 async function createMasterDynograph(slug, dynographIds) {
   const masterDynographData = {
     slug: slug,
