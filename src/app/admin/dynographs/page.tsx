@@ -109,15 +109,15 @@ const DynographListPage = () => {
   const handleEditDyno = async() => {
     setSubmitLoading(true);
     if(!edittingDynoId) return
-    if(dyno.title["fa"] === null){
-      toast({
-        variant: "error",
-        title: "اطلاعات ناقص",
-        description: `عنوان نباید خالی باشد.`,
-      });
-      setSubmitLoading(false);
-      return
-    }
+    // if(dyno.title["fa"] === null){
+    //   toast({
+    //     variant: "error",
+    //     title: "اطلاعات ناقص",
+    //     description: `عنوان نباید خالی باشد.`,
+    //   });
+    //   setSubmitLoading(false);
+    //   return
+    // }
     if(dyno.categories.length === 0){
       toast({
         variant: "error",
@@ -243,7 +243,15 @@ const DynographListPage = () => {
           title: "موفق",
           description: `محتوا با موفقیت بارگذاری شد.`,
         });
-        setDyno({slug: "", title: {fa: null, ar: null, en: null, he: null}, description: {fa: null, ar: null, en: null, he: null}, image: null, imageHint: null, pdfFile: null, htmlFile: null, infoFile: null, images:[], textimages: [], videos: [], categories: [] })
+        setDyno(({
+          slug: "",
+          dynographs: createDefaultDynographs(),
+          image: null,
+          imageHint: "",
+          images: [],
+          videos: [],
+          categories: []
+        }))
         setShowNewDynoModal(false)
         setSubmitLoading(false);
         getDynos();
@@ -306,7 +314,7 @@ const DynographListPage = () => {
   return (
     <ProtectedRoute accessRoles={['admin', 'user']}>
       <div className="h-[90vh] flex flex-col">
-        {showNewDynoModal && <NewDynographModal categories={categories} loading={submitLoading} dyno={dyno} onChange={(d: DynoDtoIn) => setDyno(d)} onSubmit={(d: DynoDtoIn) => {edittingDynoId?handleEditDyno():handleInsertDyno(d)}} onClose={() => {setShowNewDynoModal(false)}} />}
+        {/* {showNewDynoModal && <NewDynographModal categories={categories} loading={submitLoading} dyno={dyno} onChange={(d: DynoDtoIn) => setDyno(d)} onSubmit={(d: DynoDtoIn) => {edittingDynoId?handleEditDyno():handleInsertDyno(d)}} onClose={() => {setShowNewDynoModal(false)}} />} */}
         {/* {edittingDynoId && <NewDynographModal categories={categories} loading={submitLoading} dyno={mapDynoToDynoDTO()} onChange={(d: DynoDtoIn) => setDyno(d)} onSubmit={(d: DynoDtoIn) => handleInsertDyno(d)} onClose={() => {setEdittingDynoId(null)}} />} */}
         
         {/* Header - Fixed */}
@@ -440,13 +448,13 @@ const DynographListPage = () => {
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap text-center">
                         <div className="flex justify-center gap-2">
-                          <button
+                          {/* <button
                             onClick={() => {setEdittingDynoId(dyno.id); setDyno(mapDynoToDynoDTO(dyno.id)); setShowNewDynoModal(true)}}
                             className="p-2 text-blue-400 hover:bg-blue-600 hover:text-white rounded-lg transition-colors duration-150"
                             title="ویرایش"
                           >
                             <Edit className="w-4 h-4" />
-                          </button>
+                          </button> */}
                           <button
                             onClick={() => handleDelete(dyno.id)}
                             className="p-2 text-red-400 hover:bg-red-600 hover:text-white rounded-lg transition-colors duration-150"
@@ -486,12 +494,12 @@ const DynographListPage = () => {
                       </p>
                     </div>
                     <div className="flex gap-2 ml-2">
-                      <button
+                      {/* <button
                         onClick={() => {setEdittingDynoId(dyno.id); setDyno(mapDynoToDynoDTO(dyno.id)); setShowNewDynoModal(true)}}
                         className="p-2 text-blue-400 hover:bg-blue-600 hover:text-white rounded-lg transition-colors"
                       >
                         <Edit className="w-4 h-4" />
-                      </button>
+                      </button> */}
                       <button
                         onClick={() => handleDelete(dyno.id)}
                         className="p-2 text-red-400 hover:bg-red-600 hover:text-white rounded-lg transition-colors"
@@ -705,12 +713,12 @@ const DynographListPage = () => {
                         </td>
                         <td className="px-4 py-4 text-center">
                           <div className="flex justify-center gap-2">
-                            <button
+                            {/* <button
                               onClick={() => {setEdittingDynoId(dyno.id); setDyno(mapDynoToDynoDTO(dyno.id)); setShowNewDynoModal(true)}}
                               className="p-2 text-blue-400 hover:bg-blue-600 hover:text-white rounded-lg transition-colors"
                             >
                               <Edit className="w-4 h-4" />
-                            </button>
+                            </button> */}
                             <button
                               onClick={() => handleDelete(dyno.id)}
                               className="p-2 text-red-400 hover:bg-red-600 hover:text-white rounded-lg transition-colors"

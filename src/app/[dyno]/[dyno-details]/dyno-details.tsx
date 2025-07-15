@@ -224,9 +224,21 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
     
     try {
       // فرض می‌کنیم تابع fetchMessages وجود دارد
-      const newMessages: Dyno = await fetchSummaries({dynoId: dyno.id}).json();
+      const newMessages: Dyno = await fetchSummaries({dynoId: mappedDyno.dynoChildId}).json();
       // به‌روزرسانی state
       setDyno(prevDyno => {
+        if (!prevDyno) return prevDyno;
+        return {
+          ...prevDyno,
+          dynographs: {
+            ...dyno.dynographs,
+            [language]: {...dyno.dynographs[language],
+              summaries: newMessages.summaries
+            }
+          }
+        };
+      });
+      setMappedDyno(prevDyno => {
         if (!prevDyno) return prevDyno;
         return {
           ...prevDyno,
@@ -258,7 +270,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
     
     try {
       setIsGeneratingSummary(true);
-      const response: any = await generateSummary({dynoId: dyno.id, language}).json();
+      const response: any = await generateSummary({dynoId: mappedDyno.dynoChildId, language}).json();
 
       if (response.websocket_url && response.session_id) {
         setCurrentSessionId(response.session_id);
