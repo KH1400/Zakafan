@@ -102,7 +102,7 @@ export async function fetchCategories2() {
   }
 }
 
-export async function fetchCategory(categoryHref: string) {
+export async function apiGetCategory(categoryHref: string) {
   const cates: any = await fetchCategories().json();
   return cates.categories.find((s: DynoCategory) => s.href === categoryHref);
 }
@@ -160,6 +160,12 @@ export const updateDynograph = (dynographData) =>
   api.put(`dynograph/dynographs/${dynographData.id}`, {
       json: dynographData
     });
+
+export const apiGetDynoMastersByCategoryHref = ({categoryHref}:{categoryHref?:string}) => 
+  api.get(`dynograph/dynograph-masters${categoryHref?`?category_href=${categoryHref}`:''}`);
+
+export const apiGetDynoMasterBySlug = ({slug}) => 
+  api.get(`dynograph/dynograph-masters/slug/${slug}`);
 
 async function createMasterDynograph(slug, dynographIds) {
   const masterDynographData = {

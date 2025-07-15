@@ -34,20 +34,20 @@ export function InteractiveBanners({ lang = 'en' }: { lang: Language }) {
       className={cn("flex flex-col md:flex-row h-full w-full", isRtl && "flex-row-reverse")}
       onMouseLeave={() => setHoveredIndex(null)}
     >
-      {categories.map((banner, index) => {
+      {categories.map((category, index) => {
         const isHovered = hoveredIndex === index;
         const isAnyHovered = hoveredIndex !== null;
-        const finalHref = `/${banner.href}${lang === 'en' ? '' : `?lang=${lang}`}`;
+        const finalHref = `/${category.href}${lang === 'en' ? '' : `?lang=${lang}`}`;
         
         return (
           <BannerPanel
-            key={banner.href}
-            icon={banner.icon}
-            title={banner.title[lang]}
-            description={banner.description[lang]}
+            key={category.href}
+            icon={category.icon}
+            title={category.title[lang]}
+            description={category.description[lang]}
             href={finalHref}
-            image={banner.image}
-            imageHint={banner.imageHint}
+            image={category.image.file_url}
+            imageHint={category.imageHint}
             isHovered={isHovered}
             isAnyHovered={isAnyHovered}
             onMouseEnter={() => setHoveredIndex(index)}

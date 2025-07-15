@@ -6,15 +6,13 @@ import { Footer } from "@/components/fourfold/footer";
 import { MosaicLayout } from "@/components/fourfold/mosaic-layout";
 import {
   MosaicPanelData,
-  DynoCategory,
-  type Language,
-  Dyno
+  DynoCategory
 } from "@/lib/content-types";
 import { useEffect, useState } from "react";
-import { fetchCategory, fetchDynos } from "../../lib/api";
 import { useLanguage } from "../../lib/language-context";
 import Loding from "../../components/fourfold/loading";
 import { Skeleton } from "../../components/ui/skeleton";
+import { apiGetCategory, apiGetDynoMastersByCategoryHref } from "../../lib/api";
 
 const goBackTranslations = {
   en: "Go Back Home",
@@ -36,25 +34,25 @@ export default function DynosPage({ slug }: { slug: string }) {
       try {
         // همزمان fetch کردن دو تا API
         const [dynosResult, categoryResult] = await Promise.all([
-          fetchDynos({ categoryHref: slug }),
-          fetchCategory(slug)
+          apiGetDynoMastersByCategoryHref({ categoryHref: slug }),
+          apiGetCategory(slug)
         ]);
 
         // Process dynos
         const dyns: any = await dynosResult.json();
-
-        const panelData = dyns.dynographs.map((item: any, index: number) => ({
-          id: item.id,
-          title: item.title,
-          description: item.description[language] || item.description['fa'],
-          image: item.image_file || `/categories/c${item.categories[0].id}.jpg`,
-          slug: item.slug.toLocaleLowerCase(),
-          imageHint: item.image_hint,
-          categories: item.categories.map((c: any) => c.id),
-          categoryHref: item.categories.map((c: any) => c.href),
-          createdAt: item.created_at
+        const panelData = dyns.masters.map((master: any, index: number) => ({
+          id: master.id,
+          title: master.dynographs[language].title,
+          description: master.dynographs[language].description[language] || master.dynographs['fa'].description,
+          image: master.image_file,
+          slug: master.slug.toLocaleLowerCase(),
+          imageHint: master.image_hint,
+          categories: master.categories.map((c: any) => c.id),
+          categoryHref: master.categories.map((c: any) => c.href),
+          createdAt: master.created_at
         }));
 
+        console.log(panelData);
         setDynos(panelData);
         setCategory(categoryResult);
       } catch (error) {

@@ -116,10 +116,10 @@ function MosaicPanel({
         h-44 md:h-auto
         ${layoutSize.class}
       `}
-      aria-label={panel.title[language]}
+      aria-label={panel.title}
     >
       <Image
-        src={panel.image || `/categories/c${panel.categories[0]}.jpg`}
+        src={panel.image.file_url || `/categories/c${panel.categories[0]}.jpg`}
         alt={panel.slug}
         fill
         className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
@@ -142,7 +142,7 @@ function MosaicPanel({
           text-white/50 drop-shadow-lg font-headline
           transition-all duration-300  group-hover:text-white
         `}>
-          {panel.title[language]}
+          {panel.title}
         </h3>
       </div>
     </Link>
@@ -162,7 +162,7 @@ export function MosaicLayout({ panels, baseHref, lang }: MosaicLayoutProps) {
       <div className="w-full h-full flex flex-col md:grid md:grid-cols-3 lg:grid-cols-4 md:auto-rows-[20vw] gap-2 md:overflow-y-auto overflow-x-hidden" style={{gridAutoFlow: 'row dense'}}>
         {layoutPanels.map((panel, index) => (
           <MosaicPanel 
-            key={`${panel.title[language]}-${panel.originalIndex}`}
+            key={`${panel.title}-${panel.originalIndex}`}
             panel={panel} 
             baseHref={baseHref} 
             lang={lang}

@@ -1,8 +1,8 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import { Edit, Trash2, FileText, Image, Globe, CheckCircle, XCircle, Plus, Eye, Video, MessageSquareText } from 'lucide-react';
-import { deleteDyno, fetchCategories, createDynograph, fetchDynos, updateDynograph, apiGetDynoMastersByCategoryHref } from '../../../lib/api';
-import { Dyno, DynoCategory, DynoChildDtoIn, DynoDtoIn, DynoMasterDtoIn, Language, languages, slugify } from '../../../lib/content-types';
+import { deleteDyno, fetchCategories, createDynograph, fetchDynos, updateDynograph } from '../../../lib/api';
+import { Dyno, DynoCategory, DynoDtoIn, slugify } from '../../../lib/content-types';
 import { Button } from '../../../components/ui/button';
 import { NewDynographModal } from './new-dynograph-modal';
 import { useToast } from '../../../hooks/use-toast';
@@ -13,34 +13,9 @@ import { describe } from 'node:test';
 import Link from 'next/link';
 import { Input } from '../../../components/ui/input';
 
-const defaultDynoChild: DynoChildDtoIn = {
-  title: "",
-  description: "",
-  htmlFile: null,
-  pdfFile: null,
-  infoFile: null,
-  textimages: [],
-  videos: [],
-};
-
-const createDefaultDynographs = (): Record<Language, DynoChildDtoIn> => {
-  return languages.reduce((acc, lang) => {
-    acc[lang] = { ...defaultDynoChild };
-    return acc;
-  }, {} as Record<Language, DynoChildDtoIn>);
-};
-
 const DynographListPage = () => {
   const [dynos, setDynos] = useState<Dyno[]>([]);
-  const [dyno, setDyno] = useState<DynoMasterDtoIn>({
-    slug: "",
-    dynographs: createDefaultDynographs(),
-    image: null,
-    imageHint: "",
-    images: [],
-    videos: [],
-    categories: []
-  });
+  const [dyno, setDyno] = useState<DynoDtoIn>({slug: "", title: {fa: null, ar: null, en: null, he: null}, description: {fa: null, ar: null, en: null, he: null}, image: null, imageHint: null, pdfFile: null, htmlFile: null, infoFile: null, images:[], textimages: [], videos: [], categories: [] });
   const [edittingDynoId, setEdittingDynoId] = useState<string>();
   const [categories, setCategories] = useState<DynoCategory[]>([]);
   const [loading, setLoading] = useState(false);
@@ -58,31 +33,29 @@ const DynographListPage = () => {
     setLoading(true);
     try {
       // همزمان fetch کردن دو تا API
-      const dynosResponse: any = await apiGetDynoMastersByCategoryHref({}).json();
+      const dynosResult = await fetchDynos({});
 
-      const dynosData = dynosResponse.dynographs.map((dynMaster: any) => ({
-        id: dynMaster.id,
-        title: dynMaster.title,
-        description: dynMaster.description,
-        slug: dynMaster.slug,
-        image: dynMaster.image_file,
-        imageHint: dynMaster.image_hint,
-        categories: dynMaster.categories,
-        createdAt: dynMaster.created_at,
-        dynographs: Object.fromEntries(Object.keys(dynMaster.dynographs).map(key => {
-          const dynograph = dynMaster.dynographs[key];
-          return [key, {
-          id: dynograph.id,
-            }]
-          })),
-        pdfFile: dynMaster.pdf_file,
-        infoFile: dynMaster.info_file,
-        htmlFile: dynMaster.html_file,
-        html: dynMaster.html_text,
-        summaries: dynMaster.summaries?.map((s: any) => ({id: s.id, content: s.generated_summary, language: s.language, createdAt: s.updated_at})) || [],
-        images: dynMaster.image_files,
-        textimages: dynMaster.input_image_files,
-        videos: dynMaster.video_files
+      // Process dynos
+      const dynosResponse: any = await dynosResult.json();
+
+      const dynosData = dynosResponse.dynographs.map((dyns: any) => ({
+        id: dyns.id,
+        title: dyns.title,
+        description: dyns.description,
+        slug: dyns.slug,
+        image: dyns.image_file,
+        imageHint: dyns.image_hint,
+        size: dyns.size,
+        categories: dyns.categories,
+        createdAt: dyns.created_at,
+        pdfFile: dyns.pdf_file,
+        infoFile: dyns.info_file,
+        htmlFile: dyns.html_file,
+        html: dyns.html_text,
+        summaries: dyns.summaries?.map((s: any) => ({id: s.id, content: s.generated_summary, language: s.language, createdAt: s.updated_at})) || [],
+        images: dyns.image_files,
+        textimages: dyns.input_image_files,
+        videos: dyns.video_files
       }));
       setDynos(dynosData);
     } catch (error) {

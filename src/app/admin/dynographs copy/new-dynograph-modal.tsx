@@ -30,7 +30,7 @@ export const NewDynographModal = ({onChange, dyno, loading, onClose, onSubmit, c
                 <DropdownMenuContent>
                   {categories.length > 0 && categories.map((category, index) => (
                     <DropdownMenuItem dir='rtl' onClick={() => onChange({...dyno, categories: [category.id]})} key={index} className={`flex justify-start items-center gap-2 ${selectedLang.font}`}>
-                      <Image src={category.image.file_url} alt={category.href} width={20} height={20} />
+                      <Image src={category.image} alt={category.href} width={20} height={20} />
                       {category.title['fa']}
                     </DropdownMenuItem>
                   ))}

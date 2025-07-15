@@ -1,11 +1,11 @@
 "use client"
 import React, { useEffect, useRef, useState } from 'react';
-import { Dyno } from '../../../lib/content-types';
+import { Dyno, DynoMaster, Language, MediaFile } from '../../../lib/content-types';
 import { useLanguage } from '../../../lib/language-context';
 import HtmlRenderer from '../../../components/htmlviewer';
 import { Button } from '../../../components/ui/button';
-import { ArrowLeft, ArrowLeftRight, ArrowRight, Check, CheckCheck, Copy, DownloadIcon, Edit2, Trash2 } from 'lucide-react';
-import { deleteSummary, fetchDynoBySlug, fetchSummaries, generateSummary, updateSummary } from '../../../lib/api';
+import { ArrowLeft, ArrowRight, DownloadIcon } from 'lucide-react';
+import { apiGetDynoMasterBySlug, deleteSummary, fetchSummaries, generateSummary, updateSummary } from '../../../lib/api';
 import { useNavigation } from 'react-day-picker';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -98,9 +98,36 @@ const translations = {
   }
 };
 
+type DynoMasterRes = {
+    id: string;
+    slug: string;
+    image_file: MediaFile;
+    image_hint: string;
+    image_files: MediaFile[];
+    categories: any;
+    createdAt: string;
+    public_video_files: MediaFile[];
+    dynographs: Record<Language, DynoChildRes>;
+    created_at: string;
+}
+
+type DynoChildRes = {
+  id: string;
+  title: string;
+  description: string;
+  html_file: MediaFile;
+  pdf_file: MediaFile;
+  info_file: MediaFile;
+  input_image_files: MediaFile[];
+  video_files: MediaFile[];
+  summaries: {id: number, generated_summary: string, language: Language}[];
+  created_at: string;
+}
+
 export default function DynoDetailsPage({ slug }: { slug: string }) {
   const { language, selectedLang } = useLanguage();
-  const [dyno, setDyno] = useState<Dyno>();
+  const [dyno, setDyno] = useState<DynoMasterRes>();
+  const [mappedDyno, setMappedDyno] = useState<DynoMaster>();
   
   // State for scroll animation
   const [isScrolled, setIsScrolled] = useState(false);
@@ -313,7 +340,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
     if (dyno && editId) {
       try {
         const res: {id: number, generated_summary: string, language: string, created_at: string } = await updateSummary({summaryId: editId, generatedSummary: summ}).json();
-        setDyno({ ...dyno, summaries: dyno.summaries.map(s => {if(s.id === editId){return {...s, id: res.id, content: res.generated_summary}}else{return s}}) });
+        setMappedDyno({ ...mappedDyno, summaries: mappedDyno.summaries.map(s => {if(s.id === editId){return {...s, id: res.id, content: res.generated_summary}}else{return s}}) });
       } catch (error) {
         console.log(error)
       }
@@ -325,44 +352,60 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
   useEffect(() => {
     dynoSlugRef.current = slug;
     getDyno();
-  }, [slug])
+  }, [slug, language])
+
+  useEffect(() => {
+    getDynoWithLang();
+  }, [language])
 
   const getDyno = async () => {
     try {
-      const dyns: any = await fetchDynoBySlug({slug}).json();
-      let htmlText = dyns.html_text;
-      await fetch(dyns.html_file)
-        .then(response => response.text())
-        .then(data => {
-          htmlText = data
-        })
-        .catch(error => console.error('Error:', error));
-
-      const mappedDyno: Dyno = {
-        id: dyns.id,
-        title: dyns.title,
-        description: dyns.description,
-        slug: dyns.slug.toLocaleLowerCase(),
-        image: dyns.image_file,
-        imageHint: dyns.image_hint,
-        size: dyns.size,
-        categories: dyns.categories,
-        createdAt: dyns.created_at,
-        pdfFile: dyns.pdf_file,
-        infoFile: dyns.info_file,
-        htmlFile: dyns.html_file,
-        html: htmlText,
-        summaries: dyns.summaries?.map((s: any) => ({id: s.id, content: s.generated_summary, language: s.language, createdAt: s.updated_at})) || [],
-        images: dyns.image_files,
-        textimages: dyns.input_image_files,
-        videos: dyns.video_files,
-      };
-      console.log(mappedDyno);
-      setDyno(mappedDyno);
+      const dyns: any = await apiGetDynoMasterBySlug({slug}).json();
+      setMappedDyno(await mapData(language, dyns))
+      setDyno(dyns);
     } catch (error) {
-      
       console.log(error)
     }
+  }
+
+  const getDynoWithLang = async () => {
+    dynoSlugRef.current = slug;
+    setMappedDyno(await mapData(language, dyno))
+  }
+
+  const mapData = async(lang: Language, d: DynoMasterRes) => {
+    if(!d) return
+    let htmlText: string;
+    await fetch(d.dynographs[lang]?.html_file?.file_url || d.dynographs['fa']?.html_file?.file_url)
+      .then(response => response.text())
+      .then(data => {
+        htmlText = data
+      })
+      .catch(error => console.error('Error:', error));
+    return {
+      id: d.id,
+      dynoChildId: d.dynographs[lang]?.id,
+      slug: d.slug.toLocaleLowerCase(),
+      title: d.dynographs[lang].title || d.dynographs['fa'].title,
+      description: d.dynographs[lang].description || d.dynographs['fa'].description,
+      textimages: d.dynographs[lang]?.input_image_files,
+      pdfFile: d.dynographs[lang]?.pdf_file || d.dynographs['fa']?.pdf_file,
+      infoFile: d.dynographs[lang]?.info_file || d.dynographs['fa']?.info_file,
+      htmlFile: d.dynographs[lang]?.html_file || d.dynographs['fa']?.html_file,
+      htmlText: htmlText,
+      summaries: d.dynographs[lang]?.summaries?.map((s: any) => ({
+        id: s.id,
+        content: s.generated_summary,
+        language: s.language,
+        createdAt: s.updated_at
+      })) || [],
+      image: d.image_file,
+      imageHint: d.image_hint,
+      categories: d.categories,
+      images: d.image_files,
+      videos: [...d.public_video_files, ...d.dynographs[language].video_files],
+      createdAt: d.created_at,
+    };
   }
 
   if(!dyno){
@@ -400,7 +443,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
               `}
             >
               {/* Back Button with Animation */}
-              <Link href={`/${dyno.categories[0]?.href}/${language === "en" ? "/" : `/?lang=${language}`}`}>
+              <Link href={`/${mappedDyno.categories[0]?.href}/${language === "en" ? "/" : `/?lang=${language}`}`}>
                 <Button 
                   className={`
                     transition-all duration-300 ease-out
@@ -425,7 +468,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
                   transition-all duration-500 ease-out
                   ${isScrolled ? 'text-base' : 'text-lg'}
                 `}>
-                  {dyno.title[language]}
+                  {mappedDyno.title}
                 </h3>
                 <p className={`
                   text-muted-foreground transition-all duration-500 ease-out
@@ -434,7 +477,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
                     : 'text-sm opacity-100 max-h-10'
                   }
                 `}>
-                  {dyno.description[language]}
+                  {mappedDyno.description}
                 </p>
               </div>
               
@@ -452,32 +495,32 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
         </div>
         
         {/* Main Content Card */}
-        {dyno.html && <Card 
+        {mappedDyno.htmlFile.id && <Card 
           className='col-span-12 p-6 relative' 
           title={t.mainContent}
           description={t.mainContentDesc}
         >
-          {dyno.pdfFile && <Link className={`absolute ${t.mainContentDesc.length === 0?"top-0":"top-2"} end-2`} href={dyno.pdfFile}><Button variant='default' className='bg-slate-800 hover:bg-amber-500'>{t.pdfDownload}</Button></Link>}
-          <HtmlRenderer className='w-full' htmlContent={dyno.html} />
-          {/* <HtmlRenderer className='w-full' htmlFileUrl={dyno.htmlFile} /> */}
+          {mappedDyno.pdfFile && <Link className={`absolute ${t.mainContentDesc.length === 0?"top-0":"top-2"} end-2`} href={mappedDyno.pdfFile.file_url}><Button variant='default' className='bg-slate-800 hover:bg-amber-500'>{t.pdfDownload}</Button></Link>}
+          <HtmlRenderer className='w-full' htmlContent={mappedDyno.htmlText} />
+          {/* <HtmlRenderer className='w-full' htmlFileUrl={mappedDyno.htmlFile} /> */}
         </Card>}
 
         {/* Info File Card */}
-        {dyno?.infoFile && (
+        {mappedDyno?.infoFile && (
           <Card 
             className='col-span-12 md:col-span-6 p-1 md:p-6 max-h-[100vh] md:max-h-[50rem]' 
             title={t.infoImage}
           >
             <div className="relative w-full md:h-[43rem] flex-grow rounded-lg overflow-hidden">
               <img 
-                src={dyno?.infoFile} 
+                src={mappedDyno?.infoFile.file_url} 
                 alt="info image"
                 className='w-full h-full object-contain transition-transform duration-300'
               />
               {/* Download Button Overlay */}
               <div className="absolute top-2 start-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               <a
-                href={dyno.infoFile}
+                href={mappedDyno.infoFile.file_url}
                 download
                 className='h-6 w-6'>
                 <DownloadIcon className='text-white hover:text-blue-400 transition-colors p-1 hover:bg-white/10 rounded-full h-8 w-8' />
@@ -489,7 +532,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
 
         {/* Messages Card */}
         <Card 
-          className={`col-span-12 ${dyno?.infoFile ? 'md:col-span-6' : ''} flex flex-col md:min-h-[400px] p-1 md:p-6 max-h-[100vh] md:max-h-[50rem]`}
+          className={`col-span-12 ${mappedDyno?.infoFile ? 'md:col-span-6' : ''} flex flex-col md:min-h-[400px] p-1 md:p-6 max-h-[100vh] md:max-h-[50rem]`}
           title={t.messages}
           description={t.messagesDesc}
         >
@@ -522,16 +565,13 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
                 <div className="flex items-center gap-2 text-blue-700">
                   <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                   <span className="text-sm">{t.generating}</span>
-                  {/* {currentSessionId && (
-                    <span className="text-xs text-blue-500">({currentSessionId.slice(0, 8)}...)</span>
-                  )} */}
                 </div>
               </div>
             )}
 
             {/* Messages Container with Scroll */}
             <div className="flex-1 pr-2 space-y-3 flex-grow">
-              {dyno?.summaries.filter(s => s.language === language).map((summary) => (
+              {mappedDyno?.summaries.map((summary) => (
                 <TextCard key={summary.id} content={summary.content} onEdit={(ee) => handleSaveEdit(ee, summary.id)} onDelete={() => handleDelete(summary.id)} />
               ))}
             </div>
@@ -539,24 +579,24 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
         </Card>
 
         {/* Text Images Card */}
-        {dyno?.textimages && dyno?.textimages.length > 0 && (
+        {mappedDyno?.textimages && mappedDyno?.textimages.length > 0 && (
           <Card 
             className='col-span-12 p-1 md:p-6' 
             title={t.textImages}
             description={t.textImagesDesc}
           >
             <div className="flex justify-start gap-4 overflow-x-auto pb-2">
-              {dyno?.textimages.map((image, index) => (
+              {mappedDyno?.textimages.map((image, index) => (
                 <div key={index} className="group relative flex-shrink-0 rounded-md overflow-hidden border border-border hover:shadow-lg transition-shadow duration-300">
                   <img 
-                    src={image} 
+                    src={image.file_url} 
                     alt={`text-image-${index}`}
                     className="h-96 w-auto object-cover hover:scale-105 transition-transform duration-300"
                   />
                   {/* Download Button Overlay */}
                   <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                     <a
-                      href={dyno.infoFile}
+                      href={image.file_url}
                       download
                       className='h-6 w-6'>
                       <DownloadIcon className='text-white hover:text-blue-400 transition-colors p-1 hover:bg-white/10 rounded-full h-8 w-8' />
@@ -569,24 +609,24 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
         )}
 
         {/* Images Gallery Card */}
-        {dyno?.images && dyno?.images.length > 0 && (
+        {mappedDyno?.images && mappedDyno?.images.length > 0 && (
           <Card 
             className='col-span-12 p-1 md:p-6' 
             title={t.imageGallery}
             description={t.imageGalleryDesc}
           >
             <div className="flex justify-start gap-4 overflow-x-auto pb-2">
-              {dyno?.images.map((image, index) => (
+              {mappedDyno?.images.map((image, index) => (
                 <div key={index} className="group relative flex-shrink-0 rounded-md overflow-hidden border border-border hover:shadow-lg transition-shadow duration-300">
                   <img 
-                    src={image} 
+                    src={image.file_url} 
                     alt={`gallery-image-${index}`}
                     className="h-40 w-auto object-cover hover:scale-105 transition-transform duration-300"
                   />
                   {/* Download Button Overlay */}
                   <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                     <a
-                      href={dyno.infoFile}
+                      href={image.file_url}
                       download
                       className='h-6 w-6'>
                       <DownloadIcon className='text-white hover:text-blue-400 transition-colors p-1 hover:bg-white/10 rounded-full h-8 w-8' />
@@ -599,16 +639,16 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
         )}
 
         {/* Video Gallery Card */}
-        {dyno?.videos && (
+        {mappedDyno?.videos && mappedDyno?.videos.length > 0 && (
           <Card 
             className='col-span-12 p-1 md:p-6' 
             title={t.videoGallery}
             description={t.videoGalleryDesc}
           >
             <div className="flex justify-start gap-4 overflow-x-auto pb-2 h-full">
-              {dyno?.videos.map((video, index) => (
+              {mappedDyno?.videos.map((video, index) => (
                 <div key={index} className="group relative flex-shrink-0 rounded-md overflow-hidden border border-border hover:shadow-lg transition-shadow duration-300">
-                  <VideoPlayer src={video} className="w-[90vw] md:w-[40vw]" title=''/>
+                  <VideoPlayer src={video.file_url} className="w-[90vw] md:w-[40vw]" title=''/>
                 </div>
               ))}
             </div>
