@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import { Edit, Trash2, FileText, Image, Globe, CheckCircle, XCircle, Plus, Eye, Video, MessageSquareText, Edit2 } from 'lucide-react';
-import { deleteDyno, fetchCategories, updateDynograph, apiGetDynoMastersByCategoryHref, apiCreateDynographMaster, apiCreateDynographChild, apiDeleteDynographMaster, apiUpdateDynographMaster, apiUpdateDynographChild } from '../../../lib/api';
+import { fetchCategories, apiGetDynoMastersByCategoryHref, apiCreateDynographMaster, apiCreateDynographChild, apiDeleteDynographMaster, apiUpdateDynographMaster, apiUpdateDynographChild } from '../../../lib/api';
 import { Dyno, DynoCategory, DynoChildDtoIn, DynoDtoIn, DynoMasterDtoIn, DynoMasterDtoOut, Language, languages, slugify } from '../../../lib/content-types';
 import { Button } from '../../../components/ui/button';
 import { NewDynographModal } from './new-dynograph-modal';
@@ -76,7 +76,6 @@ const DynographListPage = () => {
         images: dynMaster.image_files,
         videos: dynMaster.video_files
       }));
-      console.log(dynosData);
       setDynos(dynosData);
     } catch (error) {
       console.log('Error loading data:', error);

@@ -125,7 +125,7 @@ export type DynoChildDtoOut = {
 // Category
 
 export type DynoCategory = {
-    id: number;
+    id?: number;
     title: Record<Language, string>;
     description: Record<Language, string>;
     href: string;

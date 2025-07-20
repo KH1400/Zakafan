@@ -11,6 +11,7 @@ import {
   Settings,
   ChevronDown,
   ExternalLink,
+  Group,
 } from "lucide-react";
 
 import {
@@ -40,8 +41,8 @@ import { useAuth } from "../../contexts/AuthContext";
 
 const menuItems = [
     { href: '/admin', label: 'داشبورد', icon: LayoutDashboard },
-    { href: '/admin/dynographs', label: 'داینوگراف‌ها', icon: FileText },
-    // { href: '/admin/content', label: 'مدیریت محتوا', icon: FileText },
+    { href: '/admin/dynographs', label: 'داینوگراف', icon: FileText },
+    { href: '/admin/categories', label: 'مدیریت دسته', icon: Group },
     { href: '/admin/users', label: 'کاربران', icon: Users },
     // { href: '/admin/analytics', label: 'آمار و تحلیل', icon: BarChart3 },
     { href: '/admin/settings', label: 'تنظیمات', icon: Settings },

@@ -151,11 +151,6 @@ export const updateSummary = ({summaryId, generatedSummary}) =>
 export const apiPostStoreUploadUrl = () =>
   `${baseUrl}store/upload`;
 
-export const updateDynograph = (dynographData) => 
-  api.put(`dynograph/dynographs/${dynographData.id}`, {
-      json: dynographData
-    });
-
 export const apiGetDynoMastersByCategoryHref = ({categoryHref}:{categoryHref?:string}) => 
   api.get(`dynograph/dynograph-masters${categoryHref?`?category_href=${categoryHref}`:''}`);
 
@@ -182,8 +177,21 @@ export const apiUpdateDynographMaster = (dynographMaster) =>
 
 export const apiUpdateDynographChild = (dynographData) => 
   api.put(`dynograph/dynographs/${dynographData.id}`, {
-      json: dynographData
-    });
+    json: dynographData
+  });
+
+export const apiCreateDynoCategory = (dynoCategory) =>
+  api.post(`dynograph/categories`, {
+    json: dynoCategory
+  });
+
+export const apiUpdateDynoCategory = (dynoCategory) =>
+  api.put(`dynograph/categories/${dynoCategory.id}`, {
+    json: dynoCategory
+  });
+
+export const apiDeleteDynoCategory = (dynoCategory) =>
+  api.delete(`dynograph/categories/${dynoCategory.id}`);
 
 
 
