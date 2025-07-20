@@ -4,6 +4,7 @@ import { Upload, X, FileText, Image, Video, Music, Archive, File, Check, AlertCi
 import { FileMeta, useMultiFileUpload } from "../../hooks/use-uploader";
 import { DataType } from "../../lib/content-types";
 import { Button } from "../ui/button";
+import { useLanguage } from "../../lib/language-context";
 
 // File Upload Component
 interface FileUploadComponentProps {
@@ -29,12 +30,12 @@ const getFileIcon = (file: File) => {
   return <File className="w-4 h-4" />;
 };
 
-const formatFileSize = (bytes: number) => {
+const formatFileSize = (bytes: number, language="fa") => {
   if (bytes === 0) return '0 Bytes';
   const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const sizes = [{'en': 'Bytes', 'fa': 'بایت'}, {'en': 'KB', 'fa': 'کیلوبایت'}, {'en': 'MB', 'fa': 'مگابایت'}, {'en': 'GB', 'fa': 'گیگابایت'}];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i][language==="fa"?"fa":"en"];
 };
 
 export default function FileUploadComponent({
@@ -50,7 +51,7 @@ export default function FileUploadComponent({
   processDocument = false
 }: FileUploadComponentProps) {
   const [dragActive, setDragActive] = useState(false);
-
+  const {language} = useLanguage();
   const validateFile = useCallback((file: File) => {
     if (maxSize && file.size > maxSize * 1024 * 1024) {
       alert(`حجم فایل نباید بیشتر از ${maxSize}MB باشد`);
@@ -129,7 +130,7 @@ export default function FileUploadComponent({
           className="hidden"
         />
         
-        <div className="flex items-center justify-center space-x-3 space-x-reverse">
+        <div className="flex flex-wrap items-center justify-center space-x-3 space-x-reverse">
           <div className={`p-2 rounded-full transition-colors ${dragActive ? 'bg-blue-900/50' : 'bg-gray-800'}`}>
             <Upload className={`w-6 h-6 ${dragActive ? 'text-blue-400' : 'text-gray-400'}`} />
           </div>
@@ -161,9 +162,9 @@ export default function FileUploadComponent({
             {fileUploader.files.map((fileMeta: FileMeta) => (
               <div
                 key={fileMeta.id}
-                className="flex items-center justify-between p-3 bg-gray-800 border border-gray-700 rounded-md hover:bg-gray-750 transition-colors"
+                className="flex flex-wrap items-center justify-between p-3 bg-gray-800 border border-gray-700 rounded-md hover:bg-gray-750 transition-colors"
               >
-                <div className="flex items-center space-x-3 space-x-reverse flex-1">
+                <div className="flex flex-wrap items-center space-x-3 space-x-reverse flex-1">
                   {/* Preview Image */}
                   {fileMeta.previewUrl && (
                     <div className="flex-shrink-0">
@@ -181,7 +182,7 @@ export default function FileUploadComponent({
                       {getFileIcon(fileMeta.file)}
                     </div>
                   )}
-                  <p className="text-md font-medium text-gray-200 truncate">
+                  <p className="text-xs lg:text-md text-wrap font-medium text-gray-200 truncate">
                       {fileMeta?.file.name}
                   </p>
                   <div className="flex-1 min-w-0">
@@ -193,7 +194,7 @@ export default function FileUploadComponent({
                       اندازه فایل
                     </p>
                     <p className="text-xs text-gray-500">
-                      {formatFileSize(fileMeta.file.size)}
+                      {formatFileSize(fileMeta.file.size, language)}
                     </p>
                   </div>
                   
@@ -257,7 +258,7 @@ export default function FileUploadComponent({
           </div>
           
           {/* Action Buttons */}
-          <div className="flex justify-between items-center pt-3 mt-3 border-t border-gray-700">
+          <div className="flex justify-between items-center gap-2 pt-3 mt-3 border-t border-gray-700">
             <button
               onClick={fileUploader.resetFiles}
               className="px-3 py-1.5 text-sm text-gray-400 border border-gray-600 rounded-md hover:bg-gray-800 transition-colors"

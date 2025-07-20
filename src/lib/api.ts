@@ -151,11 +151,6 @@ export const updateSummary = ({summaryId, generatedSummary}) =>
 export const apiPostStoreUploadUrl = () =>
   `${baseUrl}store/upload`;
 
-export const createDynograph = (dynographData) => 
-  api.post(`dynograph/dynographs`, {
-      json: dynographData
-    });
-
 export const updateDynograph = (dynographData) => 
   api.put(`dynograph/dynographs/${dynographData.id}`, {
       json: dynographData
@@ -167,26 +162,18 @@ export const apiGetDynoMastersByCategoryHref = ({categoryHref}:{categoryHref?:st
 export const apiGetDynoMasterBySlug = ({slug}) => 
   api.get(`dynograph/dynograph-masters/slug/${slug}`);
 
-async function createMasterDynograph(slug, dynographIds) {
-  const masterDynographData = {
-    slug: slug,
-    dynograph_ids: dynographIds,
-  };
+export const apiCreateDynographChild = (dynographData) => 
+  api.post(`dynograph/dynographs`, {
+    json: dynographData
+  });
 
-  try {
-    const result = await ky.post(`${baseUrl}dynograph/dynograph-masters`, {
-      json: masterDynographData,
-    }).json();
+export const apiCreateDynographMaster = (dynographMaster) =>
+  api.post(`dynograph/dynograph-masters`, {
+    json: dynographMaster
+  });
 
-    return result;
-  } catch (error) {
-    console.error('Error creating master dynograph:', error);
-     if (error.response) {
-       console.error('Response status:', error.response.status);
-    }
-    throw error;
-  }
-}
+export const apiDeleteDynographMaster = (masterId) => 
+  api.delete(`dynograph/dynograph-masters/${masterId}`);
 
 
 

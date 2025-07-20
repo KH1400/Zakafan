@@ -1,7 +1,7 @@
 export type Language = 'fa' | 'en' | 'ar' | 'he';
 export type DataType = 'pdf' | 'html' | 'image' | 'textimage' | 'cover' | 'info' | 'video';
 
-export const languages: Language[] = ['fa', 'en', 'ar', 'he'];
+export const languages: {lang: Language, name: string}[] = [{lang: 'fa', name: "فارسی"}, {lang: 'en', name: "انگلیسی"}, {lang: 'ar', name: "عربی"}, {lang: 'he', name: "عبری"}];
 
 export type MosaicPanel = {
     title: string;
@@ -97,6 +97,29 @@ export type DynoChildDtoIn = {
     infoFile: number;
     textimages: number[];
     videos: number[];
+}
+
+export type DynoMasterDtoOut = {
+    id: string;
+    slug: string;
+    dynographs: Record<Language, DynoChildDtoOut>;
+    image: MediaFile;
+    imageHint: string;
+    images: MediaFile[];
+    videos: MediaFile[];
+    categories: DynoCategory[];
+}
+
+export type DynoChildDtoOut = {
+    id: string;
+    title: string;
+    description: string;
+    htmlFile: MediaFile;
+    pdfFile: MediaFile;
+    infoFile: MediaFile;
+    textimages: MediaFile[];
+    summaries: Summary[];
+    videos: MediaFile[];
 }
 
 // Category

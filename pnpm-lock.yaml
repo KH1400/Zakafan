@@ -77,6 +77,9 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: ^1.1.8
         version: 1.2.7(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      await-to-js:
+        specifier: ^3.0.0
+        version: 3.0.0
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -113,6 +116,9 @@ importers:
       patch-package:
         specifier: ^8.0.0
         version: 8.0.0
+      persian-helpers:
+        specifier: ^0.1.2
+        version: 0.1.2
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -1700,6 +1706,10 @@ packages:
     resolution: {integrity: sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==}
     engines: {node: '>= 4.0.0'}
 
+  await-to-js@3.0.0:
+    resolution: {integrity: sha512-zJAaP9zxTcvTHRlejau3ZOY4V7SRpiByf3/dxx2uyKxxor19tpmpV2QRsTKikckwhaPmr2dVpxxMr7jOCYVp5g==}
+    engines: {node: '>=6.0.0'}
+
   axios@1.10.0:
     resolution: {integrity: sha512-/1xYAC4MP/HEG+3duIhFr4ZQXR4sQXOIe+o6sdqzeykGLx6Upp/1p8MHqhINOvGeP7xyNHe7tsiJByc4SSVUxw==}
 
@@ -2787,6 +2797,9 @@ packages:
 
   pend@1.2.0:
     resolution: {integrity: sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==}
+
+  persian-helpers@0.1.2:
+    resolution: {integrity: sha512-f3J5tN+4WqPzR5A9G/eHCdle2KRCxXkMTNw7pIZ2Bin5cK4ibQ7TNT5cA+eFMkCuxHds9Guzr4KcTPwD3cMSxw==}
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
@@ -5076,6 +5089,8 @@ snapshots:
 
   at-least-node@1.0.0: {}
 
+  await-to-js@3.0.0: {}
+
   axios@1.10.0:
     dependencies:
       follow-redirects: 1.15.9
@@ -6296,6 +6311,8 @@ snapshots:
       through: 2.3.8
 
   pend@1.2.0: {}
+
+  persian-helpers@0.1.2: {}
 
   picocolors@1.1.1: {}
 

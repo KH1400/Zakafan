@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import { Edit, Trash2, FileText, Image, Globe, CheckCircle, XCircle, Plus, Eye, Video, MessageSquareText } from 'lucide-react';
-import { deleteDyno, fetchCategories, createDynograph, fetchDynos, updateDynograph } from '../../../lib/api';
+import { deleteDyno, fetchCategories, fetchDynos, updateDynograph } from '../../../lib/api';
 import { Dyno, DynoCategory, DynoDtoIn, slugify } from '../../../lib/content-types';
 import { Button } from '../../../components/ui/button';
 import { NewDynographModal } from './new-dynograph-modal';
