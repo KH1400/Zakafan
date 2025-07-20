@@ -4,6 +4,7 @@ import {
   BarChart3,
   Trophy,
   MessageSquareQuote,
+  Brain
 } from "lucide-react";
 
 export const iconMap = {
@@ -11,6 +12,7 @@ export const iconMap = {
   BarChart3,
   Trophy,
   MessageSquareQuote,
+  Brain
 };
 
 export type IconName = keyof typeof iconMap; // "Shield" | "BarChart3" | ...

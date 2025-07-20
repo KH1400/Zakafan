@@ -175,5 +175,15 @@ export const apiCreateDynographMaster = (dynographMaster) =>
 export const apiDeleteDynographMaster = (masterId) => 
   api.delete(`dynograph/dynograph-masters/${masterId}`);
 
+export const apiUpdateDynographMaster = (dynographMaster) => 
+  api.put(`dynograph/dynograph-masters/${dynographMaster.id}`, {
+    json: dynographMaster
+  });
+
+export const apiUpdateDynographChild = (dynographData) => 
+  api.put(`dynograph/dynographs/${dynographData.id}`, {
+      json: dynographData
+    });
+
 
 

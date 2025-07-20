@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import { Edit, Trash2, FileText, Image, Globe, CheckCircle, XCircle, Plus, Eye, Video, MessageSquareText, Edit2 } from 'lucide-react';
-import { deleteDyno, fetchCategories, updateDynograph, apiGetDynoMastersByCategoryHref, apiCreateDynographMaster, apiCreateDynographChild, apiDeleteDynographMaster } from '../../../lib/api';
+import { deleteDyno, fetchCategories, updateDynograph, apiGetDynoMastersByCategoryHref, apiCreateDynographMaster, apiCreateDynographChild, apiDeleteDynographMaster, apiUpdateDynographMaster, apiUpdateDynographChild } from '../../../lib/api';
 import { Dyno, DynoCategory, DynoChildDtoIn, DynoDtoIn, DynoMasterDtoIn, DynoMasterDtoOut, Language, languages, slugify } from '../../../lib/content-types';
 import { Button } from '../../../components/ui/button';
 import { NewDynographModal } from './new-dynograph-modal';
@@ -54,8 +54,6 @@ const DynographListPage = () => {
       console.log(dynosResponse);
       const dynosData = dynosResponse.masters.map((dynMaster: any) => ({
         id: dynMaster.id,
-        title: dynMaster.title,
-        description: dynMaster.description,
         slug: dynMaster.slug,
         image: dynMaster.image_file,
         imageHint: dynMaster.image_hint,
@@ -70,18 +68,12 @@ const DynographListPage = () => {
               htmlFile: dynograph.html_file,
               pdfFile: dynograph.pdf_file,
               infoFile: dynograph.info_file,
-              textimages: dynograph.image_files,
+              textimages: dynograph.input_image_files,
               summaries: dynograph.summaries,
               videos: dynograph.video_files,
             }]
           })),
-        pdfFile: dynMaster.pdf_file,
-        infoFile: dynMaster.info_file,
-        htmlFile: dynMaster.html_file,
-        html: dynMaster.html_text,
-        summaries: dynMaster.summaries?.map((s: any) => ({id: s.id, content: s.generated_summary, language: s.language, createdAt: s.updated_at})) || [],
         images: dynMaster.image_files,
-        textimages: dynMaster.input_image_files,
         videos: dynMaster.video_files
       }));
       console.log(dynosData);
@@ -113,20 +105,18 @@ const DynographListPage = () => {
     setShowNewDynoModal(true);
   }
 
-  const handleEditDyno = async(dynoMaster: DynoMasterDtoIn) => {
-
-    return
+  const handleEditDyno = async(dynoMaster: DynoMasterDtoOut) => {
     setSubmitLoading(true);
-    if(!edittingDynoMaster.id) return
-    // if(dyno.title["fa"] === null){
-    //   toast({
-    //     variant: "error",
-    //     title: "اطلاعات ناقص",
-    //     description: `عنوان نباید خالی باشد.`,
-    //   });
-    //   setSubmitLoading(false);
-    //   return
-    // }
+    if(!dynoMaster.id) return
+    if(!dynoMaster.dynographs["fa"].title || !dynoMaster.dynographs["en"].title || !dynoMaster.dynographs["ar"].title || !dynoMaster.dynographs["he"].title){
+      toast({
+        variant: "error",
+        title: "اطلاعات ناقص",
+        description: `عنوان را به تمام زبان‌ها وارد کنید.`,
+      });
+      setSubmitLoading(false);
+      return
+    }
     if(dynoMaster.categories.length === 0){
       toast({
         variant: "error",
@@ -135,24 +125,63 @@ const DynographListPage = () => {
       });
       setSubmitLoading(false);
       return
+    }  
+    if(dynoMaster.slug.trim().length === 0){
+      dynoMaster.slug = slugify(dynoMaster.dynographs["en"].title)
+    }
+
+    for (const lang of languages) {
+      const langData = dynoMaster.dynographs[lang.lang];
+
+      const dynograph: Record<string, any> = {
+        id: langData.id,
+        language: lang.lang,
+        size: 1
+      };
+      
+      if (langData.title) dynograph.title = langData.title;
+      if (langData.description) dynograph.description = langData.description;
+      if (langData.htmlFile) {dynograph.html_file_id = langData.htmlFile.id;} else {dynograph.html_file_id = null}
+      if (langData.pdfFile) {dynograph.pdf_file_id = langData.pdfFile.id;} else {dynograph.pdf_file_id = null}
+      if (langData.infoFile) {dynograph.info_file_id = langData.infoFile.id;} else {dynograph.info_file_id = null}
+      if (langData.textimages && langData.textimages.length > 0) {dynograph.input_image_file_ids = langData.textimages.map(i => i.id)} else {dynograph.input_image_file_ids = [];}
+      if (langData.videos && langData.videos.length > 0) {dynograph.video_file_ids = langData.videos.map(i => i.id);} else {dynograph.video_file_ids = [];}
+    
+      try {
+        const response: any = await apiUpdateDynographChild(dynograph).json();
+      } catch (error) {
+        console.log(`Error in ${lang.lang}`, error);
+        setSubmitLoading(false);
+        return;
+      }
+    }
+
+    const dynographMaster = {
+      id: dynoMaster.id,
+      slug: dynoMaster.slug,
+      category_ids: dynoMaster.categories.map(i => i.id),
+      image_file_ids: dynoMaster.images.map(i => i.id),
+      image_file_id: dynoMaster.image.id,
+      image_hint: dynoMaster.imageHint || dynoMaster.slug,
+      public_video_file_ids: dynoMaster.videos.map(i => i.id)
     }
 
     try {
-      const response: any = await updateDynograph(edittingDynoMaster).json();
-      console.log(response)
+      const response: any = await apiUpdateDynographMaster(dynographMaster).json();
       if(response.id){
         toast({
           variant: "success",
           title: "موفق",
           description: `محتوا با موفقیت بروزرسانی شد.`,
         });
-        setEdittingDynoMaster(null)
         setShowNewDynoModal(false)
         setSubmitLoading(false);
+        setEdittingDynoMaster(null)
         getDynos();
       }
-      console.log(response) 
+      setSubmitLoading(false);
     } catch (error) {
+      console.log(error)
       setSubmitLoading(false);
     }
   };
@@ -170,7 +199,7 @@ const DynographListPage = () => {
     }
   };
 
-  const handleInsertDyno = async(dynoMaster: DynoMasterDtoIn) => {
+  const handleInsertDyno = async(dynoMaster: DynoMasterDtoOut) => {
     setSubmitLoading(true);
     if(!dynoMaster.dynographs["fa"].title || !dynoMaster.dynographs["en"].title || !dynoMaster.dynographs["ar"].title || !dynoMaster.dynographs["he"].title){
       toast({
@@ -205,11 +234,11 @@ const DynographListPage = () => {
       
       if (langData.title) dynograph.title = langData.title;
       if (langData.description) dynograph.description = langData.description;
-      if (langData.htmlFile) dynograph.html_file_id = langData.htmlFile;
-      if (langData.pdfFile) dynograph.pdf_file_id = langData.pdfFile;
-      if (langData.infoFile) dynograph.info_file_id = langData.infoFile;
-      if (langData.textimages && langData.textimages.length > 0) dynograph.input_image_file_ids = langData.textimages;
-      if (langData.videos && langData.videos.length > 0) dynograph.video_file_ids = langData.videos;
+      if (langData.htmlFile) dynograph.html_file_id = langData.htmlFile.id;
+      if (langData.pdfFile) dynograph.pdf_file_id = langData.pdfFile.id;
+      if (langData.infoFile) dynograph.info_file_id = langData.infoFile.id;
+      if (langData.textimages && langData.textimages.length > 0) dynograph.input_image_file_ids = langData.textimages.map(i => i.id);
+      if (langData.videos && langData.videos.length > 0) dynograph.video_file_ids = langData.videos.map(i => i.id);
     
       try {
         const response: any = await apiCreateDynographChild(dynograph).json();
@@ -224,11 +253,11 @@ const DynographListPage = () => {
     const dynographMaster = {
       slug: dynoMaster.slug,
       dynograph_ids: dinoIds,
-      category_ids: dynoMaster.categories,
-      image_file_ids: dynoMaster.images,
-      image_file_id: dynoMaster.image,
-      image_hint: dynoMaster.imageHint,
-      public_video_file_ids: dynoMaster.videos
+      category_ids: dynoMaster.categories.map(i => i.id),
+      image_file_ids: dynoMaster.images.map(i => i.id),
+      image_file_id: dynoMaster.image.id,
+      image_hint: dynoMaster.imageHint || dynoMaster.slug,
+      public_video_file_ids: dynoMaster.videos.map(i => i.id)
     }
 
     try {
@@ -284,7 +313,7 @@ const DynographListPage = () => {
   return (
     <ProtectedRoute accessRoles={['admin', 'user']}>
       <div className="h-[90vh] flex flex-col">
-        {showNewDynoModal && <NewDynographModal categories={categories} loading={submitLoading} defaultDynoMaster={edittingDynoMaster} onChange={(d: DynoMasterDtoIn) => {}} onSubmit={(d: DynoMasterDtoIn) => {edittingDynoMaster?.id?handleEditDyno(d):handleInsertDyno(d)}} onClose={() => {setShowNewDynoModal(false); setEdittingDynoMaster(null)}} />}
+        {showNewDynoModal && <NewDynographModal categories={categories} loading={submitLoading} defaultDynoMaster={edittingDynoMaster} onChange={(d: DynoMasterDtoOut) => {}} onSubmit={(d: DynoMasterDtoOut) => {edittingDynoMaster?.id?handleEditDyno(d):handleInsertDyno(d)}} onClose={() => {setShowNewDynoModal(false); setEdittingDynoMaster(null)}} />}
         
         {/* Header - Fixed */}
         <div className="flex-shrink-0 p-6 pb-4">
@@ -369,7 +398,15 @@ const DynographListPage = () => {
                   </div>
 
                   {/* Delete Button */}
-                  <div className="flex justify-center pt-2">
+                  <div className="flex justify-center pt-2 gap-3">
+                    <button
+                      onClick={() => handleEdit(dyno.id)}
+                      className="flex items-center gap-2 px-3 py-1 bg-blue-500/20 hover:bg-blue-500 text-blue-400 hover:text-white rounded-lg transition-all text-xs"
+                      title="ویرایش"
+                    >
+                      <Edit2 className="w-3 h-3" />
+                      ویرایش
+                    </button>
                     <button
                       onClick={() => handleDelete(dyno.id)}
                       className="flex items-center gap-2 px-3 py-1 bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white rounded-lg transition-all text-xs">

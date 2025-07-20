@@ -3,18 +3,19 @@ import React, { useEffect, useState } from 'react'
 import FileUploadComponent from '../../../components/fourfold/uploader'
 import { Input } from '../../../components/ui/input';
 import { Label } from '../../../components/ui/label';
-import { Dyno, DynoCategory, DynoChildDtoIn, DynoDtoIn, DynoMasterDtoIn, DynoMasterDtoOut, Language, languages } from '../../../lib/content-types';
+import { DynoCategory, DynoChildDtoOut, DynoMasterDtoOut, Language, languages } from '../../../lib/content-types';
 import { Button } from '../../../components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../../../components/ui/dropdown-menu';
 import Image from "next/image";
 import { useLanguage } from '../../../lib/language-context';
-import { Loader2, X } from 'lucide-react';
+import { Loader2, X, Text } from 'lucide-react';
 
-export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose, onSubmit, categories}:{className?: string, defaultDynoMaster: DynoMasterDtoOut, loading: boolean; onChange: (d: DynoMasterDtoIn) => void, onClose: () => void, onSubmit: (d: DynoMasterDtoIn) => void, categories: DynoCategory[]}) => {
+export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose, onSubmit, categories}:{className?: string, defaultDynoMaster: DynoMasterDtoOut, loading: boolean; onChange: (d: DynoMasterDtoOut) => void, onClose: () => void, onSubmit: (d: DynoMasterDtoOut) => void, categories: DynoCategory[]}) => {
   const {selectedLang} = useLanguage();
-  const [dynoMaster, setDynoMaster] = useState<DynoMasterDtoIn>()
+  const [dynoMaster, setDynoMaster] = useState<DynoMasterDtoOut>()
   useEffect(() => {
-    const dynoTemp: DynoMasterDtoIn = {
+    const dynoTemp: DynoMasterDtoOut = {
+      id: null,
       slug: "",
       image: null,
       videos: [],
@@ -22,22 +23,24 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
       images: [],
       categories: [],
       dynographs: {
-        "fa": {title: "", description: "", htmlFile: 0, pdfFile: 0, infoFile: 0, videos: [], textimages: []},
-        "en": {title: "", description: "", htmlFile: 0, pdfFile: 0, infoFile: 0, videos: [], textimages: []},
-        "ar": {title: "", description: "", htmlFile: 0, pdfFile: 0, infoFile: 0, videos: [], textimages: []},
-        "he": {title: "", description: "", htmlFile: 0, pdfFile: 0, infoFile: 0, videos: [], textimages: []}
+        "fa": {title: "", description: "", htmlFile: null, pdfFile: null, infoFile: null, videos: [], textimages: []},
+        "en": {title: "", description: "", htmlFile: null, pdfFile: null, infoFile: null, videos: [], textimages: []},
+        "ar": {title: "", description: "", htmlFile: null, pdfFile: null, infoFile: null, videos: [], textimages: []},
+        "he": {title: "", description: "", htmlFile: null, pdfFile: null, infoFile: null, videos: [], textimages: []}
       }
     };
 
+    if (defaultDynoMaster?.id) dynoTemp.id = defaultDynoMaster.id;
     if (defaultDynoMaster?.slug) dynoTemp.slug = defaultDynoMaster.slug;
-    if (defaultDynoMaster?.image) dynoTemp.image = defaultDynoMaster.image.id;
-    if (defaultDynoMaster?.videos) dynoTemp.videos = defaultDynoMaster.videos.map(v => v.id);
+    if (defaultDynoMaster?.image) dynoTemp.image = defaultDynoMaster.image;
+    if (defaultDynoMaster?.videos) dynoTemp.videos = defaultDynoMaster.videos;
     if (defaultDynoMaster?.imageHint) dynoTemp.imageHint = defaultDynoMaster.imageHint;
-    if (defaultDynoMaster?.images) dynoTemp.images = defaultDynoMaster.images.map(i => i.id);
-    if (defaultDynoMaster?.categories) dynoTemp.categories = defaultDynoMaster.categories.map(c => c.id);
+    if (defaultDynoMaster?.images) dynoTemp.images = defaultDynoMaster.images;
+    if (defaultDynoMaster?.categories) dynoTemp.categories = defaultDynoMaster.categories;
     if (defaultDynoMaster?.dynographs) dynoTemp.dynographs = Object.fromEntries(
       Object.entries(defaultDynoMaster.dynographs).map(([langCode, dynograph]) => {
-        const dynoChildTemp: DynoChildDtoIn = {
+        const dynoChildTemp: DynoChildDtoOut = {
+          id: null,
           title: "",
           description: "",
           videos: [],
@@ -46,21 +49,22 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
           infoFile: null,
           textimages: []
         };
+        if (dynograph?.id) dynoChildTemp.id = dynograph.id;
         if (dynograph?.title) dynoChildTemp.title = dynograph.title;
         if (dynograph?.description) dynoChildTemp.description = dynograph.description;
-        if (dynograph?.videos) dynoChildTemp.videos = dynograph.videos.map(v => v.id);
-        if (dynograph?.htmlFile) dynoChildTemp.htmlFile = dynograph.htmlFile.id;
-        if (dynograph?.pdfFile) dynoChildTemp.pdfFile = dynograph.pdfFile.id;
-        if (dynograph?.infoFile) dynoChildTemp.infoFile = dynograph.infoFile.id;
-        if (dynograph?.textimages) dynoChildTemp.textimages = dynograph.textimages.map(i => i.id);
+        if (dynograph?.videos) dynoChildTemp.videos = dynograph.videos;
+        if (dynograph?.htmlFile) dynoChildTemp.htmlFile = dynograph.htmlFile;
+        if (dynograph?.pdfFile) dynoChildTemp.pdfFile = dynograph.pdfFile;
+        if (dynograph?.infoFile) dynoChildTemp.infoFile = dynograph.infoFile;
+        if (dynograph?.textimages) dynoChildTemp.textimages = dynograph.textimages;
         return [langCode, dynoChildTemp]
       })
-    ) as Record<Language, DynoChildDtoIn>
+    ) as Record<Language, DynoChildDtoOut>
 
     setDynoMaster(dynoTemp)
   }, [])
 
-  const changeHandler = (d: DynoMasterDtoIn) => {
+  const changeHandler = (d: DynoMasterDtoOut) => {
     setDynoMaster(d);
     onChange(d);
   }
@@ -74,6 +78,7 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
               <MultiLangInput title="اسلاگ" text={dynoMaster?.slug} onChange={(e) => {changeHandler({...dynoMaster, slug: e})}} className="felx-grow border rounded-md border-muted p-1" />
               <p>در صورت خالی گذاشتن اسلاگ به صورت اتومات ساخته می شود</p>
             </div> */}
+            {dynoMaster?.id && <p>{dynoMaster.id}</p>}
             <div className="flex justify-start items-center gap-4 py-4">
               <Label>دسته موضوعی:</Label>
               <DropdownMenu modal={true}>
@@ -82,14 +87,14 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   {categories.length > 0 && categories.map((category, index) => (
-                    <DropdownMenuItem dir='rtl' onClick={() => changeHandler({...dynoMaster, categories: [category.id]})} key={index} className={`flex justify-start items-center gap-2 ${selectedLang.font}`}>
+                    <DropdownMenuItem dir='rtl' onClick={() => changeHandler({...dynoMaster, categories: [category]})} key={index} className={`flex justify-start items-center gap-2 ${selectedLang.font}`}>
                       <Image src={category.image.file_url} alt={category.href} width={20} height={20} />
                       {category.title['fa']}
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
-              {categories.length > 0 && dynoMaster?.categories && <p>{categories.filter(c => c.id === dynoMaster?.categories[0])[0]?.title['fa']}</p>}
+              {categories.length > 0 && dynoMaster?.categories  && dynoMaster?.categories.length > 0 && <p>{categories.filter(c => c.id === dynoMaster?.categories[0].id)[0]?.title['fa']}</p>}
             </div>
             <FileUploadComponent
               dataType="cover"
@@ -103,19 +108,20 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
                 setDynoMaster(prevState => {
                   const newState = {
                     ...prevState,
-                    image: meta.uploadedData?.id
+                    image: {id: meta.uploadedData?.id, file_url: meta.uploadedData?.file_url}
                   };
                   onChange(newState);
                   return newState;
                 });
               }}
-            />
-            {dynoMaster.image && <div className="w-full flex justify-center items-center gap-3 border h-16 bg-gray-900/50 relative p-1">
-            <div className="h-full relative w-20 border">
-              <Image alt={defaultDynoMaster.image.id.toString()} src={defaultDynoMaster.image.file_url} fill style={{ objectFit: "cover" }}></Image>
-              <Button variant='ghost' className='absolute top-2 end-2 w-4 h-4'><X/></Button>
-            </div>
-            </div>}
+              >
+              {(dynoMaster?.image)?(<div className="w-full flex flex-wrap justify-center items-center gap-3 border h-16 overflow-y-auto bg-gray-900/50 relative p-1">
+                <div className="h-full relative w-20 border">
+                  <Image alt={dynoMaster.image.id.toString()} src={dynoMaster.image.file_url} fill style={{ objectFit: "cover" }}></Image>
+                  <Button onClick={() => setDynoMaster(prev => ({...prev, image: null}))} variant='ghost' className='absolute top-2 end-2 w-4 h-4'><X/></Button>
+                </div>
+              </div>):null}
+            </FileUploadComponent>
             <FileUploadComponent
               dataType="video"
               multiple={true}
@@ -128,7 +134,7 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
                 setDynoMaster(prevState => {
                   const newState = {
                     ...prevState,
-                    videos: [...(prevState?.videos || []), meta.uploadedData?.id]
+                    videos: [...(prevState?.videos || []), {id: meta.uploadedData?.id, file_url: meta.uploadedData?.file_url}]
                   };
                   onChange(newState);
                   return newState;
@@ -147,16 +153,22 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
                 setDynoMaster(prevState => {
                   const newState = {
                     ...prevState,
-                    images: [...(prevState?.images || []), meta.uploadedData?.id]
+                    images: [...(prevState?.images || []), {id: meta.uploadedData?.id, file_url: meta.uploadedData?.file_url}]
                   };
                   onChange(newState);
                   return newState;
                 });
-              }}
-            />
+              }}>
+              {(dynoMaster?.images && dynoMaster?.images.length > 0)?(<div className="w-full flex flex-wrap justify-center items-center gap-3 border h-16 overflow-y-auto bg-gray-900/50 relative p-1">
+                {dynoMaster?.images.map((image, index)=> <div key={index} className="h-full relative w-20 border">
+                  <Image alt={image.id.toString()} src={image.file_url} fill style={{ objectFit: "cover" }}></Image>
+                  <Button onClick={() => setDynoMaster(prev => ({...prev, images: dynoMaster?.images.filter(i => i.id !== image.id)}))} variant='ghost' className='absolute top-2 end-2 w-4 h-4'><X/></Button>
+                </div>)}
+              </div>):null}
+            </FileUploadComponent>
             <div className="grid md:grid-cols-4 gap-3">
-              {languages.map(language => 
-                <div className="border border-gray-500 p-1 rounded-lg space-y-3">
+              {languages.map((language, index) => 
+                <div key={index} className="border border-gray-500 p-1 rounded-lg space-y-3">
                   <h3 className={`w-full border bg-opacity-40 p-1 rounded-lg text-center ${language.lang === 'fa' ? 'bg-green-500' : 
                                     language.lang === 'en' ? 'bg-blue-500' : 
                                     language.lang === 'ar' ? 'bg-orange-500' :
@@ -177,13 +189,20 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
                       setDynoMaster(prevState => {
                         const newState = {
                           ...prevState,
-                          dynographs: {...prevState?.dynographs, [language.lang]: {...prevState?.dynographs[language.lang], pdfFile: meta.uploadedData?.id}}
+                          dynographs: {...prevState?.dynographs, [language.lang]: {...prevState?.dynographs[language.lang], pdfFile: {id: meta.uploadedData?.id, file_url: meta.uploadedData?.file_url}}}
                         };
                         onChange(newState);
                         return newState;
                       });
                     }}
-                  />
+                    >
+                    {(dynoMaster?.dynographs[language.lang].pdfFile)?(<div className="w-full flex flex-wrap justify-center items-center gap-3 border h-16 overflow-y-auto bg-gray-900/50 relative p-1">
+                      <div className="h-full relative w-20 border">
+                        <Text className='h-full w-full' />
+                        <Button onClick={() => setDynoMaster(prev => ({...prev, dynographs: {...prev?.dynographs, [language.lang]: {...prev?.dynographs[language.lang], pdfFile: null}}}))} variant='ghost' className='absolute top-2 end-2 w-4 h-4'><X/></Button>
+                      </div>
+                    </div>):null}
+                  </FileUploadComponent>
                   <FileUploadComponent
                     dataType="html"
                     multiple={false}
@@ -196,13 +215,20 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
                       setDynoMaster(prevState => {
                         const newState = {
                           ...prevState,
-                          dynographs: {...prevState?.dynographs, [language.lang]: {...prevState?.dynographs[language.lang], htmlFile: meta.uploadedData?.id}}
+                          dynographs: {...prevState?.dynographs, [language.lang]: {...prevState?.dynographs[language.lang], htmlFile: {id: meta.uploadedData?.id, file_url: meta.uploadedData?.file_url}}}
                         };
                         onChange(newState);
                         return newState;
                       });
                     }}
-                  />
+                    >
+                    {(dynoMaster?.dynographs[language.lang].htmlFile)?(<div className="w-full flex flex-wrap justify-center items-center gap-3 border h-16 overflow-y-auto bg-gray-900/50 relative p-1">
+                      <div className="h-full relative w-20 border">
+                        <Text className='h-full w-full' />
+                        <Button onClick={() => setDynoMaster(prev => ({...prev, dynographs: {...prev?.dynographs, [language.lang]: {...prev?.dynographs[language.lang], htmlFile: null}}}))} variant='ghost' className='absolute top-2 end-2 w-4 h-4'><X/></Button>
+                      </div>
+                    </div>):null}
+                  </FileUploadComponent>
                   <FileUploadComponent
                     dataType="info"
                     multiple={false}
@@ -215,13 +241,20 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
                       setDynoMaster(prevState => {
                         const newState = {
                           ...prevState,
-                          dynographs: {...prevState?.dynographs, [language.lang]: {...prevState?.dynographs[language.lang], infoFile: meta.uploadedData?.id}}
+                          dynographs: {...prevState?.dynographs, [language.lang]: {...prevState?.dynographs[language.lang], infoFile: {id: meta.uploadedData?.id, file_url: meta.uploadedData?.file_url}}}
                         };
                         onChange(newState);
                         return newState;
                       });
                     }}
-                  />
+                    >
+                    {(dynoMaster?.dynographs[language.lang].infoFile)?(<div className="w-full flex flex-wrap justify-center items-center gap-3 border h-16 overflow-y-auto bg-gray-900/50 relative p-1">
+                      <div className="h-full relative w-20 border">
+                        <Image alt={dynoMaster?.dynographs[language.lang].infoFile.id.toString()} src={dynoMaster?.dynographs[language.lang].infoFile.file_url} fill style={{ objectFit: "cover" }}></Image>
+                        <Button onClick={() => setDynoMaster(prev => ({...prev, dynographs: {...prev?.dynographs, [language.lang]: {...prev?.dynographs[language.lang], infoFile: null}}}))} variant='ghost' className='absolute top-2 end-2 w-4 h-4'><X/></Button>
+                      </div>
+                    </div>):null}
+                  </FileUploadComponent>
                   <FileUploadComponent
                     dataType="textimage"
                     multiple={true}
@@ -234,13 +267,19 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
                       setDynoMaster(prevState => {
                         const newState = {
                           ...prevState,
-                          dynographs: {...prevState?.dynographs, [language.lang]: {...prevState?.dynographs[language.lang], textimages: [...prevState?.dynographs[language.lang].textimages, meta.uploadedData?.id]}}
+                          dynographs: {...prevState?.dynographs, [language.lang]: {...prevState?.dynographs[language.lang], textimages: [...prevState?.dynographs[language.lang].textimages, {id: meta.uploadedData?.id, file_url: meta.uploadedData?.file_url}]}}
                         };
                         onChange(newState);
                         return newState;
                       });
-                    }}
-                  />
+                    }}>
+                    {(dynoMaster?.dynographs[language.lang].textimages && dynoMaster?.dynographs[language.lang].textimages.length > 0)?(<div className="w-full flex flex-wrap justify-center items-center gap-3 border h-16 overflow-y-auto bg-gray-900/50 relative p-1">
+                      {dynoMaster?.dynographs[language.lang].textimages.map((image, index)=> <div key={index} className="h-full relative w-20 border">
+                        <Image alt={image.id.toString()} src={image.file_url} fill style={{ objectFit: "cover" }}></Image>
+                        <Button onClick={() => setDynoMaster(prev => ({...prev, dynographs: {...prev?.dynographs, [language.lang]: {...prev?.dynographs[language.lang], textimages: dynoMaster?.dynographs[language.lang].textimages.filter(i => i.id !== image.id)}}}))} variant='ghost' className='absolute top-2 end-2 w-4 h-4'><X/></Button>
+                      </div>)}
+                    </div>):null}
+                  </FileUploadComponent>
                   <FileUploadComponent
                     dataType="video"
                     multiple={true}
@@ -253,7 +292,7 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
                       setDynoMaster(prevState => {
                         const newState = {
                           ...prevState,
-                          dynographs: {...prevState?.dynographs, [language.lang]: {...prevState?.dynographs[language.lang], videos: [...prevState?.dynographs[language.lang].videos, meta.uploadedData?.id]}}
+                          dynographs: {...prevState?.dynographs, [language.lang]: {...prevState?.dynographs[language.lang], videos: [...prevState?.dynographs[language.lang].videos, {id: meta.uploadedData?.id, file_url: meta.uploadedData?.file_url}]}}
                         };
                         onChange(newState);
                         return newState;

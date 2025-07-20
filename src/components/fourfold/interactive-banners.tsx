@@ -31,10 +31,10 @@ export function InteractiveBanners({ lang = 'en' }: { lang: Language }) {
   
   return (
     <div
-      className={cn("flex flex-col md:flex-row h-full w-full", isRtl && "flex-row-reverse")}
+      className={cn("flex flex-col shrink md:flex-row h-full w-full")}
       onMouseLeave={() => setHoveredIndex(null)}
     >
-      {categories.map((category, index) => {
+      {categories.sort((a,b) => a.order - b.order).map((category, index) => {
         const isHovered = hoveredIndex === index;
         const isAnyHovered = hoveredIndex !== null;
         const finalHref = `/${category.href}${lang === 'en' ? '' : `?lang=${lang}`}`;

@@ -40,7 +40,7 @@ export function BannerPanel({
     <Link
       href={href}
       className={cn(
-        "group relative h-full shrink-0 overflow-hidden transition-all duration-700 ease-in-out",
+        "group relative h-full overflow-hidden transition-all duration-700 ease-in-out",
         {
           "basis-1/4": !isAnyHovered,
           "basis-[64%]": isHovered,

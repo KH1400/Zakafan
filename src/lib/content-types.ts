@@ -100,7 +100,7 @@ export type DynoChildDtoIn = {
 }
 
 export type DynoMasterDtoOut = {
-    id: string;
+    id?: string;
     slug: string;
     dynographs: Record<Language, DynoChildDtoOut>;
     image: MediaFile;
@@ -111,14 +111,14 @@ export type DynoMasterDtoOut = {
 }
 
 export type DynoChildDtoOut = {
-    id: string;
+    id?: string;
     title: string;
     description: string;
     htmlFile: MediaFile;
     pdfFile: MediaFile;
     infoFile: MediaFile;
     textimages: MediaFile[];
-    summaries: Summary[];
+    summaries?: Summary[];
     videos: MediaFile[];
 }
 
@@ -131,7 +131,8 @@ export type DynoCategory = {
     href: string;
     icon: string,
     image: MediaFile,
-    imageHint: string
+    imageHint: string,
+    order: number
 }
 
 export type MosaicPanelData = {

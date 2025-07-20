@@ -12,12 +12,14 @@ interface FileUploadComponentProps {
   multiple?: boolean;
   accept?: string;
   maxSize?: number; // in MB
+  disable?: boolean;
   onUploadComplete?: (meta: FileMeta) => void;
   onError?: (file: File, error: any) => void;
   className?: string;
   title?: string;
   description?: string;
   processDocument?: boolean;
+  children?: React.ReactNode
 }
 
 const getFileIcon = (file: File) => {
@@ -43,12 +45,14 @@ export default function FileUploadComponent({
   multiple = true,
   accept,
   maxSize = 10, // 10MB default
+  disable = false,
   onUploadComplete,
   onError,
   className = "",
   title = "آپلود فایل",
   description = "فایل‌های خود را انتخاب کنید یا اینجا بکشید",
-  processDocument = false
+  processDocument = false,
+  children
 }: FileUploadComponentProps) {
   const [dragActive, setDragActive] = useState(false);
   const {language} = useLanguage();
@@ -107,7 +111,7 @@ export default function FileUploadComponent({
   const successFiles = fileUploader.files.filter(f => f.status === 'success');
 
   return (
-    <div className={`w-full bg-gray-900 rounded-lg border border-gray-700 ${className}`}>
+    <div className={`w-full bg-gray-900 rounded-lg border border-gray-700 ${className} ${disable && "pointer-events-none opacity-50"}`}>
       {/* Upload Area */}
       <div
         className={`relative border-2 border-dashed rounded-lg p-4 text-center transition-all duration-300 cursor-pointer
@@ -286,6 +290,7 @@ export default function FileUploadComponent({
           </div>
         </div>
       )}
+     {children}
     </div>
   );
 }
