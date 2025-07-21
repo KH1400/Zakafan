@@ -6,11 +6,8 @@ import HtmlRenderer from '../../../components/htmlviewer';
 import { Button } from '../../../components/ui/button';
 import { ArrowLeft, ArrowRight, DownloadIcon } from 'lucide-react';
 import { apiGetDynoMasterBySlug, deleteSummary, fetchSummaries, generateSummary, updateSummary } from '../../../lib/api';
-import { useNavigation } from 'react-day-picker';
 import Link from 'next/link';
-import Image from 'next/image';
 import VideoPlayer from '../../../components/video-player';
-import Loading from '../../../components/fourfold/loading';
 import { Skeleton } from '../../../components/ui/skeleton';
 import TextCard from './text-card';
 

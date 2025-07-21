@@ -108,6 +108,7 @@ export type DynoMasterDtoOut = {
     images: MediaFile[];
     videos: MediaFile[];
     categories: DynoCategory[];
+    topScorer?: 'title' | 'description' | 'pdf' | 'html'
 }
 
 export type DynoChildDtoOut = {
@@ -146,6 +147,21 @@ export type MosaicPanelData = {
     categoryHref: string[];
 };
 
+export type SearchTotalFiles = {
+    htmlFile: number;
+    pdfFile: number;
+    imageFiles: number;
+    videoFiles: number;
+}
+
+export type SearchResponse = {
+    count: number;
+    page_size: number;
+    current_page: number;
+    total_pages: number;
+    masters: DynoMasterDtoOut[];
+}
+
 export function slugify(text: string) {
     return text
         .toString()
@@ -157,3 +173,63 @@ export function slugify(text: string) {
         .replace(/^-+/, '')              // Trim dash from start
         .replace(/-+$/, '');             // Trim dash from end
 }
+
+export function mapResDynographToDynoChildDtoOut(item: any): DynoChildDtoOut {
+    return {
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        htmlFile: item.html_file!,
+        pdfFile: item.pdf_file!,
+        infoFile: item.info_file!,
+        textimages: item.input_image_files,
+        summaries: item.summaries,
+        videos: item.video_files,
+    };
+}
+
+export function mapResMasterToDynoMasterDtoOut(master: any): DynoMasterDtoOut {
+  const dynographs = {} as Record<Language, DynoChildDtoOut>;
+
+  for (const lang of languages) {
+    const item = master.dynographs[lang.lang];
+    if (item) {
+      dynographs[lang.lang] = mapResDynographToDynoChildDtoOut(item);
+    } else {
+      dynographs[lang.lang] = {
+        id: '',
+        title: '',
+        description: '',
+        htmlFile: null!,
+        pdfFile: null!,
+        infoFile: null!,
+        textimages: [],
+        videos: [],
+        summaries: [],
+      };
+    }
+  }
+
+  const categories: DynoCategory[] = master.categories.map(cat => ({
+    id: cat.id as number,
+    title: cat.title,
+    description: cat.description,
+    href: cat.href,
+    icon: cat.icon,
+    image: cat.image,
+    imageHint: cat.imageHint,
+    order: cat.order,
+  }));
+
+  return {
+    id: master.id,
+    slug: master.slug,
+    dynographs,
+    image: master.image_file!,
+    imageHint: master.image_hint,
+    images: master.image_files,
+    videos: master.public_video_files,
+    categories,
+    topScorer: master.top_scorer
+  };
+}  

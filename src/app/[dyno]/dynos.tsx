@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { useLanguage } from "../../lib/language-context";
 import Loding from "../../components/fourfold/loading";
 import { Skeleton } from "../../components/ui/skeleton";
-import { apiGetCategory, apiGetDynoMastersByCategoryHref } from "../../lib/api";
+import { apiGetDynoCategory, apiGetDynoMastersByCategoryHref } from "../../lib/api";
 
 const goBackTranslations = {
   en: "Go Back Home",
@@ -35,7 +35,7 @@ export default function DynosPage({ slug }: { slug: string }) {
         // همزمان fetch کردن دو تا API
         const [dynosResult, categoryResult] = await Promise.all([
           apiGetDynoMastersByCategoryHref({ categoryHref: slug }),
-          apiGetCategory(slug)
+          apiGetDynoCategory(slug)
         ]);
 
         // Process dynos

@@ -3,82 +3,16 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Search, Loader2, FileText, Video, Image as ImageIcon } from "lucide-react";
+import { Search, Loader2, FileText, Video, Image as ImageIcon, FileCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { type Language, type Dyno, type DynoCategory } from "@/lib/content-types";
+import { type Language, type Dyno, type DynoCategory, SearchTotalFiles, SearchResponse, DynoMasterDtoOut, DynoChildDtoOut, mapResMasterToDynoMasterDtoOut } from "@/lib/content-types";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "../../lib/language-context";
-import { apiSearch } from "../../lib/api";
-
-// API Response Types
-interface SearchResponse {
-  count: number;
-  page_size: number;
-  current_page: number;
-  total_pages: number;
-  masters: Master[];
-}
-
-interface Master {
-  id: string;
-  slug: string;
-  dynographs: Record<string, DynographItem>;
-  categories: Category[];
-  image_files: FileItem[];
-  image_file?: FileItem;
-  image_hint: string;
-  public_video_files: any[];
-}
-
-interface DynographItem {
-  id: string;
-  title: string;
-  description: string;
-  language: string;
-  html_file?: FileItem;
-  pdf_file?: FileItem;
-  info_file?: FileItem;
-  input_image_files: FileItem[];
-  video_files: FileItem[];
-  size: number;
-  summaries: Summary[];
-}
-
-interface Category {
-  id: number;
-  title: {
-    en: string;
-    fa: string;
-    ar: string;
-    he: string;
-  };
-  description: {
-    en: string;
-    fa: string;
-    ar: string;
-    he: string;
-  };
-  icon: string;
-  href: string;
-  image_file?: FileItem;
-  image_hint: string;
-  order: number;
-}
-
-interface FileItem {
-  id: number;
-  file_url: string;
-}
-
-interface Summary {
-  id: number;
-  generated_summary: string;
-  language: string;
-}
+import { apiGetDynoCategories, apiSearch } from "../../lib/api";
 
 const translations = {
   searchPlaceholder: {
@@ -111,6 +45,18 @@ const translations = {
     ar: 'ملفات',
     he: 'קבצים',
   },
+  viewAll: {
+    en: 'View all results for',
+    fa: 'نمایش همه نتایج برای',
+    ar: 'عرض كل النتائج لـ',
+    he: 'הצג את כל התוצאות עבור',
+  },
+  showMoreResults: {
+    en: 'Show more results',
+    fa: 'مشاهده نتایج بیشتر',
+    ar: 'عرض المزيد من النتائج',
+    he: 'הצג תוצאות נוספות',
+  },
 };
 
 type SearchComponentProps = {
@@ -128,7 +74,8 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
   const [selectedCategories, setSelectedCategories] = React.useState<Set<number>>(new Set());
   const [isInputFocused, setInputFocused] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
-  
+  const [categories, setCategories] = React.useState<DynoCategory[]>([]);
+    
   const containerRef = React.useRef<HTMLDivElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const debounceTimeoutRef = React.useRef<NodeJS.Timeout>();
@@ -174,7 +121,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
 
     try {
       const results: any = await apiSearch(searchQuery).json();
-      setSearchResults(results);
+      setSearchResults({...results, masters: results.masters.map((m: any) => mapResMasterToDynoMasterDtoOut(m))});
     } catch (err) {
       setError('Search failed. Please try again.');
       setSearchResults(null);
@@ -217,19 +164,21 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
     };
   }, [isExpanded, onExpandedChange]);
 
-  // Get all unique categories from search results
-  const allCategories = React.useMemo(() => {
-    if (!searchResults) return [];
-    const categoryMap = new Map<number, Category>();
-    
-    searchResults.masters.forEach(master => {
-      master.categories.forEach(category => {
-        categoryMap.set(category.id, category);
-      });
-    });
-    
-    return Array.from(categoryMap.values()).sort((a, b) => a.order - b.order);
-  }, [searchResults]);
+  const getCategories = async () => {
+    try {
+      const categoryResult = await apiGetDynoCategories()
+      const categoriesResponse: any = await categoryResult.json();
+      const categoriesData = categoriesResponse.categories.map((c: any) => ({...c, image: c.image_file, imageHint: c.image_hint}));
+      setCategories(categoriesData);
+    } catch (error) {
+      console.log('Error loading data:', error);
+    } finally {
+    }
+  };
+
+  React.useEffect(() => {
+    getCategories();
+  }, [])
 
   // Filter results by selected categories
   const filteredResults = React.useMemo(() => {
@@ -254,26 +203,35 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
     setSelectedCategories(newSelection);
   };
 
-  const createHref = (master: Master) => {
+  const createHref = (master: DynoMasterDtoOut) => {
     const langQuery = lang === 'en' ? '' : `?lang=${lang}`;
     return `/${master.categories[0].href}/${master.slug}${langQuery}`;
   };
 
-  const getFileTypeIcon = (dynograph: DynographItem) => {
-    if (dynograph.video_files.length > 0) return <Video className="h-4 w-4" />;
-    if (dynograph.pdf_file) return <FileText className="h-4 w-4" />;
-    if (dynograph.input_image_files.length > 0) return <ImageIcon className="h-4 w-4" />;
-    return <FileText className="h-4 w-4" />;
+  const getFileTypeIcon = (total: SearchTotalFiles, topScorer) => {
+    return <div className="flex items-center gap-3 text-xs text-muted-foreground group-hover:text-teal-900 ml-auto">
+      <div className={cn("flex justify-center items-center gap-1", topScorer === "html" && "text-sky-500 font-bold")}>
+        <FileCode className="h-4 w-4" /><p>{total.htmlFile}</p>
+      </div>
+      <div className={cn("flex justify-center items-center gap-1", topScorer === "pdf" && "text-sky-500 font-bold")}>
+        <FileText className="h-4 w-4" /><p>{total.pdfFile}</p>
+      </div>
+      {total.imageFiles > 0 && <div className="flex justify-center items-center gap-1">
+        <ImageIcon className="h-4 w-4" /><p>{total.imageFiles}</p>
+      </div>}
+      {total.videoFiles > 0 && <div className="flex justify-center items-center gap-1">
+        <Video className="h-4 w-4" /><p>{total.videoFiles}</p>
+      </div>}
+    </div>;
   };
 
-  const getTotalFiles = (dynograph: DynographItem) => {
-    return (
-      (dynograph.html_file ? 1 : 0) +
-      (dynograph.pdf_file ? 1 : 0) +
-      (dynograph.info_file ? 1 : 0) +
-      dynograph.input_image_files.length +
-      dynograph.video_files.length
-    );
+  const getTotalFiles = (dynograph: DynoChildDtoOut, master: DynoMasterDtoOut) => {
+    return {
+      htmlFile: dynograph.htmlFile ? 1 : 0,
+      pdfFile: dynograph.pdfFile ? 1 : 0,
+      imageFiles: dynograph.textimages.length + master.images.length,
+      videoFiles: dynograph.videos.length + master.videos.length
+    };
   };
   
   const showResults = isExpanded && (query.trim().length > 0 || searchResults);
@@ -343,13 +301,13 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
         )}
       >
         {/* Category Filters */}
-        {allCategories.length > 0 && (
+        {categories.length > 0 && (
           <div className="flex flex-col gap-2.5 rounded-md border bg-background p-3 shadow-lg mb-2">
             <div className="text-sm font-medium text-muted-foreground mb-2">
               {translations.categories[lang]}
             </div>
             <div className="flex flex-wrap gap-2">
-              {allCategories.map(category => (
+              {categories.map(category => (
                 <div key={category.id} className="flex items-center gap-1.5">
                   <Checkbox
                     id={`category-${category.id}`}
@@ -381,7 +339,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
                   onClick={() => navigateToSearchPage(query)}
                 >
                   <Search className="h-3 w-3 mr-2" />
-                  View all results for "{query}"
+                  {translations.viewAll[language]} "{query}"
                 </Button>
               </div>
             )}
@@ -394,13 +352,13 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
               <>
                 {searchResults && (
                   <div className="px-4 py-2 border-b bg-muted/50 text-xs text-muted-foreground">
-                    {Math.min(filteredResults.length, 5)} of {filteredResults.length} {translations.searchResults[lang]}
+                    {searchResults.count} {translations.searchResults[lang]}
                   </div>
                 )}
                 <ul className="max-h-[50vh] overflow-y-auto">
                   {filteredResults.slice(0, 5).map(master => {
                     const mainDynograph = master.dynographs[language];
-                    const totalFiles = mainDynograph ? getTotalFiles(mainDynograph) : 0;
+                    const totalFiles: SearchTotalFiles = mainDynograph ? getTotalFiles(mainDynograph, master) : {htmlFile: 0, pdfFile: 0, imageFiles: 0, videoFiles: 0};
                     
                     return (
                       <li key={master.id} className="border-b last:border-b-0 group">
@@ -416,11 +374,11 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
                         >
                           <div className="flex items-start gap-3">
                             {/* Thumbnail */}
-                            {master.image_file && (
+                            {master.image && (
                               <div className="flex-shrink-0 w-12 h-12 rounded-md overflow-hidden bg-muted">
                                 <img
-                                  src={master.image_file.file_url}
-                                  alt={master.image_hint}
+                                  src={master.image.file_url}
+                                  alt={master.imageHint}
                                   className="w-full h-full object-cover"
                                 />
                               </div>
@@ -429,11 +387,12 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
                             <div className="flex-1 min-w-0">
                               {/* Title and Description */}
                               <div className="flex flex-col gap-1">
-                                <h3 className="font-medium text-sm line-clamp-1">
+                                <h3 className={cn("font-medium text-sm line-clamp-1", master.topScorer === "title" && "text-sky-500 font-bold")}>
                                   {mainDynograph?.title || master.slug}
+                                  {/* {master.topScorer || 'title'} */}
                                 </h3>
                                 {mainDynograph?.description && (
-                                  <p className="text-xs text-muted-foreground group-hover:text-gray-700 line-clamp-2">
+                                  <p className={cn("text-xs text-muted-foreground group-hover:text-gray-700 line-clamp-2", master.topScorer === "description" && "text-sky-500 font-bold")}>
                                     {mainDynograph.description}
                                   </p>
                                 )}
@@ -461,10 +420,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
                                 
                                 {/* File Info */}
                                 {mainDynograph && (
-                                  <div className="flex items-center gap-1 text-xs text-muted-foreground group-hover:text-teal-900 ml-auto">
-                                    {getFileTypeIcon(mainDynograph)}
-                                    <span>{totalFiles} {translations.files[lang]}</span>
-                                  </div>
+                                  getFileTypeIcon(totalFiles, master.topScorer)
                                 )}
                               </div>
                             </div>
@@ -474,22 +430,13 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
                     );
                   })}
                 </ul>
-                
-                {/* Show more results footer */}
-                {filteredResults.length > 5 && (
-                  <div className="px-4 py-2 border-t bg-muted/30">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-full justify-center text-xs h-8"
-                      onClick={() => navigateToSearchPage(query)}
-                    >
-                      View all {filteredResults.length} results
-                    </Button>
-                  </div>
-                )}
               </>
             )}
+            {(searchResults?.count > filteredResults.length) && (filteredResults.length > 0) && <div className="w-full p-1 text-xs flex justify-center items-center">
+              <Button variant="link" className="text-accent" onClick={() => navigateToSearchPage(query)}>
+                {translations.showMoreResults[language]}
+              </Button>
+            </div>}
           </div>
         )}
       </div>

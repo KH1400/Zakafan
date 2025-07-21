@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import { Trash2, Plus, Edit2 } from 'lucide-react';
-import { apiCreateDynoCategory, apiDeleteDynoCategory, apiUpdateDynoCategory, fetchCategories } from '../../../lib/api';
+import { apiCreateDynoCategory, apiDeleteDynoCategory, apiGetDynoCategories, apiUpdateDynoCategory } from '../../../lib/api';
 import { DynoCategory } from '../../../lib/content-types';
 import { Button } from '../../../components/ui/button';
 import { useToast } from '../../../hooks/use-toast';
@@ -28,7 +28,7 @@ const CategoryListPage = () => {
   const getCategories = async () => {
     setLoading(true);
     try {
-      const categoryResult = await fetchCategories()
+      const categoryResult = await apiGetDynoCategories()
       const categoriesResponse: any = await categoryResult.json();
       const categoriesData = categoriesResponse.categories.map((c: any) => ({...c, image: c.image_file, imageHint: c.image_hint}));
       setCategories(categoriesData);

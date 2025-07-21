@@ -3,82 +3,18 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { Search, Loader2, FileText, Video, Image as ImageIcon } from "lucide-react";
+import { Search, Loader2, FileText, Video, Image as ImageIcon, FileCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { type Language, type Dyno, type DynoCategory } from "@/lib/content-types";
+import { type Language, type Dyno, type DynoCategory, SearchTotalFiles, DynoMasterDtoOut, DynoChildDtoOut, SearchResponse, mapResMasterToDynoMasterDtoOut } from "@/lib/content-types";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "../../lib/language-context";
-import { apiSearch } from "../../lib/api";
+import { apiGetDynoCategories, apiSearch } from "../../lib/api";
 
 // API Response Types
-interface SearchResponse {
-  count: number;
-  page_size: number;
-  current_page: number;
-  total_pages: number;
-  masters: Master[];
-}
-
-interface Master {
-  id: string;
-  slug: string;
-  dynographs: Record<string, DynographItem>;
-  categories: Category[];
-  image_files: FileItem[];
-  image_file?: FileItem;
-  image_hint: string;
-  public_video_files: any[];
-}
-
-interface DynographItem {
-  id: string;
-  title: string;
-  description: string;
-  language: string;
-  html_file?: FileItem;
-  pdf_file?: FileItem;
-  info_file?: FileItem;
-  input_image_files: FileItem[];
-  video_files: FileItem[];
-  size: number;
-  summaries: Summary[];
-}
-
-interface Category {
-  id: number;
-  title: {
-    en: string;
-    fa: string;
-    ar: string;
-    he: string;
-  };
-  description: {
-    en: string;
-    fa: string;
-    ar: string;
-    he: string;
-  };
-  icon: string;
-  href: string;
-  image_file?: FileItem;
-  image_hint: string;
-  order: number;
-}
-
-interface FileItem {
-  id: number;
-  file_url: string;
-}
-
-interface Summary {
-  id: number;
-  generated_summary: string;
-  language: string;
-}
 
 const translations = {
   searchPlaceholder: {
@@ -111,6 +47,12 @@ const translations = {
     ar: 'ملفات',
     he: 'קבצים',
   },
+  showMoreResults: {
+    en: 'Show more results',
+    fa: 'مشاهده نتایج بیشتر',
+    ar: 'عرض المزيد من النتائج',
+    he: 'הצג תוצאות נוספות',
+  },
 };
 
 type SearchComponentProps = {
@@ -132,8 +74,12 @@ export default function SearchComponent({ searchContent, className }: SearchComp
   const [selectedCategories, setSelectedCategories] = React.useState<Set<number>>(new Set());
   const [isInputFocused, setInputFocused] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [categories, setCategories] = React.useState<DynoCategory[]>([]);
+  const [limit, setLimit] = React.useState<number>(10);
+  const [offset, setOffset] = React.useState<number>(0);
   
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const containerResultsRef = React.useRef<HTMLDivElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const debounceTimeoutRef = React.useRef<NodeJS.Timeout>();
   
@@ -154,7 +100,7 @@ export default function SearchComponent({ searchContent, className }: SearchComp
   }, [pathname, searchParams, router]);
 
   // Debounced search function
-  const performSearch = React.useCallback(async (searchQuery: string) => {
+  const performSearch = React.useCallback(async (searchQuery: string, li = limit, off = offset) => {
     if (!searchQuery.trim() || searchQuery.length < 3) {
       setSearchResults(null);
       return;
@@ -164,8 +110,8 @@ export default function SearchComponent({ searchContent, className }: SearchComp
     setError(null);
 
     try {
-      const results: any = await apiSearch(searchQuery).json();
-      setSearchResults(results);
+      const results: any = await apiSearch(searchQuery, li, off).json();
+      setSearchResults({...results, masters: results.masters.map((m: any) => mapResMasterToDynoMasterDtoOut(m))});
     } catch (err) {
       setError('Search failed. Please try again.');
       setSearchResults(null);
@@ -199,6 +145,10 @@ export default function SearchComponent({ searchContent, className }: SearchComp
     }
   }, [initialQuery, performSearch]);
 
+  React.useEffect(() => {
+    getCategories();
+  }, []);
+
   // Listen for URL changes (back/forward navigation)
   React.useEffect(() => {
     const urlQuery = searchParams.get('q') || '';
@@ -207,19 +157,31 @@ export default function SearchComponent({ searchContent, className }: SearchComp
     }
   }, [searchParams]);
 
+  const getCategories = async () => {
+    try {
+      const categoryResult = await apiGetDynoCategories()
+      const categoriesResponse: any = await categoryResult.json();
+      const categoriesData = categoriesResponse.categories.map((c: any) => ({...c, image: c.image_file, imageHint: c.image_hint}));
+      setCategories(categoriesData);
+    } catch (error) {
+      console.log('Error loading data:', error);
+    } finally {
+    }
+  };
+
   // Get all unique categories from search results
-  const allCategories = React.useMemo(() => {
-    if (!searchResults) return [];
-    const categoryMap = new Map<number, Category>();
+  // const allCategories = React.useMemo(() => {
+  //   if (!searchResults) return [];
+  //   const categoryMap = new Map<number, Category>();
     
-    searchResults.masters.forEach(master => {
-      master.categories.forEach(category => {
-        categoryMap.set(category.id, category);
-      });
-    });
+  //   searchResults.masters.forEach(master => {
+  //     master.categories.forEach(category => {
+  //       categoryMap.set(category.id, category);
+  //     });
+  //   });
     
-    return Array.from(categoryMap.values()).sort((a, b) => a.order - b.order);
-  }, [searchResults]);
+  //   return Array.from(categoryMap.values()).sort((a, b) => a.order - b.order);
+  // }, [searchResults]);
 
   // Filter results by selected categories
   const filteredResults = React.useMemo(() => {
@@ -244,27 +206,45 @@ export default function SearchComponent({ searchContent, className }: SearchComp
     setSelectedCategories(newSelection);
   };
 
-  const createHref = (master: Master) => {
+  const createHref = (master: DynoMasterDtoOut) => {
     const langQuery = language === 'en' ? '' : `?lang=${language}`;
     return `/${master.categories[0].href}/${master.slug}${langQuery}`;
   };
 
-  const getFileTypeIcon = (dynograph: DynographItem) => {
-    if (dynograph.video_files.length > 0) return <Video className="h-4 w-4" />;
-    if (dynograph.pdf_file) return <FileText className="h-4 w-4" />;
-    if (dynograph.input_image_files.length > 0) return <ImageIcon className="h-4 w-4" />;
-    return <FileText className="h-4 w-4" />;
+  const getFileTypeIcon = (total: SearchTotalFiles, topScorer) => {
+    return <div className="flex items-center gap-3 text-xs text-muted-foreground group-hover:text-teal-900 ml-auto">
+      <div className={cn("flex justify-center items-center gap-1", topScorer === "html" && "text-sky-500 font-bold")}>
+        <FileCode className="h-4 w-4" /><p>{total.htmlFile}</p>
+      </div>
+      <div className={cn("flex justify-center items-center gap-1", topScorer === "pdf" && "text-sky-500 font-bold")}>
+        <FileText className="h-4 w-4" /><p>{total.pdfFile}</p>
+      </div>
+      {total.imageFiles > 0 && <div className="flex justify-center items-center gap-1">
+        <ImageIcon className="h-4 w-4" /><p>{total.imageFiles}</p>
+      </div>}
+      {total.videoFiles > 0 && <div className="flex justify-center items-center gap-1">
+        <Video className="h-4 w-4" /><p>{total.videoFiles}</p>
+      </div>}
+    </div>;
   };
 
-  const getTotalFiles = (dynograph: DynographItem) => {
-    return (
-      (dynograph.html_file ? 1 : 0) +
-      (dynograph.pdf_file ? 1 : 0) +
-      (dynograph.info_file ? 1 : 0) +
-      dynograph.input_image_files.length +
-      dynograph.video_files.length
-    );
+  const getTotalFiles = (dynograph: DynoChildDtoOut, master: DynoMasterDtoOut) => {
+    return {
+      htmlFile: dynograph.htmlFile ? 1 : 0,
+      pdfFile: dynograph.pdfFile ? 1 : 0,
+      imageFiles: dynograph.textimages.length + master.images.length,
+      videoFiles: dynograph.videos.length + master.videos.length
+    };
   };
+
+  React.useEffect(() => {
+    if (isLoading && containerResultsRef.current) {
+      containerResultsRef.current.scrollTo({
+        top: containerResultsRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
+  }, [isLoading]);
 
   return (
     <div 
@@ -308,13 +288,13 @@ export default function SearchComponent({ searchContent, className }: SearchComp
         </div>
 
         {/* Category Filters - Fixed below search */}
-        {allCategories.length > 0 && (
+        {categories.length > 0 && (
           <div className="flex flex-col gap-2.5 rounded-md border bg-background p-3 shadow-sm mt-2">
             <div className="text-sm font-medium text-muted-foreground">
               {translations.categories[language]}
             </div>
             <div className="flex flex-wrap gap-2">
-              {allCategories.map(category => (
+              {categories.map(category => (
                 <div key={category.id} className="flex items-center gap-1.5">
                   <Checkbox
                     id={`category-${category.id}`}
@@ -348,14 +328,14 @@ export default function SearchComponent({ searchContent, className }: SearchComp
           <>
             {searchResults && (
               <div className="px-4 py-3 border-b bg-muted/50 text-xs text-muted-foreground sticky top-0 z-10">
-                {filteredResults.length} {translations.searchResults[language]}
+                {searchResults.count} {translations.searchResults[language]}
               </div>
             )}
-            <div className="flex-1 overflow-y-auto">
+            <div ref={containerResultsRef} className="flex-1 overflow-y-auto">
               <ul>
                 {filteredResults.map(master => {
                   const mainDynograph = master.dynographs[language];
-                  const totalFiles = mainDynograph ? getTotalFiles(mainDynograph) : 0;
+                  const totalFiles: SearchTotalFiles = mainDynograph ? getTotalFiles(mainDynograph, master) : {htmlFile: 0, pdfFile: 0, imageFiles: 0, videoFiles: 0};
                   
                   return (
                     <li key={master.id} className="border-b last:border-b-0 group">
@@ -369,11 +349,11 @@ export default function SearchComponent({ searchContent, className }: SearchComp
                       >
                         <div className="flex items-start gap-3">
                           {/* Thumbnail */}
-                          {master.image_file && (
+                          {master.image && (
                             <div className="flex-shrink-0 w-12 h-12 rounded-md overflow-hidden bg-muted">
                               <img
-                                src={master.image_file.file_url}
-                                alt={master.image_hint}
+                                src={master.image.file_url}
+                                alt={master.imageHint}
                                 className="w-full h-full object-cover"
                               />
                             </div>
@@ -382,11 +362,12 @@ export default function SearchComponent({ searchContent, className }: SearchComp
                           <div className="flex-1 min-w-0">
                             {/* Title and Description */}
                             <div className="flex flex-col gap-1">
-                              <h3 className="font-medium text-sm line-clamp-1">
+                              <h3 className={cn("font-medium text-sm line-clamp-1", master.topScorer === "title" && "text-sky-500 font-bold")}>
                                 {mainDynograph?.title || master.slug}
+                                {/* {master.topScorer || 'title'} */}
                               </h3>
                               {mainDynograph?.description && (
-                                <p className="text-xs text-muted-foreground group-hover:text-gray-700 line-clamp-2">
+                                <p className={cn("text-xs text-muted-foreground group-hover:text-gray-700 line-clamp-2", master.topScorer === "description" && "text-sky-500 font-bold")}>
                                   {mainDynograph.description}
                                 </p>
                               )}
@@ -414,10 +395,7 @@ export default function SearchComponent({ searchContent, className }: SearchComp
                               
                               {/* File Info */}
                               {mainDynograph && (
-                                <div className="flex items-center gap-1 text-xs text-muted-foreground group-hover:text-teal-900 ml-auto">
-                                  {getFileTypeIcon(mainDynograph)}
-                                  <span>{totalFiles} {translations.files[language]}</span>
-                                </div>
+                                  getFileTypeIcon(totalFiles, master.topScorer)
                               )}
                             </div>
                           </div>
@@ -427,9 +405,20 @@ export default function SearchComponent({ searchContent, className }: SearchComp
                   );
                 })}
               </ul>
+              {isLoading && (
+                <ul><li className="w-full flex justify-center items-center border-b last:border-b-0 group"><Loader2 className="h-8 w-8 animate-spin" /></li></ul>
+              )}
             </div>
           </>
         )}
+        {(searchResults?.count > filteredResults.length) && (filteredResults.length > 0) && <div className="w-full p-1 text-xs flex justify-center items-center">
+          <Button variant="link" className="text-accent" onClick={() => {
+            setLimit(prev => prev + 10);
+            performSearch(query, limit + 10)
+            }}>
+            {translations.showMoreResults[language]}
+          </Button>
+        </div>}
       </div>
     </div>
   );
