@@ -194,4 +194,8 @@ export const apiDeleteDynoCategory = (dynoCategory) =>
   api.delete(`dynograph/categories/${dynoCategory.id}`);
 
 
+export const apiSearch = (searchContent) =>
+  api.get(`dynograph/dynograph-masters/search?q=${searchContent}`);
+
+
 

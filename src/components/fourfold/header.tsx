@@ -147,11 +147,11 @@ export function Header({ currentLang, onLanguageChange, font }: HeaderProps) {
       </Link>
 
       <div className="flex flex-1 items-center justify-end gap-2 min-w-0">
-        {/* <SearchComponent 
+        <SearchComponent 
             lang={currentLang} 
             isExpanded={isSearchExpanded}
             onExpandedChange={setSearchExpanded}
-        /> */}
+        />
 
         {/* Theme Toggle Button */}
         {/* <Button 
