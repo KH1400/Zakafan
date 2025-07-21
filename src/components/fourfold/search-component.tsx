@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Search, Loader2, FileText, Video, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -79,16 +80,6 @@ interface Summary {
   language: string;
 }
 
-// API function (replace with your actual API call)
-// const apiSearch = async (searchContent: string): Promise<SearchResponse> => {
-//   // Replace this with your actual API endpoint
-//   const response = await apiSearch(`${encodeURIComponent(searchContent)}`).json();
-//   if (!response.ok) {
-//     throw new Error('Search failed');
-//   }
-//   return response.json();
-// };
-
 const translations = {
   searchPlaceholder: {
     en: 'Search content...',
@@ -100,7 +91,7 @@ const translations = {
     en: 'No results found.',
     fa: 'نتیجه‌ای یافت نشد.',
     ar: 'لم يتم العثور على نتائج.',
-    he: 'לא נמצאו תוצאות.',
+    he: 'לא נמצאו تוצאות.',
   },
   searchResults: {
     en: 'results found',
@@ -130,6 +121,7 @@ type SearchComponentProps = {
 };
 
 export function SearchComponent({ lang, isExpanded, onExpandedChange, className }: SearchComponentProps) {
+  const router = useRouter();
   const [query, setQuery] = React.useState("");
   const [searchResults, setSearchResults] = React.useState<SearchResponse | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -143,9 +135,36 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
   
   const { language, selectedLang } = useLanguage();
 
+  // Navigate to search page
+  const navigateToSearchPage = React.useCallback((searchQuery: string) => {
+    if (!searchQuery.trim()) return;
+    
+    const params = new URLSearchParams();
+    params.set('q', searchQuery.trim());
+    
+    if (lang !== 'en') {
+      params.set('lang', lang);
+    }
+    
+    const searchUrl = `/search?${params.toString()}`;
+    router.push(searchUrl);
+    
+    // Close the search dropdown
+    onExpandedChange(false);
+    setInputFocused(false);
+  }, [router, lang, onExpandedChange]);
+
+  // Handle Enter key press
+  const handleKeyDown = React.useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      navigateToSearchPage(query);
+    }
+  }, [query, navigateToSearchPage]);
+
   // Debounced search function
   const performSearch = React.useCallback(async (searchQuery: string) => {
-    if (!searchQuery.trim()) {
+    if (!searchQuery.trim() || searchQuery.length < 3) {
       setSearchResults(null);
       return;
     }
@@ -282,6 +301,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
           ref={inputRef}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
           placeholder={translations.searchPlaceholder[lang]}
           className={cn(
             "h-full bg-transparent pe-10 text-base ring-offset-background transition-all duration-300 ease-in-out focus-visible:ring-0 focus-visible:ring-offset-0 md:text-sm",
@@ -299,7 +319,13 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
           type="button"
           aria-label="Toggle Search"
           className="absolute end-0 top-0 h-10 w-10 shrink-0"
-          onClick={() => onExpandedChange(!isExpanded)}
+          onClick={() => {
+            if (isExpanded && query.trim()) {
+              navigateToSearchPage(query);
+            } else {
+              onExpandedChange(!isExpanded);
+            }
+          }}
         >
           {isLoading ? (
             <Loader2 className="h-5 w-5 animate-spin" />
@@ -345,6 +371,21 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
         {/* Search Results */}
         {showResults && (
           <div className="rounded-md border bg-popover text-popover-foreground shadow-lg">
+            {/* "View All Results" button */}
+            {query.trim().length >= 3 && (
+              <div className="px-4 py-2 border-b bg-muted/30">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full justify-start text-xs h-8 px-2"
+                  onClick={() => navigateToSearchPage(query)}
+                >
+                  <Search className="h-3 w-3 mr-2" />
+                  View all results for "{query}"
+                </Button>
+              </div>
+            )}
+            
             {error ? (
               <div className="p-4 text-center text-sm text-destructive">{error}</div>
             ) : filteredResults.length === 0 && !isLoading ? (
@@ -353,11 +394,11 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
               <>
                 {searchResults && (
                   <div className="px-4 py-2 border-b bg-muted/50 text-xs text-muted-foreground">
-                    {filteredResults.length} {translations.searchResults[lang]}
+                    {Math.min(filteredResults.length, 5)} of {filteredResults.length} {translations.searchResults[lang]}
                   </div>
                 )}
                 <ul className="max-h-[50vh] overflow-y-auto">
-                  {filteredResults.map(master => {
+                  {filteredResults.slice(0, 5).map(master => {
                     const mainDynograph = master.dynographs[language];
                     const totalFiles = mainDynograph ? getTotalFiles(mainDynograph) : 0;
                     
@@ -430,10 +471,23 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
                           </div>
                         </Link>
                       </li>
-
                     );
                   })}
                 </ul>
+                
+                {/* Show more results footer */}
+                {filteredResults.length > 5 && (
+                  <div className="px-4 py-2 border-t bg-muted/30">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-full justify-center text-xs h-8"
+                      onClick={() => navigateToSearchPage(query)}
+                    >
+                      View all {filteredResults.length} results
+                    </Button>
+                  </div>
+                )}
               </>
             )}
           </div>

@@ -23,6 +23,7 @@ import logoFa from "@public/logo/Dynograph fa.svg"
 import logoEn from "@public/logo/Dynograph en.svg"
 import logoAr from "@public/logo/Dynograph ar.svg"
 import logoHe from "@public/logo/Dynograph he.svg"
+import { usePathname } from 'next/navigation';
 
 const languageOrder: Language[] = ['fa', 'ar', 'he', 'en'];
 
@@ -78,7 +79,8 @@ export function Header({ currentLang, onLanguageChange, font }: HeaderProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { theme, setTheme } = useTheme();
-  
+  const pathname = usePathname();
+
   // Function to handle language change with URL update
   const handleLanguageChange = (lang: Language) => {
     // Update the callback
@@ -147,11 +149,13 @@ export function Header({ currentLang, onLanguageChange, font }: HeaderProps) {
       </Link>
 
       <div className="flex flex-1 items-center justify-end gap-2 min-w-0">
+      {pathname !== '/search' && (
         <SearchComponent 
-            lang={currentLang} 
-            isExpanded={isSearchExpanded}
-            onExpandedChange={setSearchExpanded}
+          lang={currentLang} 
+          isExpanded={isSearchExpanded}
+          onExpandedChange={setSearchExpanded}
         />
+      )}
 
         {/* Theme Toggle Button */}
         {/* <Button 
