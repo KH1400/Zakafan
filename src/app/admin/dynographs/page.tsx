@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import { Edit, Trash2, FileText, Image, Globe, CheckCircle, XCircle, Plus, Eye, Video, MessageSquareText, Edit2 } from 'lucide-react';
-import { fetchCategories, apiGetDynoMastersByCategoryHref, apiCreateDynographMaster, apiCreateDynographChild, apiDeleteDynographMaster, apiUpdateDynographMaster, apiUpdateDynographChild } from '../../../lib/api';
+import { apiGetDynoMastersByCategoryHref, apiCreateDynographMaster, apiCreateDynographChild, apiDeleteDynographMaster, apiUpdateDynographMaster, apiUpdateDynographChild, apiGetDynoCategories } from '../../../lib/api';
 import { Dyno, DynoCategory, DynoChildDtoIn, DynoDtoIn, DynoMasterDtoIn, DynoMasterDtoOut, Language, languages, slugify } from '../../../lib/content-types';
 import { Button } from '../../../components/ui/button';
 import { NewDynographModal } from './new-dynograph-modal';
@@ -87,7 +87,7 @@ const DynographListPage = () => {
   const getCategories = async () => {
     setLoading(true);
     try {
-      const categoryResult = await fetchCategories()
+      const categoryResult = await apiGetDynoCategories()
       const categoriesResponse: any = await categoryResult.json();
       const categoriesData = categoriesResponse.categories.map((c: any) => ({...c, image: c.image_file, imageHint: c.image_hint}));
       setCategories(categoriesData);

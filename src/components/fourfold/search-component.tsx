@@ -13,6 +13,7 @@ import { type Language, type Dyno, type DynoCategory, SearchTotalFiles, SearchRe
 import { cn } from "@/lib/utils";
 import { useLanguage } from "../../lib/language-context";
 import { apiGetDynoCategories, apiSearch } from "../../lib/api";
+import HighlightedText from "./highlight-text";
 
 const translations = {
   searchPlaceholder: {
@@ -387,8 +388,9 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
                             <div className="flex-1 min-w-0">
                               {/* Title and Description */}
                               <div className="flex flex-col gap-1">
-                                <h3 className={cn("font-medium text-sm line-clamp-1", mainDynograph.topScorer === "title" && "text-sky-500 font-bold")}>
-                                  {mainDynograph?.title || master.slug}
+                                <h3 className={cn("font-medium text-sm line-clamp-1")}>
+                                  <HighlightedText text={mainDynograph?.title || master.slug} phrase={query} className="bg-red-500 text-accent-foreground"/>
+                                  {/* {mainDynograph?.title || master.slug} */}
                                   {/* {master.topScorer || 'title'} */}
                                 </h3>
                                 {mainDynograph?.description && (
