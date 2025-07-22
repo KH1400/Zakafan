@@ -331,7 +331,7 @@ export default function SearchComponent({ searchContent, className }: SearchComp
                 {searchResults.count} {translations.searchResults[language]}
               </div>
             )}
-            <div ref={containerResultsRef} className="flex-1 overflow-y-auto">
+            <div ref={containerResultsRef} className="flex-1 overflow-y-auto py-3">
               <ul>
                 {filteredResults.map(master => {
                   const mainDynograph = master.dynographs[language];
@@ -362,12 +362,12 @@ export default function SearchComponent({ searchContent, className }: SearchComp
                           <div className="flex-1 min-w-0">
                             {/* Title and Description */}
                             <div className="flex flex-col gap-1">
-                              <h3 className={cn("font-medium text-sm line-clamp-1", master.topScorer === "title" && "text-sky-500 font-bold")}>
+                              <h3 className={cn("font-medium text-sm line-clamp-1", mainDynograph.topScorer === "title" && "text-sky-500 font-bold")}>
                                 {mainDynograph?.title || master.slug}
                                 {/* {master.topScorer || 'title'} */}
                               </h3>
                               {mainDynograph?.description && (
-                                <p className={cn("text-xs text-muted-foreground group-hover:text-gray-700 line-clamp-2", master.topScorer === "description" && "text-sky-500 font-bold")}>
+                                <p className={cn("text-xs text-muted-foreground group-hover:text-gray-700 line-clamp-2", mainDynograph.topScorer === "description" && "text-sky-500 font-bold")}>
                                   {mainDynograph.description}
                                 </p>
                               )}
@@ -395,7 +395,7 @@ export default function SearchComponent({ searchContent, className }: SearchComp
                               
                               {/* File Info */}
                               {mainDynograph && (
-                                  getFileTypeIcon(totalFiles, master.topScorer)
+                                  getFileTypeIcon(totalFiles, mainDynograph.topScorer)
                               )}
                             </div>
                           </div>

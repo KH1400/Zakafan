@@ -387,12 +387,12 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
                             <div className="flex-1 min-w-0">
                               {/* Title and Description */}
                               <div className="flex flex-col gap-1">
-                                <h3 className={cn("font-medium text-sm line-clamp-1", master.topScorer === "title" && "text-sky-500 font-bold")}>
+                                <h3 className={cn("font-medium text-sm line-clamp-1", mainDynograph.topScorer === "title" && "text-sky-500 font-bold")}>
                                   {mainDynograph?.title || master.slug}
                                   {/* {master.topScorer || 'title'} */}
                                 </h3>
                                 {mainDynograph?.description && (
-                                  <p className={cn("text-xs text-muted-foreground group-hover:text-gray-700 line-clamp-2", master.topScorer === "description" && "text-sky-500 font-bold")}>
+                                  <p className={cn("text-xs text-muted-foreground group-hover:text-gray-700 line-clamp-2", mainDynograph.topScorer === "description" && "text-sky-500 font-bold")}>
                                     {mainDynograph.description}
                                   </p>
                                 )}
@@ -420,7 +420,7 @@ export function SearchComponent({ lang, isExpanded, onExpandedChange, className 
                                 
                                 {/* File Info */}
                                 {mainDynograph && (
-                                  getFileTypeIcon(totalFiles, master.topScorer)
+                                  getFileTypeIcon(totalFiles, mainDynograph.topScorer)
                                 )}
                               </div>
                             </div>

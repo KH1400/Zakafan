@@ -108,7 +108,6 @@ export type DynoMasterDtoOut = {
     images: MediaFile[];
     videos: MediaFile[];
     categories: DynoCategory[];
-    topScorer?: 'title' | 'description' | 'pdf' | 'html'
 }
 
 export type DynoChildDtoOut = {
@@ -121,6 +120,7 @@ export type DynoChildDtoOut = {
     textimages: MediaFile[];
     summaries?: Summary[];
     videos: MediaFile[];
+    topScorer?: 'title' | 'description' | 'pdf' | 'html'
 }
 
 // Category
@@ -185,6 +185,7 @@ export function mapResDynographToDynoChildDtoOut(item: any): DynoChildDtoOut {
         textimages: item.input_image_files,
         summaries: item.summaries,
         videos: item.video_files,
+        topScorer: item.top_scorer
     };
 }
 
@@ -229,7 +230,6 @@ export function mapResMasterToDynoMasterDtoOut(master: any): DynoMasterDtoOut {
     imageHint: master.image_hint,
     images: master.image_files,
     videos: master.public_video_files,
-    categories,
-    topScorer: master.top_scorer
+    categories
   };
 }  
