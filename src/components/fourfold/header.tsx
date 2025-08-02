@@ -140,7 +140,7 @@ export function Header({ currentLang, onLanguageChange, font }: HeaderProps) {
       >
         <img
           className="h-10 w-auto drop-shadow-[0_4px_4px_rgba(245,158,11,0.6)]"
-          src={`/logo/Dynograph ${currentLang}.svg`}
+          src={`/logo/dynograph-${currentLang}.svg`}
         />
         {/* <img
           className="h-10 w-auto drop-shadow-[0_4px_4px_rgba(245,158,11,0.6)]"
