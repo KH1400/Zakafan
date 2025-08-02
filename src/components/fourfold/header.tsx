@@ -19,10 +19,10 @@ import {
 import { SearchComponent } from './search-component';
 import type { Language } from '@/lib/content-types';
 import { cn } from '@/lib/utils';
-import logoFa from "@public/logo/dynograph fa.svg"
-import logoEn from "@public/logo/dynograph en.svg"
-import logoAr from "@public/logo/dynograph ar.svg"
-import logoHe from "@public/logo/dynograph he.svg"
+import logoFa from "@public/logo/dynograph-fa.svg"
+import logoEn from "@public/logo/dynograph-en.svg"
+import logoAr from "@public/logo/dynograph-ar.svg"
+import logoHe from "@public/logo/dynograph-he.svg"
 import { usePathname } from 'next/navigation';
 
 const languageOrder: Language[] = ['fa', 'ar', 'he', 'en'];
