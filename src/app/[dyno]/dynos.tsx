@@ -65,7 +65,7 @@ export default function DynosPage({ slug }: { slug: string }) {
     if (slug) {
       loadData();
     }
-  }, [slug, language]); // فقط slug و language را dependency قرار دادیم
+  }, [slug, language]);
 
   if (loading || !category) {
     return <LoadSkeleton />
