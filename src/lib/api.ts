@@ -194,6 +194,35 @@ export const apiDeleteDynoCategory = (dynoCategory) =>
   api.delete(`dynograph/categories/${dynoCategory.id}`);
 
 
+export async function apiGetPostCategory(categoryHref: string) {
+  const cates: any = await apiGetPostCategories().json();
+  return cates.categories.find((s: DynoCategory) => s.href === categoryHref);
+}
+
+export const apiGetPostCategories = () => 
+  api.get(`dynograph/post-categories`, {
+    retry: {
+      limit: 4, // تلاش مجدد تا 4 بار
+      methods: ['get'], // فقط روی GET اعمال شه
+      statusCodes: [408, 413, 429, 500, 502, 503, 504],
+      backoffLimit: 500 // حداکثر تاخیر بین retry (ms)
+    },
+    cache: 'no-store'
+  });
+
+export const apiCreatePostCategory = (dynoCategory) =>
+  api.post(`dynograph/post-categories`, {
+    json: dynoCategory
+  });
+
+export const apiUpdatePostCategory = (dynoCategory) =>
+  api.put(`dynograph/post-categories/${dynoCategory.id}`, {
+    json: dynoCategory
+  });
+
+export const apiDeletePostCategory = (dynoCategory) =>
+  api.delete(`dynograph/post-categories/${dynoCategory.id}`);
+
 export const apiSearch = (searchContent: string, limit = 10, offset = 0) =>
   api.get(`dynograph/dynograph-masters/search?q=${searchContent}&limit=${limit}&offset=${offset}`);
 
