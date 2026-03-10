@@ -14,7 +14,8 @@ import { title } from 'process';
 export const NewCategoryModal = ({defaultCategory, loading, onClose, onSubmit}:{className?: string, defaultCategory: DynoCategory, loading: boolean; onClose: () => void, onSubmit: (d: DynoCategory) => void}) => {
   const [postCategory, setPostCategory] = useState<DynoCategory>()
   useEffect(() => {
-    setPostCategory(defaultCategory)
+    let tempDyno: DynoCategory = {title: {fa: '', en: '', he: '', ar: ''}, order: 0, image: null, imageHint: '', href: '', description: {fa: '', en: '', he: '', ar: ''}, icon: ''}
+    setPostCategory(defaultCategory || tempDyno)
   }, [])
 
   return (

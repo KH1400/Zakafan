@@ -55,7 +55,7 @@ const CategoryListPage = () => {
       description: category.description,
       icon:category.icon,
       href: category.href,
-      image_file_id: category.image.id,
+      image_file_id: category.image?.id,
       image_hint: category.imageHint || category.href,
       order: category.order
     }
@@ -165,7 +165,7 @@ const CategoryListPage = () => {
   return (
     <ProtectedRoute accessRoles={['admin', 'user']}>
       <div className="h-[90vh] flex flex-col">
-        {showNewModal && <NewCategoryModal loading={false} defaultCategory={edittingCategory} onSubmit={(d: DynoCategory) => {edittingCategory?.id?handleUpdate(d):handleInsert(d)}} onClose={() => {setShowNewModal(false); setEdittingCategory(null)}} />}
+        {showNewModal && <NewCategoryModal loading={false} defaultCategory={edittingCategory} onSubmit={(d: DynoCategory) => {if(edittingCategory){handleUpdate(d)}else{handleInsert(d)}}} onClose={() => {setShowNewModal(false); setEdittingCategory(null)}} />}
         
         {/* Header - Fixed */}
         <div className="flex-shrink-0 p-6 pb-4">

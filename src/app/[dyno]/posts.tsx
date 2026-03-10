@@ -6,6 +6,8 @@ import { Heart, MessageCircle, Share2, Play, Verified, Copy, Check, Download, Ar
 import { useAutoRefreshToken } from '../../contexts/AuthContext';
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
+import { DynoCategory } from '../../lib/content-types';
+import { apiGetPostCategories } from '../../lib/api';
 
 type CategoryType = 'political' | 'celebrities' | 'news' | 'thinktanks';
 
@@ -168,6 +170,8 @@ const goBackTranslations = {
 export default function Posts({ slug }: { slug: string }) {
   const { language, selectedLang } = useLanguage();
   useAutoRefreshToken();
+  const [loading, setLoading] = useState(false);
+  const [postCategories, setPostCategories] = useState<DynoCategory[]>([]); 
   const [activeTab, setActiveTab] = useState<number>(1); 
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
@@ -242,6 +246,24 @@ export default function Posts({ slug }: { slug: string }) {
       window.open(url, '_blank');
     } finally {
       setDownloadingId(null);
+    }
+  };
+
+  useEffect(() => {
+    getCategories();
+  }, []);
+
+  const getCategories = async () => {
+    setLoading(true);
+    try {
+      const categoryResult = await apiGetPostCategories()
+      const categoriesResponse: any = await categoryResult.json();
+      const categoriesData = categoriesResponse.categories.map((c: any) => ({...c, image: c.image_file, imageHint: c.image_hint}));
+      setPostCategories(categoriesData);
+    } catch (error) {
+      console.log('Error loading data:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -348,6 +370,19 @@ export default function Posts({ slug }: { slug: string }) {
       <div className="sticky top-10 z-[15] w-full bg-[#050505]/80 supports-[backdrop-filter]:bg-[#050505]/60 backdrop-blur-xl border-b border-white/5 pt-6 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex overflow-x-auto hide-scrollbar gap-3 pb-4">
+            {postCategories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setActiveTab(cat.id)}
+                className={`relative whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
+                  activeTab === cat.id
+                    ? 'text-white bg-white/10 shadow-[0_0_20px_rgba(255,255,255,0.05)] border border-white/20'
+                    : 'text-slate-400 bg-white/5 border border-transparent hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                {cat.title[language]}
+              </button>
+            ))}
             {CATEGORIES.map((cat) => (
               <button
                 key={cat.id}

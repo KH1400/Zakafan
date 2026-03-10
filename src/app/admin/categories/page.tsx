@@ -55,7 +55,7 @@ const CategoryListPage = () => {
       description: category.description,
       icon:category.icon,
       href: category.href,
-      image_file_id: category.image.id,
+      image_file_id: category.image?.id,
       image_hint: category.imageHint || category.href,
       order: category.order
     }

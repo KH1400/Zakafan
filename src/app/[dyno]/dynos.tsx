@@ -23,7 +23,7 @@ const goBackTranslations = {
 
 export default function DynosPage({ slug }: { slug: string }) {
   const { language, selectedLang } = useLanguage();
-  const [dynos, setDynos] = useState<MosaicPanelData[]>([]);
+  const [dynos, setDynos] = useState<{version: string; dynos: MosaicPanelData[]}[]>([]);
   const [category, setCategory] = useState<DynoCategory>();
   const [loading, setLoading] = useState(true);
 
@@ -40,17 +40,51 @@ export default function DynosPage({ slug }: { slug: string }) {
 
         // Process dynos
         const dyns: any = await dynosResult.json();
-        const panelData = dyns.masters.map((master: any, index: number) => ({
-          id: master.id,
-          title: master.dynographs[language].title,
-          description: master.dynographs[language].description[language] || master.dynographs['fa'].description,
-          image: master.image_file,
-          slug: master.slug.toLocaleLowerCase(),
-          imageHint: master.image_hint,
-          categories: master.categories.map((c: any) => c.id),
-          categoryHref: master.categories.map((c: any) => c.href),
-          createdAt: master.created_at
-        }));
+        // const panelData = dyns.masters.map((master: any, index: number) => ({
+        //   id: master.id,
+        //   title: master.dynographs[language].title,
+        //   description: master.dynographs[language].description[language] || master.dynographs['fa']?.description || master.dynographs[language].title,
+        //   image: master.image_file,
+        //   slug: master.slug.toLocaleLowerCase(),
+        //   imageHint: master.image_hint,
+        //   version: master.version,
+        //   categories: master.categories.map((c: any) => c.id),
+        //   categoryHref: master.categories.map((c: any) => c.href),
+        //   createdAt: master.created_at
+        // }));
+
+        const grouped = dyns.masters.reduce((acc: any, master: any) => {
+          const version = master.version;
+
+          const dyno = {
+            id: master.id,
+            title: master.dynographs[language].title,
+            description:
+              master.dynographs[language].description[language] ||
+              master.dynographs["fa"]?.description ||
+              master.dynographs[language].title,
+            image: master.image_file,
+            slug: master.slug.toLocaleLowerCase(),
+            imageHint: master.image_hint,
+            version: master.version,
+            categories: master.categories.map((c: any) => c.id),
+            categoryHref: master.categories.map((c: any) => c.href),
+            createdAt: master.created_at,
+          };
+
+          if (!acc[version]) {
+            acc[version] = {
+              version: String(version),
+              dynos: [],
+            };
+          }
+
+          acc[version].dynos.push(dyno);
+
+          return acc;
+        }, {});
+
+        const panelData = Object.values(grouped) as any;
 
         console.log(panelData);
         setDynos(panelData);
@@ -89,11 +123,16 @@ export default function DynosPage({ slug }: { slug: string }) {
       
       {/* Main content */}
       <div className="flex-grow w-full overflow-y-auto flex flex-col flex-shrink-0">
-        <MosaicLayout
-          panels={dynos}
-          baseHref={category.href}
-          lang={language}
-        />
+        {dynos.map(d =>
+        <div className="">
+          <p className="w-full py-1 my-1 mt-8 text-gray-400 text-sm text-center bg-white/5">{d.version}</p>
+          <MosaicLayout
+            panels={d.dynos}
+            baseHref={category.href}
+            lang={language}
+          />
+        </div>
+        )}
       </div>
       
       {/* Footer */}

@@ -107,6 +107,7 @@ export type DynoMasterDtoOut = {
     imageHint: string;
     images: MediaFile[];
     videos: MediaFile[];
+    version: string;
     categories: DynoCategory[];
 }
 
@@ -143,6 +144,7 @@ export type MosaicPanelData = {
     image: MediaFile;
     imageHint: string;
     size: number;
+    version: string;
     categories: number[];
     categoryHref: string[];
 };
@@ -229,6 +231,7 @@ export function mapResMasterToDynoMasterDtoOut(master: any): DynoMasterDtoOut {
     image: master.image_file!,
     imageHint: master.image_hint,
     images: master.image_files,
+    version: master.version,
     videos: master.public_video_files,
     categories
   };

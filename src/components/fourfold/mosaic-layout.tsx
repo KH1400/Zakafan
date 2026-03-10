@@ -91,13 +91,15 @@ function generateSmartCombination(totalPanels: number, basePatterns: { [key: num
 function MosaicPanel({ 
   panel, 
   baseHref, 
-  lang, 
+  lang,
+  version,
   priority = false,
   layoutSize
 }: { 
   panel: MosaicPanelData, 
   baseHref: string, 
   lang: string,
+  version: string,
   priority?: boolean,
   layoutSize: typeof SIZES[0]
 }) {
@@ -144,6 +146,7 @@ function MosaicPanel({
         `}>
           {panel.title}
         </h3>
+        {/* <span className="text-xs">{panel.version}</span> */}
       </div>
     </Link>
   );
@@ -166,6 +169,7 @@ export function MosaicLayout({ panels, baseHref, lang }: MosaicLayoutProps) {
             panel={panel} 
             baseHref={baseHref} 
             lang={lang}
+            version={panel.version}
             layoutSize={panel.layoutSize}
             priority={panel.originalIndex < 4}
           />

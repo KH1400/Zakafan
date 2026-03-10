@@ -202,10 +202,10 @@ export async function apiGetPostCategory(categoryHref: string) {
 export const apiGetPostCategories = () => 
   api.get(`dynograph/post-categories`, {
     retry: {
-      limit: 4, // تلاش مجدد تا 4 بار
-      methods: ['get'], // فقط روی GET اعمال شه
+      limit: 4,
+      methods: ['get'],
       statusCodes: [408, 413, 429, 500, 502, 503, 504],
-      backoffLimit: 500 // حداکثر تاخیر بین retry (ms)
+      backoffLimit: 500
     },
     cache: 'no-store'
   });

@@ -160,8 +160,9 @@ const DynographListPage = () => {
       slug: dynoMaster.slug,
       category_ids: dynoMaster.categories.map(i => i.id),
       image_file_ids: dynoMaster.images.map(i => i.id),
-      image_file_id: dynoMaster.image.id,
+      image_file_id: dynoMaster.image?.id,
       image_hint: dynoMaster.imageHint || dynoMaster.slug,
+      version: dynoMaster.version || "جنگ رمضان",
       public_video_file_ids: dynoMaster.videos.map(i => i.id)
     }
 
@@ -254,9 +255,10 @@ const DynographListPage = () => {
       dynograph_ids: dinoIds,
       category_ids: dynoMaster.categories.map(i => i.id),
       image_file_ids: dynoMaster.images.map(i => i.id),
-      image_file_id: dynoMaster.image.id,
+      image_file_id: dynoMaster.image?.id,
       image_hint: dynoMaster.imageHint || dynoMaster.slug,
-      public_video_file_ids: dynoMaster.videos.map(i => i.id)
+      public_video_file_ids: dynoMaster.videos.map(i => i.id),
+      version: dynoMaster.version
     }
 
     try {
