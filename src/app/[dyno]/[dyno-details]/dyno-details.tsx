@@ -376,6 +376,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
     try {
       const dyns: any = await apiGetDynoMasterBySlug({slug}).json();
       setMappedDyno(await mapData(language, dyns));
+      console.log(dyns);
       setDyno(dyns);
     } catch (error) {
       console.error(error);
@@ -552,7 +553,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
         )}
 
         <Card 
-          className={`col-span-12 ${mappedDyno?.infoFile ? 'md:col-span-6 flex flex-col' : 'grid grid-cols-2 gap-2'} md:min-h-[400px] p-1 md:p-6 max-h-[100vh] md:max-h-[50rem]`}
+          className={`col-span-12 ${mappedDyno?.infoFile ? 'md:col-span-6' : ''}  flex flex-col md:min-h-[400px] p-1 md:p-6 max-h-[100vh] md:max-h-[50rem]`}
           title={t.messages}
           description={t.messagesDesc}
         >
@@ -578,7 +579,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
             </button>
           </div>
 
-          <div className="h-[40rem] flex flex-col overflow-y-auto px-1">
+          <div className="w-full h-[40rem] flex flex-col overflow-y-auto px-1">
             
             {/* باکسی که پیام در حال تولید را نمایش می‌دهد */}
             {isGeneratingSummary && (
@@ -599,7 +600,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
               </div>
             )}
 
-            <div className="flex-1 pr-2 space-y-3 flex-grow">
+            <div className={`w-full ${mappedDyno?.infoFile ? 'grid grid-cols-1' : 'grid grid-cols-2'}  gap-3 flex-1 pr-2 flex-grow`}>
               {mappedDyno?.summaries?.map((summary) => (
                 <TextCard 
                   key={summary.id} 
