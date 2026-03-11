@@ -113,7 +113,7 @@ export const generateSummary = ({dynoId, language}) =>
     },
     dynograph_id: dynoId,
     // processing_model_name: "openrouter:deepseek-chat"
-    processing_model_name: "openrouter:gemini-2.5-flash-lite-preview-06-17",
+    processing_model_name: "Local:qwen3-vl-32b-instruct-FP8",
   }
 });
 

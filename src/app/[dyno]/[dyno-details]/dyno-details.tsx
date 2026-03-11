@@ -129,13 +129,21 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
   // State for scroll animation
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  // استیت جدید برای نگهداری متن در حال استریم
+  const [streamingMessage, setStreamingMessage] = useState<string>("");
+  
   const wsRef = useRef<WebSocket | null>(null);
-  // انتخاب ترجمه بر اساس زبان فعلی
   const t = translations[language as keyof typeof translations] || translations.en;
 
-  // تابع برای بستن WebSocket قبلی
+  useEffect(() => {
+    if (mappedDyno?.dynoChildId) {
+      fetchMessages();
+    }
+  }, [mappedDyno?.dynoChildId]);
+  
   const closeWebSocket = () => {
     if (wsRef.current) {
       wsRef.current.close();
@@ -143,49 +151,53 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
     }
   };
 
-  // تابع برای اتصال به WebSocket
   const connectWebSocket = (websocketUrl: string, sessionId: string) => {
-    // بستن اتصال قبلی اگر وجود دارد
     closeWebSocket();
 
     const ws = new WebSocket(websocketUrl);
     wsRef.current = ws;
+    setStreamingMessage("");
 
     ws.onopen = () => {
       console.log('WebSocket connected');
-      setTimeout(() => {
-        closeWebSocket();
-        // خواندن پیام‌های جدید
-        fetchMessages();
-
-        // تغییر وضعیت loading
-        setIsGeneratingSummary(false);
-        setCurrentSessionId(null);
-      }, 10000);
     };
-    let message = "";
 
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
         console.log('WebSocket message received:', data);
-        message += data.content;
-        console.log(message)
-        // چک کردن اتمام پردازش
-        if (data.is_complete === true) {
-          message = "";
-          // بستن WebSocket
+
+        // مدیریت خطا از سمت سرور
+        if (data.is_error) {
+          console.error('Server error during generation:', data);
           closeWebSocket();
-          
-          // خواندن پیام‌های جدید
-          fetchMessages();
-          
-          // تغییر وضعیت loading
           setIsGeneratingSummary(false);
           setCurrentSessionId(null);
-        } else if (data.content) {
-          // اگر محتوا در حال به‌روزرسانی است (اختیاری - برای نمایش real-time)
-          console.log('Content update:', data.content);
+          setStreamingMessage("");
+          return;
+        }
+
+        // چانک‌های میانی
+        if (data.is_complete === false) {
+          if (data.content) {
+            setStreamingMessage(prev => prev + data.content);
+          }
+        } 
+        // چانک نهایی (که کل پیام را یکجا دارد)
+        else if (data.is_complete === true) {
+          if (data.content) {
+            setStreamingMessage(data.content);
+          }
+          
+          closeWebSocket();
+          
+          // دریافت پیام‌ها از سرور و سپس ریست کردن وضعیت لودینگ
+          // تا پرش تصویر در رابط کاربری اتفاق نیفتد
+          fetchMessages().then(() => {
+            setIsGeneratingSummary(false);
+            setCurrentSessionId(null);
+            setStreamingMessage("");
+          });
         }
       } catch (error) {
         console.error('Error parsing WebSocket message:', error);
@@ -196,18 +208,17 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
       console.error('WebSocket error:', error);
       setIsGeneratingSummary(false);
       setCurrentSessionId(null);
+      setStreamingMessage("");
     };
 
     ws.onclose = (event) => {
       console.log('WebSocket closed:', event.code, event.reason);
       
-      // اگر اتصال غیرمنتظره بسته شده و هنوز در حال پردازش هستیم
-      if (isGeneratingSummary && event.code !== 1000) {
+      // تلاش مجدد فقط در صورت قطع غیرمنتظره
+      if (isGeneratingSummary && event.code !== 1000 && event.code !== 1005) {
         console.log('Unexpected WebSocket close, retrying...');
-        // می‌توانید retry logic اضافه کنید
         setTimeout(() => {
           if (currentSessionId) {
-            // تلاش مجدد برای اتصال
             connectWebSocket(websocketUrl, sessionId);
           }
         }, 2000);
@@ -215,31 +226,34 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
     };
   };
 
-  // تابع برای خواندن پیام‌های جدید
   const fetchMessages = async () => {
-    if (!dyno) return;
+    if (!dyno || !mappedDyno) return;
     
     try {
-      // فرض می‌کنیم تابع fetchMessages وجود دارد
       const newMessages: Dyno = await fetchSummaries({dynoId: mappedDyno.dynoChildId}).json();
-      // به‌روزرسانی state
       setDyno(prevDyno => {
         if (!prevDyno) return prevDyno;
         return {
           ...prevDyno,
           dynographs: {
-            ...dyno.dynographs,
-            [language]: {...dyno.dynographs[language],
+            ...prevDyno.dynographs,
+            [language]: {
+              ...prevDyno.dynographs[language],
               summaries: newMessages.summaries
             }
           }
         };
       });
-      setMappedDyno(prevDyno => {
-        if (!prevDyno) return prevDyno;
+      setMappedDyno(prevMapped => {
+        if (!prevMapped) return prevMapped;
         return {
-          ...prevDyno,
-          summaries: newMessages.summaries.map((s: any) => ({id: s.id, content: s.generated_summary, language: s.language, createdAt: s.updated_at}))
+          ...prevMapped,
+          summaries: newMessages.summaries.map((s: any) => ({
+            id: s.id, 
+            content: s.generated_summary, 
+            language: s.language, 
+            createdAt: s.updated_at
+          }))
         };
       });
     } catch (error) {
@@ -249,37 +263,28 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
 
   const handleDelete = async (id: number) => {
     if (!id) return;
-    
     try {
-      // فرض می‌کنیم تابع fetchMessages وجود دارد
-      const dd = await deleteSummary({summaryId: id}).json();
-      console.log(dd)
-      // به‌روزرسانی state
+      await deleteSummary({summaryId: id}).json();
       fetchMessages();
     } catch (error) {
-      console.error('Error fetching messages:', error);
+      console.error('Error deleting message:', error);
     }
   };
 
-  // تابع اصلی برای تولید پیام جدید
   const handleGenerateNew = async () => {
-    if (!dyno || isGeneratingSummary) return;
+    if (!dyno || !mappedDyno || isGeneratingSummary) return;
     
     try {
       setIsGeneratingSummary(true);
       const response: any = await generateSummary({dynoId: mappedDyno.dynoChildId, language}).json();
-
+      
       if (response.websocket_url && response.session_id) {
         setCurrentSessionId(response.session_id);
-        
-        // اتصال به WebSocket
         connectWebSocket(response.websocket_url, response.session_id);
       } else {
-        // اگر WebSocket URL دریافت نشد، loading را متوقف کنید
         setIsGeneratingSummary(false);
         console.error('WebSocket URL not received');
       }
-      
     } catch (error) {
       console.error('Error generating message:', error);
       setIsGeneratingSummary(false);
@@ -287,24 +292,18 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
     }
   };
 
-  // cleanup در useEffect
   useEffect(() => {
     return () => {
       closeWebSocket();
     };
   }, []);
 
-
-  // Scroll handler for header animation
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;
-    if (!scrollContainer) {
-      return;
-    }
+    if (!scrollContainer) return;
   
     const handleScroll = () => {
       const scrollTop = scrollContainer.scrollTop;
-      // تغییر threshold برای تست آسان‌تر
       const shouldBeScrolled = scrollTop > 20;
       
       if (shouldBeScrolled !== isScrolled) {
@@ -312,11 +311,8 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
       }
     };
   
-    // اضافه کردن تاخیر کوچک برای اطمینان از رندر کامل
     const timeoutId = setTimeout(() => {
       scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
-      
-      // چک کردن موقعیت اولیه
       handleScroll();
     }, 500);
   
@@ -324,9 +320,8 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
       clearTimeout(timeoutId);
       scrollContainer.removeEventListener('scroll', handleScroll);
     };
-  }); // اضافه کردن isScrolled به dependency array
+  }, [isScrolled]); 
 
-  // Handle download functionality
   const handleDownload = async (imageUrl: string, fileName?: string) => {
     try {
       const response = await fetch(imageUrl);
@@ -345,13 +340,21 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
     }
   };
 
-  const handleSaveEdit = async (summ, editId) => {
-    if (dyno && editId) {
+  const handleSaveEdit = async (summ: string, editId: number) => {
+    if (dyno && mappedDyno && editId) {
       try {
         const res: {id: number, generated_summary: string, language: string, created_at: string } = await updateSummary({summaryId: editId, generatedSummary: summ}).json();
-        setMappedDyno({ ...mappedDyno, summaries: mappedDyno.summaries.map(s => {if(s.id === editId){return {...s, id: res.id, content: res.generated_summary}}else{return s}}) });
+        setMappedDyno({ 
+          ...mappedDyno, 
+          summaries: mappedDyno.summaries.map(s => {
+            if(s.id === editId){
+              return {...s, id: res.id, content: res.generated_summary}
+            }
+            return s;
+          }) 
+        });
       } catch (error) {
-        console.log(error)
+        console.error(error);
       }
     }
   };
@@ -361,42 +364,52 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
   useEffect(() => {
     dynoSlugRef.current = slug;
     getDyno();
-  }, [slug, language])
+  }, [slug, language]);
 
   useEffect(() => {
-    getDynoWithLang();
-  }, [language])
+    if(dyno) {
+      getDynoWithLang();
+    }
+  }, [language]);
 
   const getDyno = async () => {
     try {
       const dyns: any = await apiGetDynoMasterBySlug({slug}).json();
-      setMappedDyno(await mapData(language, dyns))
+      setMappedDyno(await mapData(language, dyns));
       setDyno(dyns);
     } catch (error) {
-      console.log(error)
+      console.error(error);
     }
   }
 
   const getDynoWithLang = async () => {
+    if(!dyno) return;
     dynoSlugRef.current = slug;
-    setMappedDyno(await mapData(language, dyno))
+    setMappedDyno(await mapData(language, dyno as DynoMasterRes));
   }
 
   const mapData = async(lang: Language, d: DynoMasterRes) => {
-    if(!d) return
-    let htmlText: string;
-    await fetch(d.dynographs[lang]?.html_file?.file_url || d.dynographs['fa']?.html_file?.file_url)
-      .then(response => response.text())
-      .then(data => {
-        htmlText = data
-      })
-      .catch(error => console.error('Error:', error));
+    if(!d) return;
+    let htmlText = "";
+    
+    // Fallback logic for HTML content
+    const htmlUrl = d.dynographs[lang]?.html_file?.file_url || d.dynographs['fa']?.html_file?.file_url;
+    
+    if (htmlUrl) {
+      try {
+        const response = await fetch(htmlUrl);
+        htmlText = await response.text();
+      } catch (error) {
+        console.error('Error fetching HTML:', error);
+      }
+    }
+
     return {
       id: d.id,
-      dynoChildId: d.dynographs[lang]?.id,
+      dynoChildId: d.dynographs[lang]?.id || d.dynographs['fa']?.id,
       slug: d.slug.toLocaleLowerCase(),
-      title: d.dynographs[lang].title || d.dynographs['fa'].title,
-      description: d.dynographs[lang].description || d.dynographs['fa'].description,
+      title: d.dynographs[lang]?.title || d.dynographs['fa']?.title,
+      description: d.dynographs[lang]?.description || d.dynographs['fa']?.description,
       textimages: d.dynographs[lang]?.input_image_files,
       pdfFile: d.dynographs[lang]?.pdf_file || d.dynographs['fa']?.pdf_file,
       infoFile: d.dynographs[lang]?.info_file || d.dynographs['fa']?.info_file,
@@ -412,12 +425,12 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
       imageHint: d.image_hint,
       categories: d.categories,
       images: d.image_files,
-      videos: [...d.public_video_files, ...d.dynographs[language].video_files],
+      videos: [...(d.public_video_files || []), ...(d.dynographs[language]?.video_files || d.dynographs['fa']?.video_files || [])],
       createdAt: d.created_at,
     };
   }
 
-  if(!dyno){
+  if(!dyno || !mappedDyno){
     return <LoadSkeleton/>
   }
   
@@ -427,7 +440,6 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
       className="w-full h-full overflow-y-auto bg-background outline-none"
     >
       <div className="grid grid-cols-12 gap-6 px-1 md:px-12 mx-auto">
-        {/* Enhanced Header Content Card with Scroll Animation */}
         <div className={`
           col-span-12 sticky top-0 z-50 
           transition-all duration-500 ease-out
@@ -451,8 +463,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
                 ${isScrolled ? 'px-1 py-1' : 'px-4 py-3'}
               `}
             >
-              {/* Back Button with Animation */}
-              <Link href={`/${mappedDyno.categories[0]?.href}/${language === "en" ? "/" : `/?lang=${language}`}`}>
+              <Link href={`/${mappedDyno.categories?.[0]?.href || ''}/${language === "en" ? "/" : `/?lang=${language}`}`}>
                 <Button 
                   className={`
                     transition-all duration-300 ease-out
@@ -463,11 +474,10 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
                   `} 
                   variant='ghost'
                 >
-                  {(selectedLang.dir==="ltr")?<ArrowLeft />:<ArrowRight />}
+                  {(selectedLang.dir==="ltr") ? <ArrowLeft /> : <ArrowRight />}
                 </Button>
               </Link>
               
-              {/* Title and Description with Animation */}
               <div className={`
                 text-center transition-all duration-500 ease-out
                 ${isScrolled ? 'transform scale-95' : 'transform scale-100'}
@@ -489,12 +499,9 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
                   {mappedDyno.description}
                 </p>
               </div>
-              
-              {/* Spacer to balance the layout */}
               <div className="w-10" />
             </div>
             
-            {/* Animated Progress Bar */}
             <div className={`
               absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-primary to-accent
               transition-all duration-300 ease-out
@@ -503,91 +510,108 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
           </Card>
         </div>
         
-        {/* Main Content Card */}
-        {mappedDyno.htmlFile.id && <Card 
-          className='col-span-12 p-6 relative' 
-          title={t.mainContent}
-          description={t.mainContentDesc}
-        >
-          {mappedDyno.pdfFile && <Link className={`absolute ${t.mainContentDesc.length === 0?"top-0":"top-2"} end-2`} href={mappedDyno.pdfFile.file_url}><Button variant='default' className='bg-slate-800 hover:bg-amber-500'>{t.pdfDownload}</Button></Link>}
-          <HtmlRenderer className='w-full' htmlContent={mappedDyno.htmlText} />
-          {/* <HtmlRenderer className='w-full' htmlFileUrl={mappedDyno.htmlFile} /> */}
-        </Card>}
+        {mappedDyno.htmlFile?.id && (
+          <Card 
+            className='col-span-12 p-6 relative' 
+            title={t.mainContent}
+            description={t.mainContentDesc}
+          >
+            {mappedDyno.pdfFile && (
+              <Link className={`absolute ${t.mainContentDesc.length === 0 ? "top-0" : "top-2"} end-2`} href={mappedDyno.pdfFile.file_url}>
+                <Button variant='default' className='bg-slate-800 hover:bg-amber-500'>
+                  {t.pdfDownload}
+                </Button>
+              </Link>
+            )}
+            <HtmlRenderer className='w-full' htmlContent={mappedDyno.htmlText} />
+          </Card>
+        )}
 
-        {/* Info File Card */}
         {mappedDyno?.infoFile && (
           <Card 
             className='col-span-12 md:col-span-6 p-1 md:p-6 max-h-[100vh] md:max-h-[50rem]' 
             title={t.infoImage}
           >
-            <div className="relative w-full md:h-[43rem] flex-grow rounded-lg overflow-hidden">
+            <div className="relative w-full md:h-[43rem] flex-grow rounded-lg overflow-hidden group">
               <img 
                 src={mappedDyno?.infoFile.file_url} 
                 alt="info image"
                 className='w-full h-full object-contain transition-transform duration-300'
               />
-              {/* Download Button Overlay */}
               <div className="absolute top-2 start-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              <a
-                href={mappedDyno.infoFile.file_url}
-                download
-                className='h-6 w-6'>
-                <DownloadIcon className='text-white hover:text-blue-400 transition-colors p-1 hover:bg-white/10 rounded-full h-8 w-8' />
-              </a>
+                <a
+                  href={mappedDyno.infoFile.file_url}
+                  download
+                  className='h-6 w-6'
+                >
+                  <DownloadIcon className='text-white hover:text-blue-400 transition-colors p-1 hover:bg-black/30 bg-black/10 rounded-full h-8 w-8' />
+                </a>
               </div>
             </div>
           </Card>
         )}
 
-        {/* Messages Card */}
         <Card 
-          className={`col-span-12 ${mappedDyno?.infoFile ? 'md:col-span-6' : ''} flex flex-col md:min-h-[400px] p-1 md:p-6 max-h-[100vh] md:max-h-[50rem]`}
+          className={`col-span-12 ${mappedDyno?.infoFile ? 'md:col-span-6 flex flex-col' : 'grid grid-cols-2 gap-2'} md:min-h-[400px] p-1 md:p-6 max-h-[100vh] md:max-h-[50rem]`}
           title={t.messages}
           description={t.messagesDesc}
         >
-            {/* Generate New Button */}
-            <div className="mb-4">
-              <button
-                onClick={handleGenerateNew}
-                disabled={isGeneratingSummary}
-                className={`px-4 py-2 rounded-md font-medium text-sm transition-all duration-200 shadow-sm hover:shadow-md 
-                          transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-ring
-                          ${isGeneratingSummary 
-                            ? 'bg-secondary text-secondary-foreground cursor-not-allowed opacity-70' 
-                            : 'bg-primary text-primary-foreground hover:bg-primary/90'
-                          }`}
-              >
-                {isGeneratingSummary ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                    {t.generating}
-                  </div>
-                ) : (
-                  t.generateNew
-                )}
-              </button>
-            </div>
-          <div className="h-[40rem] flex flex-col overflow-y-auto px-1">
-
-            {isGeneratingSummary && (
-              <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                <div className="flex items-center gap-2 text-blue-700">
-                  <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                  <span className="text-sm">{t.generating}</span>
+          <div className="mb-4">
+            <button
+              onClick={handleGenerateNew}
+              disabled={isGeneratingSummary}
+              className={`px-4 py-2 rounded-md font-medium text-sm transition-all duration-200 shadow-sm hover:shadow-md 
+                        transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-ring
+                        ${isGeneratingSummary 
+                          ? 'bg-secondary text-secondary-foreground cursor-not-allowed opacity-70' 
+                          : 'bg-primary text-primary-foreground hover:bg-primary/90'
+                        }`}
+            >
+              {isGeneratingSummary && !streamingMessage ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                  {t.generating}
                 </div>
+              ) : (
+                t.generateNew
+              )}
+            </button>
+          </div>
+
+          <div className="h-[40rem] flex flex-col overflow-y-auto px-1">
+            
+            {/* باکسی که پیام در حال تولید را نمایش می‌دهد */}
+            {isGeneratingSummary && (
+              <div className="mb-4 p-4 border border-blue-200 bg-blue-50 dark:bg-blue-900/10 dark:border-blue-800 rounded-lg shadow-sm transition-all">
+                <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-2">
+                  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-sm font-semibold">{t.generating}</span>
+                </div>
+                
+                {streamingMessage && (
+                  <div 
+                    className="text-sm text-foreground mt-3 whitespace-pre-wrap leading-relaxed animate-in fade-in duration-300"
+                    dir={selectedLang.dir}
+                  >
+                    {streamingMessage}
+                  </div>
+                )}
               </div>
             )}
 
-            {/* Messages Container with Scroll */}
             <div className="flex-1 pr-2 space-y-3 flex-grow">
-              {mappedDyno?.summaries.map((summary) => (
-                <TextCard key={summary.id} content={summary.content} onEdit={(ee) => handleSaveEdit(ee, summary.id)} onDelete={() => handleDelete(summary.id)} />
+              {mappedDyno?.summaries?.map((summary) => (
+                <TextCard 
+                  key={summary.id} 
+                  content={summary.content} 
+                  onEdit={(ee) => handleSaveEdit(ee, summary.id)} 
+                  onDelete={() => handleDelete(summary.id)} 
+                />
               ))}
             </div>
           </div>
         </Card>
 
-        {/* Text Images Card */}
         {mappedDyno?.textimages && mappedDyno?.textimages.length > 0 && (
           <Card 
             className='col-span-12 p-1 md:p-6' 
@@ -602,13 +626,13 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
                     alt={`text-image-${index}`}
                     className="h-96 w-auto object-cover hover:scale-105 transition-transform duration-300"
                   />
-                  {/* Download Button Overlay */}
                   <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                     <a
                       href={image.file_url}
                       download
-                      className='h-6 w-6'>
-                      <DownloadIcon className='text-white hover:text-blue-400 transition-colors p-1 hover:bg-white/10 rounded-full h-8 w-8' />
+                      className='h-6 w-6'
+                    >
+                      <DownloadIcon className='text-white hover:text-blue-400 transition-colors p-1 hover:bg-black/30 bg-black/10 rounded-full h-8 w-8' />
                     </a>
                   </div>
                 </div>
@@ -617,7 +641,6 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
           </Card>
         )}
 
-        {/* Images Gallery Card */}
         {mappedDyno?.images && mappedDyno?.images.length > 0 && (
           <Card 
             className='col-span-12 p-1 md:p-6' 
@@ -632,13 +655,13 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
                     alt={`gallery-image-${index}`}
                     className="h-40 w-auto object-cover hover:scale-105 transition-transform duration-300"
                   />
-                  {/* Download Button Overlay */}
                   <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                     <a
                       href={image.file_url}
                       download
-                      className='h-6 w-6'>
-                      <DownloadIcon className='text-white hover:text-blue-400 transition-colors p-1 hover:bg-white/10 rounded-full h-8 w-8' />
+                      className='h-6 w-6'
+                    >
+                      <DownloadIcon className='text-white hover:text-blue-400 transition-colors p-1 hover:bg-black/30 bg-black/10 rounded-full h-8 w-8' />
                     </a>
                   </div>
                 </div>
@@ -647,7 +670,6 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
           </Card>
         )}
 
-        {/* Video Gallery Card */}
         {mappedDyno?.videos && mappedDyno?.videos.length > 0 && (
           <Card 
             className='col-span-12 p-1 md:p-6' 
@@ -680,10 +702,8 @@ const Card = ({children, className, title, description}:{
                     hover:shadow-xl hover:bg-background/90 hover:dark:bg-[#161b22]/90 hover:border-border
                     transition-all duration-300 ease-out ${className}`}>
       
-      {/* Base subtle overlay for visibility */}
       <div className="absolute inset-0 bg-accent/5 rounded-lg" />
       
-      {/* Content */}
       <div className="relative z-10">
         {title && (
           <div className="mb-4">
@@ -696,11 +716,9 @@ const Card = ({children, className, title, description}:{
         {children}
       </div>
       
-      {/* Hover accent overlay */}
       <div className="absolute inset-0 bg-slate-700/10 rounded-lg opacity-0 
                       group-hover:opacity-100 transition-opacity duration-300" />
       
-      {/* Glass effect border */}
       <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-slate-600/20 via-transparent to-slate/10 
                       opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
     </div>
@@ -708,73 +726,66 @@ const Card = ({children, className, title, description}:{
 }
 
 const LoadSkeleton = () => {
-  return <div className="w-full h-full overflow-y-auto bg-background animate-pulse">
-  <div className="grid grid-cols-12 gap-6 px-1 md:px-12 mx-auto">
-    {/* Sticky Header Skeleton */}
-    <div className="col-span-12 sticky top-0 z-50 -mt-6">
-      <Skeleton className="p-4 bg-muted-foreground/10 backdrop-blur-md border rounded-lg shadow-md"/>
-    </div>
+  return (
+    <div className="w-full h-full overflow-y-auto bg-background animate-pulse">
+      <div className="grid grid-cols-12 gap-6 px-1 md:px-12 mx-auto">
+        <div className="col-span-12 sticky top-0 z-50 -mt-6">
+          <Skeleton className="p-4 bg-muted-foreground/10 backdrop-blur-md border rounded-lg shadow-md"/>
+        </div>
 
-    {/* Main Content Skeleton */}
-      <Skeleton className="col-span-12 h-96 p-6 border rounded-lg bg-muted-foreground/10"/>
+        <Skeleton className="col-span-12 h-96 p-6 border rounded-lg bg-muted-foreground/10"/>
 
+        <div className="col-span-12 md:col-span-6">
+          <Skeleton className="p-6 border rounded-lg h-[50rem] bg-muted-foreground/10 "/>
+        </div>
 
-    {/* Info Image Skeleton */}
-    <div className="col-span-12 md:col-span-6">
-      <Skeleton className="p-6 border rounded-lg h-[50rem] bg-muted-foreground/10 "/>
-    </div>
-
-    {/* Messages Skeleton */}
-    <div className="col-span-12 md:col-span-6">
-      <div className="p-6 border rounded-lg bg-card h-[50rem] flex flex-col">
-        <div className="h-8 w-32 bg-muted rounded mb-4" />
-        <div className="space-y-4 flex-1 overflow-y-auto">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="p-4 bg-muted/40 rounded-lg space-y-2">
-              <Skeleton className="bg-muted-foreground/10 h-3 w-full rounded" />
-              <Skeleton className="bg-muted-foreground/10 h-3 w-3/4 rounded" />
+        <div className="col-span-12 md:col-span-6">
+          <div className="p-6 border rounded-lg bg-card h-[50rem] flex flex-col">
+            <div className="h-8 w-32 bg-muted rounded mb-4" />
+            <div className="space-y-4 flex-1 overflow-y-auto">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="p-4 bg-muted/40 rounded-lg space-y-2">
+                  <Skeleton className="bg-muted-foreground/10 h-3 w-full rounded" />
+                  <Skeleton className="bg-muted-foreground/10 h-3 w-3/4 rounded" />
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+        </div>
+
+        <div className="col-span-12">
+          <div className="p-6 border rounded-lg bg-card">
+            <div className="h-4 w-32 bg-muted rounded mb-4" />
+            <div className="flex gap-4 overflow-x-auto">
+              {[...Array(3)].map((_, i) => (
+                <Skeleton key={i} className="bg-muted-foreground/10 w-60 h-96 rounded-md" />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="col-span-12">
+          <div className="p-6 border rounded-lg bg-card">
+            <div className="h-4 w-32 bg-muted rounded mb-4" />
+            <div className="flex gap-4 overflow-x-auto">
+              {[...Array(4)].map((_, i) => (
+                <Skeleton key={i } className="bg-muted-foreground/10 w-40 h-40 rounded-md" />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="col-span-12">
+          <div className="p-6 border rounded-lg bg-card">
+            <div className="h-4 w-32 bg-muted rounded mb-4" />
+            <div className="flex gap-4 overflow-x-auto">
+              {[...Array(2)].map((_, i) => (
+                <Skeleton key={i} className="bg-muted-foreground/10 w-[90vw] md:w-[40vw] h-60 rounded-md" />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
-
-    {/* Text Images Skeleton */}
-    <div className="col-span-12">
-      <div className="p-6 border rounded-lg bg-card">
-        <div className="h-4 w-32 bg-muted rounded mb-4" />
-        <div className="flex gap-4 overflow-x-auto">
-          {[...Array(3)].map((_, i) => (
-            <Skeleton key={i} className="bg-muted-foreground/10 w-60 h-96 rounded-md" />
-          ))}
-        </div>
-      </div>
-    </div>
-
-    {/* Images Gallery Skeleton */}
-    <div className="col-span-12">
-      <div className="p-6 border rounded-lg bg-card">
-        <div className="h-4 w-32 bg-muted rounded mb-4" />
-        <div className="flex gap-4 overflow-x-auto">
-          {[...Array(4)].map((_, i) => (
-            <Skeleton key={i } className="bg-muted-foreground/10 w-40 h-40 rounded-md" />
-          ))}
-        </div>
-      </div>
-    </div>
-
-    {/* Videos Gallery Skeleton */}
-    <div className="col-span-12">
-      <div className="p-6 border rounded-lg bg-card">
-        <div className="h-4 w-32 bg-muted rounded mb-4" />
-        <div className="flex gap-4 overflow-x-auto">
-          {[...Array(2)].map((_, i) => (
-            <Skeleton key={i} className="bg-muted-foreground/10 w-[90vw] md:w-[40vw] h-60 rounded-md" />
-          ))}
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
+  )
 }

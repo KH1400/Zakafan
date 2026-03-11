@@ -21,6 +21,7 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
       videos: [],
       imageHint: "",
       images: [],
+      version: "جنگ رمضان",
       categories: [],
       dynographs: {
         "fa": {title: "", description: "", htmlFile: null, pdfFile: null, infoFile: null, videos: [], textimages: []},
@@ -284,7 +285,7 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
                     dataType="video"
                     multiple={true}
                     processDocument={false}
-                    maxSize={10}
+                    maxSize={50}
                     accept="video/*"
                     title="آپلود ویدئوها"
                     onError={(error) => console.log('Error:', error)}
