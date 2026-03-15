@@ -116,6 +116,7 @@ type DynoChildRes = {
   pdf_file: MediaFile;
   info_file: MediaFile;
   input_image_files: MediaFile[];
+  info_image_files: MediaFile[];
   video_files: MediaFile[];
   summaries: {id: number, generated_summary: string, language: Language}[];
   created_at: string;
@@ -213,7 +214,6 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
 
     ws.onclose = (event) => {
       console.log('WebSocket closed:', event.code, event.reason);
-      
       // تلاش مجدد فقط در صورت قطع غیرمنتظره
       if (isGeneratingSummary && event.code !== 1000 && event.code !== 1005) {
         console.log('Unexpected WebSocket close, retrying...');
@@ -221,8 +221,9 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
           if (currentSessionId) {
             connectWebSocket(websocketUrl, sessionId);
           }
-        }, 2000);
+        }, 5000);
       }
+      setIsGeneratingSummary(false);
     };
   };
 
@@ -277,7 +278,6 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
     try {
       setIsGeneratingSummary(true);
       const response: any = await generateSummary({dynoId: mappedDyno.dynoChildId, language}).json();
-      
       if (response.websocket_url && response.session_id) {
         setCurrentSessionId(response.session_id);
         connectWebSocket(response.websocket_url, response.session_id);
@@ -412,6 +412,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
       title: d.dynographs[lang]?.title || d.dynographs['fa']?.title,
       description: d.dynographs[lang]?.description || d.dynographs['fa']?.description,
       textimages: d.dynographs[lang]?.input_image_files,
+      infoimages: d.dynographs[lang]?.info_image_files,
       pdfFile: d.dynographs[lang]?.pdf_file || d.dynographs['fa']?.pdf_file,
       infoFile: d.dynographs[lang]?.info_file || d.dynographs['fa']?.info_file,
       htmlFile: d.dynographs[lang]?.html_file || d.dynographs['fa']?.html_file,
@@ -528,7 +529,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
           </Card>
         )}
 
-        {mappedDyno?.infoFile && (
+        {mappedDyno?.infoimages.length == 0 && mappedDyno?.infoFile && (
           <Card 
             className='col-span-12 md:col-span-6 p-1 md:p-6 max-h-[100vh] md:max-h-[50rem]' 
             title={t.infoImage}
@@ -552,8 +553,36 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
           </Card>
         )}
 
+        {mappedDyno?.infoimages.length > 0 && (
+          <Card 
+            className='col-span-12 md:col-span-6 p-1 md:p-6 max-h-[100vh] md:max-h-[50rem]' 
+            title={t.infoImage}
+          >
+            <div className={`w-full grid grid-cols-1 gap-3 flex-1 pr-2 flex-grow`}>
+              {mappedDyno?.infoimages?.map((infoimage) => (
+                <div className="relative w-full md:h-[43rem] flex-grow rounded-lg overflow-hidden group">
+                  <img 
+                    src={infoimage.file_url} 
+                    alt="info image"
+                    className='w-full h-full object-contain transition-transform duration-300'
+                  />
+                  <div className="absolute top-2 start-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <a
+                      href={infoimage.file_url}
+                      download
+                      className='h-6 w-6'
+                    >
+                      <DownloadIcon className='text-white hover:text-blue-400 transition-colors p-1 hover:bg-black/30 bg-black/10 rounded-full h-8 w-8' />
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
+
         <Card 
-          className={`col-span-12 ${mappedDyno?.infoFile ? 'md:col-span-6' : ''}  flex flex-col md:min-h-[400px] p-1 md:p-6 max-h-[100vh] md:max-h-[50rem]`}
+          className={`col-span-12 ${(mappedDyno?.infoFile || mappedDyno?.infoimages.length > 0) ? 'md:col-span-6' : ''}  flex flex-col md:min-h-[400px] p-1 md:p-6 max-h-[100vh] md:max-h-[50rem]`}
           title={t.messages}
           description={t.messagesDesc}
         >
@@ -600,7 +629,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
               </div>
             )}
 
-            <div className={`w-full ${mappedDyno?.infoFile ? 'grid grid-cols-1' : 'grid grid-cols-2'}  gap-3 flex-1 pr-2 flex-grow`}>
+            <div className={`w-full ${(mappedDyno?.infoFile || mappedDyno?.infoimages.length > 0) ? 'grid grid-cols-1' : 'grid grid-cols-2'}  gap-3 flex-1 pr-2 flex-grow`}>
               {mappedDyno?.summaries?.map((summary) => (
                 <TextCard 
                   key={summary.id} 

@@ -1,5 +1,5 @@
 export type Language = 'fa' | 'en' | 'ar' | 'he';
-export type DataType = 'pdf' | 'html' | 'image' | 'textimage' | 'cover' | 'info' | 'video';
+export type DataType = 'pdf' | 'html' | 'image' | 'textimage' | 'infoimage' | 'cover' | 'info' | 'video';
 
 export const languages: {lang: Language, name: string}[] = [{lang: 'fa', name: "فارسی"}, {lang: 'en', name: "انگلیسی"}, {lang: 'ar', name: "عربی"}, {lang: 'he', name: "عبری"}];
 
@@ -74,6 +74,7 @@ export type DynoMaster = {
     pdfFile: MediaFile;
     infoFile: MediaFile;
     textimages: MediaFile[];
+    infoimages: MediaFile[];
     videos: MediaFile[];
     summaries: Summary[];
     createdAt: string;
@@ -119,6 +120,7 @@ export type DynoChildDtoOut = {
     pdfFile: MediaFile;
     infoFile: MediaFile;
     textimages: MediaFile[];
+    infoimages: MediaFile[];
     summaries?: Summary[];
     videos: MediaFile[];
     topScorer?: 'title' | 'description' | 'pdf' | 'html'
@@ -185,6 +187,7 @@ export function mapResDynographToDynoChildDtoOut(item: any): DynoChildDtoOut {
         pdfFile: item.pdf_file!,
         infoFile: item.info_file!,
         textimages: item.input_image_files,
+        infoimages: item.info_image_files,
         summaries: item.summaries,
         videos: item.video_files,
         topScorer: item.top_scorer
@@ -207,6 +210,7 @@ export function mapResMasterToDynoMasterDtoOut(master: any): DynoMasterDtoOut {
         pdfFile: null!,
         infoFile: null!,
         textimages: [],
+        infoimages: [],
         videos: [],
         summaries: [],
       };
