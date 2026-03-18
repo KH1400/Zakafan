@@ -86,7 +86,6 @@ export default function DynosPage({ slug }: { slug: string }) {
 
         const panelData = Object.values(grouped) as any;
 
-        console.log(panelData);
         setDynos(panelData);
         setCategory(categoryResult);
       } catch (error) {
@@ -122,16 +121,14 @@ export default function DynosPage({ slug }: { slug: string }) {
       </header>
       
       {/* Main content */}
-      <div className="flex-grow w-full overflow-y-auto flex flex-col flex-shrink-0">
+      <div className="flex-grow w-full flex flex-col flex-shrink-0 space-y-8">
         {dynos.map(d =>
-        <div className="">
-          <p className="w-full py-1 my-1 mt-8 text-gray-400 text-sm text-center bg-white/5">{d.version}</p>
           <MosaicLayout
+            version={d.version}
             panels={d.dynos}
             baseHref={category.href}
             lang={language}
           />
-        </div>
         )}
       </div>
       

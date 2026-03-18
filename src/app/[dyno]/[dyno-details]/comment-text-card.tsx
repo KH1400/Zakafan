@@ -2,7 +2,7 @@
 import { Check, Command, Copy, Edit, GemIcon, GitCommitVertical, Reply, Trash2, X } from "lucide-react";
 import { useState } from "react";
 
-interface TextCardProps {
+interface CommentTextCardProps {
   content: string;
   onShowCommentModal?: () => void;
   onEdit?: (newContent: string) => void;
@@ -10,9 +10,8 @@ interface TextCardProps {
   onCopy?: () => void;
 }
 
-const TextCard: React.FC<TextCardProps> = ({ 
+const CommentTextCard: React.FC<CommentTextCardProps> = ({ 
   content, 
-  onShowCommentModal = () => {},
   onEdit = () => {},
   onDelete = () => {},
   onCopy = () => {}
@@ -121,36 +120,6 @@ const TextCard: React.FC<TextCardProps> = ({
           ) : (
             <>
               <button
-                onClick={onShowCommentModal}
-                className={`flex items-center gap-2 text-md px-4 py-1 rounded-xl font-medium transition-all duration-200
-                    bg-gray-800 text-gray-200 hover:bg-gray-700 hover:shadow-md border border-gray-700`}
-                title="نمایش کامنت"
-              >
-                <Reply size={18} />
-                <span>کامنت‌ها</span>
-              </button>
-
-              {/* <button
-                onClick={handleGenerateNewComment}
-                disabled={isGenerating}
-                className={`flex items-center gap-2 text-md px-4 py-1 rounded-xl font-medium transition-all duration-200 ${
-                  isGenerating 
-                    ? 'bg-green-600 text-white shadow-lg shadow-green-600/25' 
-                    : 'bg-gray-800 text-gray-200 hover:bg-gray-700 hover:shadow-md border border-gray-700'
-                }`}
-                title="تولید کامنت"
-              >
-                {isGenerating ? <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"/> : <Reply size={18} />}
-                <span>{isGenerating ? 
-                  <div className="rounded-lg transition-all">
-                    <div className="flex items-center gap-2 ">
-                      
-                      <span className="text-sm font-semibold">در حال تولید</span>
-                    </div>
-                  </div>
-                   : 'کامنت‌ها'}</span>
-              </button> */}
-              <button
                 onClick={handleCopy}
                 className={`flex items-center gap-2 text-md px-4 py-1 rounded-xl font-medium transition-all duration-200 ${
                   copied 
@@ -188,4 +157,4 @@ const TextCard: React.FC<TextCardProps> = ({
   );
 };
 
-export default TextCard
+export default CommentTextCard

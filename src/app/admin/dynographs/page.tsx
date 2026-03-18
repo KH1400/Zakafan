@@ -69,6 +69,7 @@ const DynographListPage = () => {
               pdfFile: dynograph.pdf_file,
               infoFile: dynograph.info_file,
               textimages: dynograph.input_image_files,
+              infoimages: dynograph.info_image_files,
               summaries: dynograph.summaries,
               videos: dynograph.video_files,
             }]
@@ -144,6 +145,7 @@ const DynographListPage = () => {
       if (langData.pdfFile) {dynograph.pdf_file_id = langData.pdfFile.id;} else {dynograph.pdf_file_id = null}
       if (langData.infoFile) {dynograph.info_file_id = langData.infoFile.id;} else {dynograph.info_file_id = null}
       if (langData.textimages && langData.textimages.length > 0) {dynograph.input_image_file_ids = langData.textimages.map(i => i.id)} else {dynograph.input_image_file_ids = [];}
+      if (langData.infoimages && langData.infoimages.length > 0) {dynograph.info_image_file_ids = langData.infoimages.map(i => i.id)} else {dynograph.info_image_file_ids = [];}
       if (langData.videos && langData.videos.length > 0) {dynograph.video_file_ids = langData.videos.map(i => i.id);} else {dynograph.video_file_ids = [];}
     
       try {
@@ -238,6 +240,7 @@ const DynographListPage = () => {
       if (langData.pdfFile) dynograph.pdf_file_id = langData.pdfFile.id;
       if (langData.infoFile) dynograph.info_file_id = langData.infoFile.id;
       if (langData.textimages && langData.textimages.length > 0) dynograph.input_image_file_ids = langData.textimages.map(i => i.id);
+      if (langData.infoimages && langData.infoimages.length > 0) dynograph.info_image_file_ids = langData.infoimages.map(i => i.id);
       if (langData.videos && langData.videos.length > 0) dynograph.video_file_ids = langData.videos.map(i => i.id);
     
       try {

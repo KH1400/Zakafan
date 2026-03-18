@@ -59,6 +59,13 @@ export type Summary = {
     createdAt: string;
 }
 
+export type Comment = {
+    id: number;
+    content: string;
+    language: string;
+    createdAt: string;
+}
+
 export type DynoMaster = {
     id: string;
     slug: string;

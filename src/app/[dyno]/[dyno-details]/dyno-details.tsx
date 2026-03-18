@@ -1,15 +1,16 @@
 "use client"
 import React, { useEffect, useRef, useState } from 'react';
-import { Dyno, DynoMaster, Language, MediaFile } from '../../../lib/content-types';
+import { Comment, Dyno, DynoMaster, Language, MediaFile } from '../../../lib/content-types';
 import { useLanguage } from '../../../lib/language-context';
 import HtmlRenderer from '../../../components/htmlviewer';
 import { Button } from '../../../components/ui/button';
-import { ArrowLeft, ArrowRight, DownloadIcon } from 'lucide-react';
-import { apiGetDynoMasterBySlug, deleteSummary, fetchSummaries, generateSummary, updateSummary } from '../../../lib/api';
+import { ArrowLeft, ArrowRight, DownloadIcon, X } from 'lucide-react';
+import { apiGetDynoMasterBySlug, deleteComment, deleteSummary, fetchComments, fetchSummaries, generateComment, generateSummary, updateComment, updateSummary } from '../../../lib/api';
 import Link from 'next/link';
 import VideoPlayer from '../../../components/video-player';
 import { Skeleton } from '../../../components/ui/skeleton';
 import TextCard from './text-card';
+import CommentTextCard from './comment-text-card';
 
 // ترجمه‌های متن‌ها
 const translations = {
@@ -28,6 +29,7 @@ const translations = {
     edit: "ویرایش",
     copy: "کپی",
     generateNew: "تولید توئیت جدید",
+    generateNewComment: "تولید کامنت جدید",
     generating: "در حال تولید...",
     copied: "کپی شد!",
     download: "دانلود تصویر",
@@ -48,6 +50,7 @@ const translations = {
     edit: "تحرير",
     copy: "نسخ",
     generateNew: "توليد تغريدة جديدة",
+    generateNewComment: "توليد تغريدة جديدة",
     generating: "إنتاج...",
     copied: "تم النسخ!",
     download: "تحميل الصورة",
@@ -68,6 +71,7 @@ const translations = {
     edit: "Edit",
     copy: "Copy",
     generateNew: "Generate New Tweet",
+    generateNewComment: "Generate New Comment",
     generating: "Generating...",
     copied: "Copied!",
     download: "Download Image",
@@ -88,6 +92,7 @@ const translations = {
     edit: "עריכה",
     copy: "העתק",
     generateNew: "יצירת ציוץ חדש",
+    generateNewComment: "יצירת ציוץ חדש",
     generating: "יצירת תוכן חדש...",
     copied: "הועתק!",
     download: "הורד תמונה",
@@ -131,10 +136,16 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   
+  const [showCommentModalId, setShowCommentModalId] = useState<number>();
+  const [isLoadingComments, setIsLoadingComments] = useState(false);
+  const [isGeneratingComment, setIsGeneratingComment] = useState(false);
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   // استیت جدید برای نگهداری متن در حال استریم
+  const [streamingComment, setStreamingComment] = useState<string>("");
   const [streamingMessage, setStreamingMessage] = useState<string>("");
+
+  const [comments, setComments] = useState<Comment[]>();
   
   const wsRef = useRef<WebSocket | null>(null);
   const t = translations[language as keyof typeof translations] || translations.en;
@@ -152,7 +163,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
     }
   };
 
-  const connectWebSocket = (websocketUrl: string, sessionId: string) => {
+  const connectWebSocket = (websocketUrl: string, sessionId: string, type: 'comment' | 'summary') => {
     closeWebSocket();
 
     const ws = new WebSocket(websocketUrl);
@@ -173,32 +184,50 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
           console.error('Server error during generation:', data);
           closeWebSocket();
           setIsGeneratingSummary(false);
+          setIsGeneratingComment(false);
           setCurrentSessionId(null);
           setStreamingMessage("");
+          setStreamingComment("");
           return;
         }
 
         // چانک‌های میانی
         if (data.is_complete === false) {
           if (data.content) {
-            setStreamingMessage(prev => prev + data.content);
+            if(type === 'summary')
+              setStreamingMessage(prev => prev + data.content);
+
+            if(type === 'comment')
+              setStreamingComment(prev => prev + data.content);
           }
         } 
         // چانک نهایی (که کل پیام را یکجا دارد)
         else if (data.is_complete === true) {
           if (data.content) {
-            setStreamingMessage(data.content);
+            if(type === 'summary')
+              setStreamingMessage(data.content);
+
+            if(type === 'comment')
+              setStreamingComment(data.content);
           }
           
           closeWebSocket();
           
           // دریافت پیام‌ها از سرور و سپس ریست کردن وضعیت لودینگ
           // تا پرش تصویر در رابط کاربری اتفاق نیفتد
-          fetchMessages().then(() => {
-            setIsGeneratingSummary(false);
-            setCurrentSessionId(null);
-            setStreamingMessage("");
-          });
+          if(type === 'summary')
+            fetchMessages().then(() => {
+              setIsGeneratingSummary(false);
+              setCurrentSessionId(null);
+              setStreamingMessage("");
+            });
+            
+            if(type === 'comment')
+            handleFetchComments(showCommentModalId).then(() => {
+              setIsGeneratingComment(false);
+              setCurrentSessionId(null);
+              setStreamingComment("");
+            });
         }
       } catch (error) {
         console.error('Error parsing WebSocket message:', error);
@@ -208,8 +237,10 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
     ws.onerror = (error) => {
       console.error('WebSocket error:', error);
       setIsGeneratingSummary(false);
+      setIsGeneratingComment(false);
       setCurrentSessionId(null);
       setStreamingMessage("");
+      setStreamingComment("");
     };
 
     ws.onclose = (event) => {
@@ -219,11 +250,12 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
         console.log('Unexpected WebSocket close, retrying...');
         setTimeout(() => {
           if (currentSessionId) {
-            connectWebSocket(websocketUrl, sessionId);
+            connectWebSocket(websocketUrl, sessionId, type);
           }
         }, 5000);
       }
       setIsGeneratingSummary(false);
+      setIsGeneratingComment(false);
     };
   };
 
@@ -262,11 +294,36 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
     }
   };
 
+  const handleFetchComments = async (summaryId: number) => {
+    if (!dyno || !mappedDyno || !summaryId) return;
+    setIsLoadingComments(true)
+    try {
+      const newComments: {comments: {id: number, generated_comment: string, language: string, created_at: string }[]} = await fetchComments(summaryId).json();
+      setComments(newComments.comments.map(s => {
+            return {id: s.id, content: s.generated_comment, createdAt: s.created_at}
+          }) as Comment[])
+      setIsLoadingComments(false)
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+      setIsLoadingComments(false)
+    }
+  };
+
   const handleDelete = async (id: number) => {
     if (!id) return;
     try {
       await deleteSummary({summaryId: id}).json();
       fetchMessages();
+    } catch (error) {
+      console.error('Error deleting message:', error);
+    }
+  };
+
+  const handleDeleteComment = async (id: number) => {
+    if (!id) return;
+    try {
+      await deleteComment({commentId: id}).json();
+      handleFetchComments(showCommentModalId);
     } catch (error) {
       console.error('Error deleting message:', error);
     }
@@ -280,7 +337,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
       const response: any = await generateSummary({dynoId: mappedDyno.dynoChildId, language}).json();
       if (response.websocket_url && response.session_id) {
         setCurrentSessionId(response.session_id);
-        connectWebSocket(response.websocket_url, response.session_id);
+        connectWebSocket(response.websocket_url, response.session_id, 'summary');
       } else {
         setIsGeneratingSummary(false);
         console.error('WebSocket URL not received');
@@ -288,6 +345,25 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
     } catch (error) {
       console.error('Error generating message:', error);
       setIsGeneratingSummary(false);
+      setCurrentSessionId(null);
+    }
+  };
+
+  const handleGenerateNewComment = async (summaryId) => {
+    if (!dyno || !mappedDyno || isGeneratingComment) return;
+    try {
+      setIsGeneratingComment(true);
+      const response: any = await generateComment({summaryId, language}).json();
+      if (response.websocket_url && response.session_id) {
+        setCurrentSessionId(response.session_id);
+        connectWebSocket(response.websocket_url, response.session_id, 'comment');
+      } else {
+        setIsGeneratingComment(false);
+        console.error('WebSocket URL not received');
+      }
+    } catch (error) {
+      console.error('Error generating message:', error);
+      setIsGeneratingComment(false);
       setCurrentSessionId(null);
     }
   };
@@ -359,6 +435,22 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
     }
   };
 
+  const handleSaveEditComment = async (summ: string, editId: number) => {
+    if (dyno && mappedDyno && editId) {
+      try {
+        const res: {id: number, generated_comment: string, language: string, created_at: string } = await updateComment({commentId: editId, generatedComment: summ, language}).json();
+        setComments(comments.map(s => {
+            if(s.id === editId){
+              return {...s, id: res.id, content: res.generated_comment}
+            }
+            return s;
+          }))
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
   const dynoSlugRef = useRef<string>("");
 
   useEffect(() => {
@@ -375,8 +467,9 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
   const getDyno = async () => {
     try {
       const dyns: any = await apiGetDynoMasterBySlug({slug}).json();
+      console.log(await mapData(language, dyns));
       setMappedDyno(await mapData(language, dyns));
-      console.log(dyns);
+
       setDyno(dyns);
     } catch (error) {
       console.error(error);
@@ -441,7 +534,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
       ref={scrollContainerRef}
       className="w-full h-full overflow-y-auto bg-background outline-none"
     >
-      <div className="grid grid-cols-12 gap-6 px-1 md:px-12 mx-auto">
+      <div className="relative grid grid-cols-12 gap-6 px-1 md:px-12 mx-auto">
         <div className={`
           col-span-12 sticky top-0 z-50 
           transition-all duration-500 ease-out
@@ -529,9 +622,9 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
           </Card>
         )}
 
-        {mappedDyno?.infoimages.length == 0 && mappedDyno?.infoFile && (
+        {mappedDyno?.infoimages?.length == 0 && mappedDyno?.infoFile && (
           <Card 
-            className='col-span-12 md:col-span-6 p-1 md:p-6 max-h-[100vh] md:max-h-[50rem]' 
+            className='col-span-12 md:col-span-6 p-1 md:p-6 max-h-[80vh] md:max-h-[40rem] overflow-hidden' 
             title={t.infoImage}
           >
             <div className="relative w-full md:h-[43rem] flex-grow rounded-lg overflow-hidden group">
@@ -553,14 +646,14 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
           </Card>
         )}
 
-        {mappedDyno?.infoimages.length > 0 && (
+        {mappedDyno?.infoimages?.length > 0 && (
           <Card 
-            className='col-span-12 md:col-span-6 p-1 md:p-6 max-h-[100vh] md:max-h-[50rem]' 
+            className='col-span-12 md:col-span-6 p-1 md:p-2 max-h-[80vh] md:max-h-[40rem] overflow-hidden' 
             title={t.infoImage}
           >
-            <div className={`w-full grid grid-cols-1 gap-3 flex-1 pr-2 flex-grow`}>
+            <div className={`w-full grid grid-cols-1 gap-3 flex-1 p-2 flex-grow max-h-[70vh] md:max-h-[35rem] overflow-y-auto`}>
               {mappedDyno?.infoimages?.map((infoimage) => (
-                <div className="relative w-full md:h-[43rem] flex-grow rounded-lg overflow-hidden group">
+                <div className="relative w-full flex-grow rounded-lg overflow-hidden group mb-3">
                   <img 
                     src={infoimage.file_url} 
                     alt="info image"
@@ -582,7 +675,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
         )}
 
         <Card 
-          className={`col-span-12 ${(mappedDyno?.infoFile || mappedDyno?.infoimages.length > 0) ? 'md:col-span-6' : ''}  flex flex-col md:min-h-[400px] p-1 md:p-6 max-h-[100vh] md:max-h-[50rem]`}
+          className={`col-span-12 ${(mappedDyno?.infoFile || mappedDyno?.infoimages?.length > 0) ? 'md:col-span-6' : ''}  flex flex-col md:min-h-[400px] p-1 md:p-6 max-h-[80vh] md:max-h-[40rem]`}
           title={t.messages}
           description={t.messagesDesc}
         >
@@ -608,7 +701,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
             </button>
           </div>
 
-          <div className="w-full h-[40rem] flex flex-col overflow-y-auto px-1">
+          <div className="w-full h-[29rem] flex flex-col overflow-y-auto px-1">
             
             {/* باکسی که پیام در حال تولید را نمایش می‌دهد */}
             {isGeneratingSummary && (
@@ -629,11 +722,12 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
               </div>
             )}
 
-            <div className={`w-full ${(mappedDyno?.infoFile || mappedDyno?.infoimages.length > 0) ? 'grid grid-cols-1' : 'grid grid-cols-2'}  gap-3 flex-1 pr-2 flex-grow`}>
+            <div className={`w-full ${(mappedDyno?.infoFile || mappedDyno?.infoimages?.length > 0) ? 'grid grid-cols-1' : 'grid grid-cols-2'}  gap-3 flex-1 pr-2 flex-grow`}>
               {mappedDyno?.summaries?.map((summary) => (
                 <TextCard 
                   key={summary.id} 
                   content={summary.content} 
+                  onShowCommentModal={() => {setShowCommentModalId(summary.id); handleFetchComments(summary.id)}} 
                   onEdit={(ee) => handleSaveEdit(ee, summary.id)} 
                   onDelete={() => handleDelete(summary.id)} 
                 />
@@ -641,6 +735,75 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
             </div>
           </div>
         </Card>
+
+        {showCommentModalId && <div 
+          className={`fixed top-48 -translate-x-1/2 left-1/2 bg-secondary z-50 w-5/6 md:w-3/5 flex flex-col p-2 md:p-6 rounded max-h-[90vh] md:max-h-[60rem]`}
+          title={t.messages}
+          // description={t.messagesDesc}
+        >
+          <div className="mb-4 w-full flex justify-between items-center">
+            <button
+              onClick={() => handleGenerateNewComment(showCommentModalId)}
+              disabled={isGeneratingComment}
+              className={`px-4 py-2 rounded-md font-medium text-sm transition-all duration-200 shadow-sm hover:shadow-md 
+                        transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-ring
+                        ${isGeneratingComment 
+                          ? 'bg-secondary text-secondary-foreground cursor-not-allowed opacity-70' 
+                          : 'bg-primary text-primary-foreground hover:bg-primary/90'
+                        }`}
+            >
+              {isGeneratingComment && !streamingComment ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                  {t.generating}
+                </div>
+              ) : (
+                t.generateNewComment
+              )}
+            </button>
+            <button
+              onClick={() => setShowCommentModalId(null)}
+              className={`px-4 py-2 rounded-md font-medium text-sm transition-all duration-200 shadow-sm hover:shadow-md 
+                        transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-ring
+                        bg-primary text-primary-foreground hover:bg-primary/90`}
+            >
+              <X/>
+            </button>
+          </div>
+
+          <div className="w-full h-[29rem] flex flex-col overflow-y-auto px-1">
+            
+            {/* باکسی که پیام در حال تولید را نمایش می‌دهد */}
+            {isGeneratingComment && (
+              <div className="mb-4 p-4 border border-blue-200 bg-blue-50 dark:bg-blue-900/10 dark:border-blue-800 rounded-lg shadow-sm transition-all">
+                <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-2">
+                  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-sm font-semibold">{t.generating}</span>
+                </div>
+                
+                {streamingComment && (
+                  <div 
+                    className="text-sm text-foreground mt-3 whitespace-pre-wrap leading-relaxed animate-in fade-in duration-300"
+                    dir={selectedLang.dir}
+                  >
+                    {streamingComment}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className={`w-full grid grid-cols-1 gap-3 flex-1 pr-2 flex-grow`}>
+              {comments?.map((comment) => (
+                <CommentTextCard 
+                  key={comment.id} 
+                  content={comment.content} 
+                  onEdit={(ee) => handleSaveEditComment(ee, comment.id)} 
+                  onDelete={() => handleDeleteComment(comment.id)} 
+                />
+              ))}
+            </div>
+          </div>
+        </div>}
 
         {mappedDyno?.textimages && mappedDyno?.textimages.length > 0 && (
           <Card 

@@ -272,6 +272,7 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
                           ...prevState,
                           dynographs: {...prevState?.dynographs, [language.lang]: {...prevState?.dynographs[language.lang], infoimages: [...prevState?.dynographs[language.lang].infoimages, {id: meta.uploadedData?.id, file_url: meta.uploadedData?.file_url}]}}
                         };
+                        console.log(newState)
                         onChange(newState);
                         return newState;
                       });

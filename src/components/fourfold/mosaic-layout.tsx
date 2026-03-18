@@ -10,6 +10,7 @@ type MosaicLayoutProps = {
   panels: MosaicPanelData[];
   baseHref: string;
   lang: string;
+  version: string;
 };
 
 // Define size configurations
@@ -114,7 +115,7 @@ function MosaicPanel({
         ${selectedLang.font} 
         group relative block overflow-hidden 
         transition-transform duration-300 ease-in-out 
-        hover:scale-[1.02] hover:z-10 
+        hover:scale-x-[1] hover:z-10 
         h-44 md:h-auto
         ${layoutSize.class}
       `}
@@ -152,7 +153,7 @@ function MosaicPanel({
   );
 }
 
-export function MosaicLayout({ panels, baseHref, lang }: MosaicLayoutProps) {
+export function MosaicLayout({ panels, baseHref, lang, version }: MosaicLayoutProps) {
   const { language } = useLanguage();
   
   // Use useMemo to prevent regenerating layout on every render
@@ -161,8 +162,9 @@ export function MosaicLayout({ panels, baseHref, lang }: MosaicLayoutProps) {
   }, [panels]); // Only regenerate when panels actually change
  
   return (
-    <div className="w-full h-full">
-      <div className="w-full h-full flex flex-col md:grid md:grid-cols-3 lg:grid-cols-4 md:auto-rows-[20vw] gap-2 md:overflow-y-auto overflow-x-hidden" style={{gridAutoFlow: 'row dense'}}>
+    <div className="w-full h-auto">
+      <p className="w-full py-1 text-gray-400 text-sm text-center bg-white/5">{version}</p>
+      <div className="w-full h-auto flex flex-col md:grid md:grid-cols-3 lg:grid-cols-4 md:auto-rows-[18vw] gap-2 md:overflow-y-auto overflow-x-hidden" style={{gridAutoFlow: 'row dense'}}>
         {layoutPanels.map((panel, index) => (
           <MosaicPanel 
             key={`${panel.title}-${panel.originalIndex}`}

@@ -113,7 +113,18 @@ export const generateSummary = ({dynoId, language}) =>
     },
     dynograph_id: dynoId,
     // processing_model_name: "openrouter:deepseek-chat"
-    processing_model_name: "Local:qwen3-vl-32b-instruct-FP8",
+    // processing_model_name: "Local:qwen3-vl-32b-instruct-FP8",
+  }
+});
+
+export const generateComment = ({summaryId, language}) => 
+  api.post('chatbot/comments/stream', {json: {
+    prompt_info: {
+      prompt_template_id: 3,
+      language: language
+    },
+    dynograph_summary_id: summaryId,
+    // processing_model_name: "Local:qwen3-vl-32b-instruct-FP8",
   }
 });
 
@@ -131,6 +142,15 @@ export const deleteSummary = ({summaryId}) =>
 
 export const updateSummary = ({summaryId, generatedSummary}) => 
   api.put(`dynograph/dynograph-summaries/${summaryId}`, { json: { generated_summary: generatedSummary }});
+
+export const fetchComments = (summaryId) => 
+  api.get(`dynograph/dynograph-comments?summary_id=${summaryId}`);
+
+export const deleteComment = ({commentId}) => 
+  api.delete(`dynograph/dynograph-comments/${commentId}`);
+
+export const updateComment = ({commentId, generatedComment, language}) => 
+  api.put(`dynograph/dynograph-comments/${commentId}`, { json: { generated_comment: generatedComment, language: language }});
 
 export const apiPostStoreUploadUrl = () =>
   `${baseUrl}store/upload`;
