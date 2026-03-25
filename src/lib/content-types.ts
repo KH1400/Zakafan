@@ -177,10 +177,16 @@ export type SearchResponse = {
 }
 
 export type News = {
-  "dynograph_id": string,
-  "content": {},
-  "language": string,
-  "categories": [number]
+    id?: number,
+    dynograph_id: string,
+    content: {
+        channel_title: string,
+        channel_username: string,
+        text: string,
+        date: string
+    },
+    language: string,
+    categories: [number]
 }
 
 export function slugify(text: string) {

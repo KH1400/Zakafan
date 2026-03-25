@@ -43,6 +43,7 @@ const menuItems = [
     // { href: '/admin', label: 'داشبورد', icon: LayoutDashboard },
     { href: '/admin/dynographs', label: 'داینوگراف', icon: FileText },
     { href: '/admin/categories', label: 'مدیریت دسته', icon: Group },
+    { href: '/admin/social-posts', label: 'مدیریت پست‌های بله', icon: Group },
     { href: '/admin/posts', label: 'مدیریت پست‌ها', icon: Group },
     { href: '/admin/post-categories', label: 'مدیریت دسته پست', icon: Group },
     // { href: '/admin/users', label: 'کاربران', icon: Users },

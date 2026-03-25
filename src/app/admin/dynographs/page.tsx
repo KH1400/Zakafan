@@ -52,7 +52,7 @@ const DynographListPage = () => {
     try {
       // همزمان fetch کردن دو تا API
       const dynosResponse: any = await apiGetDynoMastersByCategoryHref({}).json();
-      console.log(dynosResponse);
+      // console.log(dynosResponse);
       const dynosData = dynosResponse.masters.map((dynMaster: any) => ({
         id: dynMaster.id,
         slug: dynMaster.slug,
