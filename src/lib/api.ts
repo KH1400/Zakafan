@@ -247,8 +247,8 @@ export const apiDeletePostCategory = (dynoCategory) =>
 export const apiSearch = (searchContent: string, limit = 10, offset = 0) =>
   api.get(`dynograph/dynograph-masters/search?q=${searchContent}&limit=${limit}&offset=${offset}`);
 
-export const apiGetDynoNews = ({dynographId}) => 
-  api.get(`dynograph/filter-dynograph-news${dynographId?`?dynograph_id=${dynographId}`:''}`);
+export const apiGetDynoNews = (dynographId: string, withoutDynoId: boolean = false) => 
+  api.get(`dynograph/filter-dynograph-news?without_dynograph=${withoutDynoId}${dynographId?`&dynograph_id=${dynographId}`:''}`);
 
 export const apiPatchDynoNews = (newsId: number, body: News) => 
   api.patch(`dynograph/dynograph-news/${newsId}`, {json: body});
