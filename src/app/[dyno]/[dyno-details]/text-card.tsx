@@ -76,10 +76,10 @@ const TextCard: React.FC<TextCardProps> = ({
       <div className="h-1 bg-gradient-to-r from-blue-500 via-blue-500 to-amber-500"></div>
       
       {/* Content */}
-      <div className="w-full p-8">
+      <div className="w-full px-2 lg:px-8 py-2">
         <div className="w-full mb-6 relative">
           <div className="w-full absolute inset-0 bg-gradient-to-br from-blue-900/20 to-purple-900/20 rounded-xl opacity-50"></div>
-          <div className="w-full relative bg-gray-800/80 backdrop-blur-sm rounded-xl p-6 border border-gray-700">
+          <div className="w-full relative bg-gray-800/80 backdrop-blur-sm rounded-xl px-2 lg:px-6 border border-gray-700">
             {isEditing ? (
               <textarea
                 value={editContent}
@@ -99,7 +99,7 @@ const TextCard: React.FC<TextCardProps> = ({
         {/* Action buttons */}
         <div className="flex items-center justify-end gap-4">
           {isEditing ? (
-            <>
+            <div className="flex flex-wrap gap-2">
               <button
                 onClick={handleCancel}
                 className="flex items-center gap-2 text-md px-4 py-1 bg-gray-700 text-gray-300 rounded-xl font-medium hover:bg-gray-600 hover:shadow-md transition-all duration-200"
@@ -117,9 +117,9 @@ const TextCard: React.FC<TextCardProps> = ({
                 <Check size={18} />
                 <span>ذخیره</span>
               </button>
-            </>
+            </div>
           ) : (
-            <>
+            <div className="flex flex-wrap gap-2">
               <button
                 onClick={onShowCommentModal}
                 className={`flex items-center gap-2 text-md px-4 py-1 rounded-xl font-medium transition-all duration-200
@@ -129,27 +129,6 @@ const TextCard: React.FC<TextCardProps> = ({
                 <Reply size={18} />
                 <span>کامنت‌ها</span>
               </button>
-
-              {/* <button
-                onClick={handleGenerateNewComment}
-                disabled={isGenerating}
-                className={`flex items-center gap-2 text-md px-4 py-1 rounded-xl font-medium transition-all duration-200 ${
-                  isGenerating 
-                    ? 'bg-green-600 text-white shadow-lg shadow-green-600/25' 
-                    : 'bg-gray-800 text-gray-200 hover:bg-gray-700 hover:shadow-md border border-gray-700'
-                }`}
-                title="تولید کامنت"
-              >
-                {isGenerating ? <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"/> : <Reply size={18} />}
-                <span>{isGenerating ? 
-                  <div className="rounded-lg transition-all">
-                    <div className="flex items-center gap-2 ">
-                      
-                      <span className="text-sm font-semibold">در حال تولید</span>
-                    </div>
-                  </div>
-                   : 'کامنت‌ها'}</span>
-              </button> */}
               <button
                 onClick={handleCopy}
                 className={`flex items-center gap-2 text-md px-4 py-1 rounded-xl font-medium transition-all duration-200 ${
@@ -180,7 +159,7 @@ const TextCard: React.FC<TextCardProps> = ({
                 <Trash2 size={18} />
                 <span>حذف</span>
               </button>
-            </>
+            </div>
           )}
         </div>
       </div>

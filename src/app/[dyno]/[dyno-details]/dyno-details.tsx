@@ -4,7 +4,7 @@ import { Comment, Dyno, DynoMaster, Language, MediaFile } from '../../../lib/con
 import { useLanguage } from '../../../lib/language-context';
 import HtmlRenderer from '../../../components/htmlviewer';
 import { Button } from '../../../components/ui/button';
-import { ArrowLeft, ArrowRight, DownloadIcon, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Dock, DownloadIcon, Image, List, X, Wallpaper, Text, DockIcon } from 'lucide-react';
 import { apiGetDynoMasterBySlug, deleteComment, deleteSummary, fetchComments, fetchSummaries, generateComment, generateSummary, updateComment, updateSummary } from '../../../lib/api';
 import Link from 'next/link';
 import VideoPlayer from '../../../components/video-player';
@@ -33,7 +33,8 @@ const translations = {
     generating: "در حال تولید...",
     copied: "کپی شد!",
     download: "دانلود تصویر",
-    pdfDownload: "دانلود خلاصه فایل پژوهشی",
+    pdfDownload: "دانلود پی دی اف خلاصه فایل پژوهشی",
+    wordDownload: "دانلود خلاصه فایل پژوهشی",
   },
   ar: {
     mainContent: "المحتوى الرئيسي",
@@ -54,7 +55,8 @@ const translations = {
     generating: "إنتاج...",
     copied: "تم النسخ!",
     download: "تحميل الصورة",
-    pdfDownload: "تحميل ملخص الملف البحثي"
+    pdfDownload: "تحميل  PDF ملخص الملف البحثي",
+    wordDownload: "تحميل ملخص الملف البحثي"
   },
   en: {
     mainContent: "Main Content",
@@ -75,7 +77,8 @@ const translations = {
     generating: "Generating...",
     copied: "Copied!",
     download: "Download Image",
-    pdfDownload: "Download research summary file"
+    pdfDownload: "Download PDF research summary file",
+    wordDownload: "Download research summary file"
   },
   he: {
     mainContent: "תוכן ראשי",
@@ -96,7 +99,8 @@ const translations = {
     generating: "יצירת תוכן חדש...",
     copied: "הועתק!",
     download: "הורד תמונה",
-    pdfDownload: "הורדת קובץ סיכום המחקר"
+    pdfDownload: "הורדת קובץ  PDF סיכום המחקר",
+    wordDownload: "הורדת קובץ סיכום המחקר"
   }
 };
 
@@ -119,6 +123,7 @@ type DynoChildRes = {
   description: string;
   html_file: MediaFile;
   pdf_file: MediaFile;
+  word_file: MediaFile;
   info_file: MediaFile;
   input_image_files: MediaFile[];
   info_image_files: MediaFile[];
@@ -467,7 +472,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
   const getDyno = async () => {
     try {
       const dyns: any = await apiGetDynoMasterBySlug({slug}).json();
-      console.log(await mapData(language, dyns));
+      // console.log(await mapData(language, dyns));
       setMappedDyno(await mapData(language, dyns));
 
       setDyno(dyns);
@@ -507,6 +512,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
       textimages: d.dynographs[lang]?.input_image_files,
       infoimages: d.dynographs[lang]?.info_image_files,
       pdfFile: d.dynographs[lang]?.pdf_file || d.dynographs['fa']?.pdf_file,
+      wordFile: d.dynographs[lang]?.word_file || d.dynographs['fa']?.word_file,
       infoFile: d.dynographs[lang]?.info_file || d.dynographs['fa']?.info_file,
       htmlFile: d.dynographs[lang]?.html_file || d.dynographs['fa']?.html_file,
       htmlText: htmlText,
@@ -611,13 +617,29 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
             title={t.mainContent}
             description={t.mainContentDesc}
           >
-            {mappedDyno.pdfFile && (
-              <Link className={`absolute ${t.mainContentDesc.length === 0 ? "top-0" : "top-2"} end-2`} href={mappedDyno.pdfFile.file_url}>
-                <Button variant='default' className='bg-slate-800 hover:bg-amber-500'>
-                  {t.pdfDownload}
-                </Button>
-              </Link>
-            )}
+            <div className={`absolute ${t.mainContentDesc.length === 0 ? "top-0" : "top-2"} end-2 flex justify-between gap-2`}>
+              {mappedDyno.pdfFile && (
+                <Link className={``} href={mappedDyno.pdfFile.file_url}>
+                  <Button variant='default' title={t.pdfDownload} className='bg-slate-800 hover:bg-amber-500'>
+                    <DockIcon/>
+                  </Button>
+                </Link>
+              )}
+              {mappedDyno.wordFile && (
+                <Link className={``} href={mappedDyno.wordFile.file_url}>
+                  <Button variant='default' title={t.wordDownload} className='bg-slate-800 hover:bg-amber-500'>
+                    <Text/>
+                  </Button>
+                </Link>
+              )}
+              {mappedDyno.infoFile && (
+                <Link className={``} href={mappedDyno.infoFile.file_url}>
+                  <Button variant='default' title={t.infoImage} className='bg-slate-800 hover:bg-amber-500'>
+                    <Image/>
+                  </Button>
+                </Link>
+              )}
+            </div>
             <HtmlRenderer className='w-full' htmlContent={mappedDyno.htmlText} />
           </Card>
         )}
@@ -701,7 +723,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
             </button>
           </div>
 
-          <div className="w-full h-[29rem] flex flex-col overflow-y-auto px-1">
+          <div className="w-full h-[26rem] lg:h-[29rem] flex flex-col overflow-y-auto px-1">
             
             {/* باکسی که پیام در حال تولید را نمایش می‌دهد */}
             {isGeneratingSummary && (
@@ -722,7 +744,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
               </div>
             )}
 
-            <div className={`w-full ${(mappedDyno?.infoFile || mappedDyno?.infoimages?.length > 0) ? 'grid grid-cols-1' : 'grid grid-cols-2'}  gap-3 flex-1 pr-2 flex-grow`}>
+            <div className={`w-full ${(mappedDyno?.infoFile || mappedDyno?.infoimages?.length > 0) ? 'grid grid-cols-1' : 'grid grid-cols-2'} gap-3 flex-1 pr-2 flex-grow`}>
               {mappedDyno?.summaries?.map((summary) => (
                 <TextCard 
                   key={summary.id} 
@@ -735,75 +757,6 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
             </div>
           </div>
         </Card>
-
-        {showCommentModalId && <div 
-          className={`fixed top-48 -translate-x-1/2 left-1/2 bg-secondary z-50 w-5/6 md:w-3/5 flex flex-col p-2 md:p-6 rounded max-h-[90vh] md:max-h-[60rem]`}
-          title={t.messages}
-          // description={t.messagesDesc}
-        >
-          <div className="mb-4 w-full flex justify-between items-center">
-            <button
-              onClick={() => handleGenerateNewComment(showCommentModalId)}
-              disabled={isGeneratingComment}
-              className={`px-4 py-2 rounded-md font-medium text-sm transition-all duration-200 shadow-sm hover:shadow-md 
-                        transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-ring
-                        ${isGeneratingComment 
-                          ? 'bg-secondary text-secondary-foreground cursor-not-allowed opacity-70' 
-                          : 'bg-primary text-primary-foreground hover:bg-primary/90'
-                        }`}
-            >
-              {isGeneratingComment && !streamingComment ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                  {t.generating}
-                </div>
-              ) : (
-                t.generateNewComment
-              )}
-            </button>
-            <button
-              onClick={() => setShowCommentModalId(null)}
-              className={`px-4 py-2 rounded-md font-medium text-sm transition-all duration-200 shadow-sm hover:shadow-md 
-                        transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-ring
-                        bg-primary text-primary-foreground hover:bg-primary/90`}
-            >
-              <X/>
-            </button>
-          </div>
-
-          <div className="w-full h-[29rem] flex flex-col overflow-y-auto px-1">
-            
-            {/* باکسی که پیام در حال تولید را نمایش می‌دهد */}
-            {isGeneratingComment && (
-              <div className="mb-4 p-4 border border-blue-200 bg-blue-50 dark:bg-blue-900/10 dark:border-blue-800 rounded-lg shadow-sm transition-all">
-                <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-2">
-                  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                  <span className="text-sm font-semibold">{t.generating}</span>
-                </div>
-                
-                {streamingComment && (
-                  <div 
-                    className="text-sm text-foreground mt-3 whitespace-pre-wrap leading-relaxed animate-in fade-in duration-300"
-                    dir={selectedLang.dir}
-                  >
-                    {streamingComment}
-                  </div>
-                )}
-              </div>
-            )}
-
-            <div className={`w-full grid grid-cols-1 gap-3 flex-1 pr-2 flex-grow`}>
-              {comments?.map((comment) => (
-                <CommentTextCard 
-                  key={comment.id} 
-                  content={comment.content} 
-                  onEdit={(ee) => handleSaveEditComment(ee, comment.id)} 
-                  onDelete={() => handleDeleteComment(comment.id)} 
-                />
-              ))}
-            </div>
-          </div>
-        </div>}
 
         {mappedDyno?.textimages && mappedDyno?.textimages.length > 0 && (
           <Card 
@@ -878,6 +831,77 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
             </div>
           </Card>
         )}
+
+        {showCommentModalId && <div 
+          className={`fixed inset-0 z-[1000] flex items-center justify-center bg-gray-900 bg-opacity-60 backdrop-blur-sm p-4`}
+          title={t.messages}
+          // description={t.messagesDesc}
+        >
+          <div className={`relative w-full max-w-3xl max-h-screen-minus-16 overflow-y-auto bg-secondary rounded-2xl shadow-2xl p-8 transform scale-95 transition-transform duration-300 ease-out`}>
+            <div className="mb-4 w-full flex justify-between items-center">
+              <button
+                onClick={() => handleGenerateNewComment(showCommentModalId)}
+                disabled={isGeneratingComment}
+                className={`px-4 py-2 rounded-md font-medium text-sm transition-all duration-200 shadow-sm hover:shadow-md 
+                          transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-ring
+                          ${isGeneratingComment 
+                            ? 'bg-secondary text-secondary-foreground cursor-not-allowed opacity-70' 
+                            : 'bg-primary text-primary-foreground hover:bg-primary/90'
+                          }`}
+              >
+                {isGeneratingComment && !streamingComment ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                    {t.generating}
+                  </div>
+                ) : (
+                  t.generateNewComment
+                )}
+              </button>
+              <button
+                onClick={() => setShowCommentModalId(null)}
+                className={`px-4 py-2 rounded-md font-medium text-sm transition-all duration-200 shadow-sm hover:shadow-md 
+                          transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-ring
+                          bg-primary text-primary-foreground hover:bg-primary/90`}
+              >
+                <X/>
+              </button>
+            </div>
+
+            <div className="w-full h-[29rem] flex flex-col overflow-y-auto px-1">
+              
+              {/* باکسی که پیام در حال تولید را نمایش می‌دهد */}
+              {isGeneratingComment && (
+                <div className="mb-4 p-4 border border-blue-200 bg-blue-50 dark:bg-blue-900/10 dark:border-blue-800 rounded-lg shadow-sm transition-all">
+                  <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-2">
+                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-sm font-semibold">{t.generating}</span>
+                  </div>
+                  
+                  {streamingComment && (
+                    <div 
+                      className="text-sm text-foreground mt-3 whitespace-pre-wrap leading-relaxed animate-in fade-in duration-300"
+                      dir={selectedLang.dir}
+                    >
+                      {streamingComment}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className={`w-full grid grid-cols-1 gap-3 flex-1 pr-2 flex-grow`}>
+                {comments?.map((comment) => (
+                  <CommentTextCard 
+                    key={comment.id} 
+                    content={comment.content} 
+                    onEdit={(ee) => handleSaveEditComment(ee, comment.id)} 
+                    onDelete={() => handleDeleteComment(comment.id)} 
+                  />
+                ))}
+              </div>
+            </div>    
+          </div>
+        </div>}
       </div>
     </div>
   );

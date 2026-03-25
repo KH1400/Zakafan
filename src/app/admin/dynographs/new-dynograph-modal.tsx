@@ -24,10 +24,10 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
       version: "جنگ رمضان",
       categories: [],
       dynographs: {
-        "fa": {title: "", description: "", htmlFile: null, pdfFile: null, infoFile: null, videos: [], textimages: [], infoimages: []},
-        "en": {title: "", description: "", htmlFile: null, pdfFile: null, infoFile: null, videos: [], textimages: [], infoimages: []},
-        "ar": {title: "", description: "", htmlFile: null, pdfFile: null, infoFile: null, videos: [], textimages: [], infoimages: []},
-        "he": {title: "", description: "", htmlFile: null, pdfFile: null, infoFile: null, videos: [], textimages: [], infoimages: []}
+        "fa": {title: "", description: "", htmlFile: null, pdfFile: null, wordFile: null, infoFile: null, videos: [], textimages: [], infoimages: []},
+        "en": {title: "", description: "", htmlFile: null, pdfFile: null, wordFile: null, infoFile: null, videos: [], textimages: [], infoimages: []},
+        "ar": {title: "", description: "", htmlFile: null, pdfFile: null, wordFile: null, infoFile: null, videos: [], textimages: [], infoimages: []},
+        "he": {title: "", description: "", htmlFile: null, pdfFile: null, wordFile: null, infoFile: null, videos: [], textimages: [], infoimages: []}
       }
     };
 
@@ -47,6 +47,7 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
           videos: [],
           htmlFile: null,
           pdfFile: null,
+          wordFile: null,
           infoFile: null,
           textimages: [],
           infoimages: []
@@ -57,6 +58,7 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
         if (dynograph?.videos) dynoChildTemp.videos = dynograph.videos;
         if (dynograph?.htmlFile) dynoChildTemp.htmlFile = dynograph.htmlFile;
         if (dynograph?.pdfFile) dynoChildTemp.pdfFile = dynograph.pdfFile;
+        if (dynograph?.wordFile) dynoChildTemp.wordFile = dynograph.wordFile;
         if (dynograph?.infoFile) dynoChildTemp.infoFile = dynograph.infoFile;
         if (dynograph?.textimages) dynoChildTemp.textimages = dynograph.textimages;
         if (dynograph?.infoimages) dynoChildTemp.infoimages = dynograph.infoimages;
@@ -207,6 +209,32 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
                     </div>):null}
                   </FileUploadComponent>
                   <FileUploadComponent
+                    dataType="docx"
+                    multiple={false}
+                    processDocument={true}
+                    maxSize={10}
+                    accept=".docx"
+                    title="آپلود داکیومنت ورد"
+                    onError={(error) => console.log('Error:', error)}
+                    onUploadComplete={(meta) => {
+                      setDynoMaster(prevState => {
+                        const newState = {
+                          ...prevState,
+                          dynographs: {...prevState?.dynographs, [language.lang]: {...prevState?.dynographs[language.lang], wordFile: {id: meta.uploadedData?.id, file_url: meta.uploadedData?.file_url}}}
+                        };
+                        onChange(newState);
+                        return newState;
+                      });
+                    }}
+                    >
+                    {(dynoMaster?.dynographs[language.lang].wordFile)?(<div className="w-full flex flex-wrap justify-center items-center gap-3 border h-16 overflow-y-auto bg-gray-900/50 relative p-1">
+                      <div className="h-full relative w-20 border">
+                        <Text className='h-full w-full' />
+                        <Button onClick={() => setDynoMaster(prev => ({...prev, dynographs: {...prev?.dynographs, [language.lang]: {...prev?.dynographs[language.lang], wordFile: null}}}))} variant='ghost' className='absolute top-2 end-2 w-4 h-4'><X/></Button>
+                      </div>
+                    </div>):null}
+                  </FileUploadComponent>
+                  <FileUploadComponent
                     dataType="html"
                     multiple={false}
                     processDocument={true}
@@ -272,7 +300,6 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
                           ...prevState,
                           dynographs: {...prevState?.dynographs, [language.lang]: {...prevState?.dynographs[language.lang], infoimages: [...prevState?.dynographs[language.lang].infoimages, {id: meta.uploadedData?.id, file_url: meta.uploadedData?.file_url}]}}
                         };
-                        console.log(newState)
                         onChange(newState);
                         return newState;
                       });

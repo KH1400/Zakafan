@@ -1,5 +1,5 @@
 export type Language = 'fa' | 'en' | 'ar' | 'he';
-export type DataType = 'pdf' | 'html' | 'image' | 'textimage' | 'infoimage' | 'cover' | 'info' | 'video';
+export type DataType = 'pdf' | 'docx' | 'html' | 'image' | 'textimage' | 'infoimage' | 'cover' | 'info' | 'video';
 
 export const languages: {lang: Language, name: string}[] = [{lang: 'fa', name: "فارسی"}, {lang: 'en', name: "انگلیسی"}, {lang: 'ar', name: "عربی"}, {lang: 'he', name: "عبری"}];
 
@@ -79,6 +79,7 @@ export type DynoMaster = {
     htmlFile: MediaFile;
     htmlText: string;
     pdfFile: MediaFile;
+    wordFile: MediaFile;
     infoFile: MediaFile;
     textimages: MediaFile[];
     infoimages: MediaFile[];
@@ -102,6 +103,7 @@ export type DynoChildDtoIn = {
     description: string;
     htmlFile: number;
     pdfFile: number;
+    wordFile: number;
     infoFile: number;
     textimages: number[];
     videos: number[];
@@ -125,6 +127,7 @@ export type DynoChildDtoOut = {
     description: string;
     htmlFile: MediaFile;
     pdfFile: MediaFile;
+    wordFile: MediaFile;
     infoFile: MediaFile;
     textimages: MediaFile[];
     infoimages: MediaFile[];
@@ -192,6 +195,7 @@ export function mapResDynographToDynoChildDtoOut(item: any): DynoChildDtoOut {
         description: item.description,
         htmlFile: item.html_file!,
         pdfFile: item.pdf_file!,
+        wordFile: item.word_file!,
         infoFile: item.info_file!,
         textimages: item.input_image_files,
         infoimages: item.info_image_files,
@@ -215,6 +219,7 @@ export function mapResMasterToDynoMasterDtoOut(master: any): DynoMasterDtoOut {
         description: '',
         htmlFile: null!,
         pdfFile: null!,
+        wordFile: null!,
         infoFile: null!,
         textimages: [],
         infoimages: [],

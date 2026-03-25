@@ -19,6 +19,7 @@ const defaultDynoChild: DynoChildDtoIn = {
   description: "",
   htmlFile: null,
   pdfFile: null,
+  wordFile: null,
   infoFile: null,
   textimages: [],
   videos: [],
@@ -67,6 +68,7 @@ const DynographListPage = () => {
               description: dynograph.description,
               htmlFile: dynograph.html_file,
               pdfFile: dynograph.pdf_file,
+              wordFile: dynograph.word_file,
               infoFile: dynograph.info_file,
               textimages: dynograph.input_image_files,
               infoimages: dynograph.info_image_files,
@@ -143,6 +145,7 @@ const DynographListPage = () => {
       if (langData.description) dynograph.description = langData.description;
       if (langData.htmlFile) {dynograph.html_file_id = langData.htmlFile.id;} else {dynograph.html_file_id = null}
       if (langData.pdfFile) {dynograph.pdf_file_id = langData.pdfFile.id;} else {dynograph.pdf_file_id = null}
+      if (langData.wordFile) {dynograph.word_file_id = langData.wordFile.id;} else {dynograph.word_file_id = null}
       if (langData.infoFile) {dynograph.info_file_id = langData.infoFile.id;} else {dynograph.info_file_id = null}
       if (langData.textimages && langData.textimages.length > 0) {dynograph.input_image_file_ids = langData.textimages.map(i => i.id)} else {dynograph.input_image_file_ids = [];}
       if (langData.infoimages && langData.infoimages.length > 0) {dynograph.info_image_file_ids = langData.infoimages.map(i => i.id)} else {dynograph.info_image_file_ids = [];}
@@ -238,6 +241,7 @@ const DynographListPage = () => {
       if (langData.description) dynograph.description = langData.description;
       if (langData.htmlFile) dynograph.html_file_id = langData.htmlFile.id;
       if (langData.pdfFile) dynograph.pdf_file_id = langData.pdfFile.id;
+      if (langData.wordFile) dynograph.word_file_id = langData.wordFile.id;
       if (langData.infoFile) dynograph.info_file_id = langData.infoFile.id;
       if (langData.textimages && langData.textimages.length > 0) dynograph.input_image_file_ids = langData.textimages.map(i => i.id);
       if (langData.infoimages && langData.infoimages.length > 0) dynograph.info_image_file_ids = langData.infoimages.map(i => i.id);
