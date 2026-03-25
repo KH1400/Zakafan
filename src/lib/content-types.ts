@@ -176,6 +176,13 @@ export type SearchResponse = {
     masters: DynoMasterDtoOut[];
 }
 
+export type News = {
+  "dynograph_id": string,
+  "content": {},
+  "language": string,
+  "categories": [number]
+}
+
 export function slugify(text: string) {
     return text
         .toString()
@@ -251,4 +258,4 @@ export function mapResMasterToDynoMasterDtoOut(master: any): DynoMasterDtoOut {
     videos: master.public_video_files,
     categories
   };
-}  
+}

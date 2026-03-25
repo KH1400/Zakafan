@@ -1,4 +1,5 @@
-import { DynoCategory, DynoDtoIn } from "./content-types";
+import { json } from "stream/consumers";
+import { DynoCategory, DynoDtoIn, News } from "./content-types";
 import ky from 'ky';
 
 export const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -246,5 +247,8 @@ export const apiDeletePostCategory = (dynoCategory) =>
 export const apiSearch = (searchContent: string, limit = 10, offset = 0) =>
   api.get(`dynograph/dynograph-masters/search?q=${searchContent}&limit=${limit}&offset=${offset}`);
 
+export const apiGetDynoNews = ({dynographId}) => 
+  api.get(`dynograph/filter-dynograph-news${dynographId?`?dynograph_id=${dynographId}`:''}`);
 
-
+export const apiPatchDynoNews = (newsId: number, body: News) => 
+  api.patch(`dynograph/dynograph-news/${newsId}`, {json: body});
