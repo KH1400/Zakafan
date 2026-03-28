@@ -36,32 +36,61 @@ export const api = ky.create({
     ],
     afterResponse: [
       async (request, options, response) => {
-        // اگر 401 گرفتید، refresh token کنید
         if (response.status === 401) {
           const refreshToken = localStorage.getItem('refresh_token');
           if (refreshToken) {
             try {
-              const refreshResponse:any = await ky.post(`${baseUrl}/auth/token/refresh`, {
+              const refreshResponse: any = await ky.post(`${baseUrl}/auth/token/refresh/`, {
                 json: { refresh: refreshToken }
               });
               const { access } = await refreshResponse.json();
               
-              // token جدید را ذخیره کنید
               localStorage.setItem('auth_token', access);
-              
-              // درخواست اصلی را دوباره بفرستید
               request.headers.set('Authorization', `Bearer ${access}`);
               return ky(request);
             } catch (error) {
-              // refresh token هم expire شده، logout کنید
-              localStorage.clear();
-              window.location.href = '/auth/signin';
+              // اگر رفرش توکن هم نامعتبر بود
+              localStorage.removeItem('auth_token');
+              localStorage.removeItem('refresh_token');
+              // هدایت به صفحه لاگین یا صفحه اصلی ادمین
+              window.location.href = '/auth/signin'; 
             }
+          } else {
+            // اگر رفرش توکن وجود نداشت
+            window.location.href = '/auth/signin';
           }
         }
         return response;
       }
     ]
+    // afterResponse: [
+    //   async (request, options, response) => {
+    //     // اگر 401 گرفتید، refresh token کنید
+    //     if (response.status === 401) {
+    //       const refreshToken = localStorage.getItem('refresh_token');
+    //       if (refreshToken) {
+    //         try {
+    //           const refreshResponse:any = await ky.post(`${baseUrl}/auth/token/refresh`, {
+    //             json: { refresh: refreshToken }
+    //           });
+    //           const { access } = await refreshResponse.json();
+              
+    //           // token جدید را ذخیره کنید
+    //           localStorage.setItem('auth_token', access);
+              
+    //           // درخواست اصلی را دوباره بفرستید
+    //           request.headers.set('Authorization', `Bearer ${access}`);
+    //           return ky(request);
+    //         } catch (error) {
+    //           // refresh token هم expire شده، logout کنید
+    //           localStorage.clear();
+    //           window.location.href = '/auth/signin';
+    //         }
+    //       }
+    //     }
+    //     return response;
+    //   }
+    // ]
   }
 });
 

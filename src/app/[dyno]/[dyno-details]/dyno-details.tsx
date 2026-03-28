@@ -625,13 +625,6 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
                   </Button>
                 </Link>
               )}
-              {mappedDyno.wordFile && (
-                <Link className={``} href={mappedDyno.wordFile.file_url}>
-                  <Button variant='default' title={t.wordDownload} className='bg-slate-800 hover:bg-amber-500'>
-                    <Text/>
-                  </Button>
-                </Link>
-              )}
               {mappedDyno.infoFile && (
                 <Link className={``} href={mappedDyno.infoFile.file_url}>
                   <Button variant='default' title={t.infoImage} className='bg-slate-800 hover:bg-amber-500'>
@@ -674,8 +667,8 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
             title={t.infoImage}
           >
             <div className={`w-full grid grid-cols-1 gap-3 flex-1 p-2 flex-grow max-h-[70vh] md:max-h-[35rem] overflow-y-auto`}>
-              {mappedDyno?.infoimages?.map((infoimage) => (
-                <div className="relative w-full flex-grow rounded-lg overflow-hidden group mb-3">
+              {mappedDyno?.infoimages?.map((infoimage, idx) => (
+                <div key={idx} className="relative w-full flex-grow rounded-lg overflow-hidden group mb-3">
                   <img 
                     src={infoimage.file_url} 
                     alt="info image"
