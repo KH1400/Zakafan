@@ -5,7 +5,7 @@ import { useLanguage } from '../../../lib/language-context';
 import HtmlRenderer from '../../../components/htmlviewer';
 import { Button } from '../../../components/ui/button';
 import { ArrowLeft, ArrowRight, Dock, DownloadIcon, Image, List, X, Wallpaper, Text, DockIcon } from 'lucide-react';
-import { apiGetDynoMasterBySlug, deleteComment, deleteSummary, fetchComments, fetchSummaries, generateComment, generateSummary, updateComment, updateSummary } from '../../../lib/api';
+import { apiGetDynoMasterBySlug, apiGetSocialPosts, deleteComment, deleteSummary, fetchComments, fetchSummaries, generateComment, generateSummary, updateComment, updateSummary } from '../../../lib/api';
 import Link from 'next/link';
 import VideoPlayer from '../../../components/video-player';
 import { Skeleton } from '../../../components/ui/skeleton';
@@ -35,6 +35,9 @@ const translations = {
     download: "دانلود تصویر",
     pdfDownload: "دانلود پی دی اف خلاصه فایل پژوهشی",
     wordDownload: "دانلود خلاصه فایل پژوهشی",
+    relatedNews: "اخبار و واکنش‌ها",
+    noNews: "خبری یافت نشد.",
+    source: "منبع:",
   },
   ar: {
     mainContent: "المحتوى الرئيسي",
@@ -56,7 +59,10 @@ const translations = {
     copied: "تم النسخ!",
     download: "تحميل الصورة",
     pdfDownload: "تحميل  PDF ملخص الملف البحثي",
-    wordDownload: "تحميل ملخص الملف البحثي"
+    wordDownload: "تحميل ملخص الملف البحثي",
+    relatedNews: "اخبار و واکنش‌ها",
+    noNews: "خبری یافت نشد.",
+    source: "منبع:"
   },
   en: {
     mainContent: "Main Content",
@@ -78,7 +84,10 @@ const translations = {
     copied: "Copied!",
     download: "Download Image",
     pdfDownload: "Download PDF research summary file",
-    wordDownload: "Download research summary file"
+    wordDownload: "Download research summary file",
+    relatedNews: "اخبار و واکنش‌ها",
+    noNews: "خبری یافت نشد.",
+    source: "منبع:",
   },
   he: {
     mainContent: "תוכן ראשי",
@@ -100,7 +109,10 @@ const translations = {
     copied: "הועתק!",
     download: "הורד תמונה",
     pdfDownload: "הורדת קובץ  PDF סיכום המחקר",
-    wordDownload: "הורדת קובץ סיכום המחקר"
+    wordDownload: "הורדת קובץ סיכום המחקר",
+    relatedNews: "اخبار و واکنش‌ها",
+    noNews: "خبری یافت نشد.",
+    source: "منبع:",
   }
 };
 
@@ -150,6 +162,9 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
   const [streamingComment, setStreamingComment] = useState<string>("");
   const [streamingMessage, setStreamingMessage] = useState<string>("");
 
+  const [socialPosts, setSocialPosts] = useState<any[]>([]);
+  const [isLoadingPosts, setIsLoadingPosts] = useState(false);
+
   const [comments, setComments] = useState<Comment[]>();
   
   const wsRef = useRef<WebSocket | null>(null);
@@ -158,6 +173,7 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
   useEffect(() => {
     if (mappedDyno?.dynoChildId) {
       fetchMessages();
+      loadSocialPosts();
     }
   }, [mappedDyno?.dynoChildId]);
   
@@ -296,6 +312,20 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
       });
     } catch (error) {
       console.error('Error fetching messages:', error);
+    }
+  };
+
+  const loadSocialPosts = async () => {
+    if (!mappedDyno?.dynoChildId) return;
+    setIsLoadingPosts(true);
+    try {
+      // فرض بر این است که apiGetSocialPosts در lib/api تعریف شده است
+      const res: any = await apiGetSocialPosts({ dynographId: mappedDyno.dynoChildId, withoutDynoId: false }).json();
+      setSocialPosts(res.news || []);
+    } catch (error) {
+      console.error("Error loading social posts:", error);
+    } finally {
+      setIsLoadingPosts(false);
     }
   };
 
@@ -534,6 +564,39 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
   if(!dyno || !mappedDyno){
     return <LoadSkeleton/>
   }
+
+  
+  const SocialPostCard = ({ post, dir }: { post: any; dir: string }) => (
+    <div 
+      className="group flex flex-col w-80 md:w-96 flex-shrink-0 rounded-xl border border-border/40 bg-card/40 hover:bg-accent/5 transition-all duration-300 shadow-sm"
+      style={{ height: '280px' }} // ارتفاع ثابت برای هماهنگی در اسکرول افقی
+    >
+      {/* هدر کارت */}
+      <div className="p-4 pb-2 flex justify-between items-start border-b border-border/10">
+        <span className="text-xs font-bold text-primary px-2 py-1 bg-primary/10 rounded-md truncate max-w-[150px]">
+          {post.content?.channel_title || 'منبع'}
+        </span>
+        <span className="text-[10px] text-muted-foreground whitespace-nowrap" dir="ltr">
+          {post.content?.date ? new Date(post.content.date).toLocaleDateString('fa-IR') : '-'}
+        </span>
+      </div>
+
+      {/* بدنه خبر با اسکرول داخلی */}
+      <div className="flex-1 overflow-y-auto p-4 pt-2 custom-scrollbar">
+        <p className="text-sm leading-relaxed text-foreground/90 whitespace-pre-wrap">
+          {post.content?.text}
+        </p>
+      </div>
+
+      {/* فوتر کارت */}
+      {post.content?.channel_username && (
+        <div className="p-3 px-4 bg-black/5 dark:bg-white/5 flex items-center gap-1 text-[10px] text-muted-foreground">
+          <List size={12} className="opacity-60" />
+          <span className="truncate">@{post.content.channel_username}</span>
+        </div>
+      )}
+    </div>
+  );
   
   return (
     <div 
@@ -751,6 +814,24 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
           </div>
         </Card>
 
+        {socialPosts.length > 0 && (
+          <Card title={t.relatedNews} className="col-span-12 w-full overflow-hidden">
+            <div className="w-full overflow-x-auto pb-4 custom-scrollbar flex justify-start items-stretch gap-4 p-4">
+              {isLoadingPosts ? (
+                <div className="flex gap-4">
+                  {[1, 2, 3, 4].map(i => (
+                    <Skeleton key={i} className="h-48 w-80 rounded-xl flex-shrink-0" />
+                  ))}
+                </div>
+              ) : (
+                socialPosts.map((post, idx) => (
+                  <SocialPostCard key={idx} post={post} dir={selectedLang.dir} />
+                ))
+              )}
+            </div>
+          </Card>
+        )}
+
         {mappedDyno?.textimages && mappedDyno?.textimages.length > 0 && (
           <Card 
             className='col-span-12 p-1 md:p-6' 
@@ -811,14 +892,14 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
 
         {mappedDyno?.videos && mappedDyno?.videos.length > 0 && (
           <Card 
-            className='col-span-12 p-1 md:p-6' 
+            className='col-span-12 p-1 md:p-6 max-h-96' 
             title={t.videoGallery}
             description={t.videoGalleryDesc}
           >
             <div className="flex justify-start gap-4 overflow-x-auto pb-2 h-full">
               {mappedDyno?.videos.map((video, index) => (
                 <div key={index} className="group relative flex-shrink-0 rounded-md overflow-hidden border border-border hover:shadow-lg transition-shadow duration-300">
-                  <VideoPlayer src={video.file_url} className="w-[90vw] md:w-[40vw]" title=''/>
+                  <VideoPlayer src={video.file_url} className="w-[90vw] md:w-[40vw] h-96" title=''/>
                 </div>
               ))}
             </div>

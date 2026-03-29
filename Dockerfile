@@ -1,11 +1,12 @@
-FROM docker.arvancloud.ir/node:22 AS base
+FROM node:22 AS base
+# FROM docker.arvancloud.ir/node:22 AS base
 # RUN npm config set registry https://mirror-npm.runflare.com
 
 # RUN apk add --no-cache libc6-compat
 # RUN npm install --global corepack@latest 
 # RUN corepack enable pnpm
-RUN export http_proxy=http://user:PASSword@193.151.149.252:443
-RUN export https_proxy=http://user:PASSword@193.151.149.252:443
+# RUN export http_proxy=http://user:PASSword@193.151.149.252:443
+# RUN export https_proxy=http://user:PASSword@193.151.149.252:443
 RUN npm i -g pnpm
 
 FROM base AS deps
