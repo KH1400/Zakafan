@@ -892,14 +892,14 @@ export default function DynoDetailsPage({ slug }: { slug: string }) {
 
         {mappedDyno?.videos && mappedDyno?.videos.length > 0 && (
           <Card 
-            className='col-span-12 p-1 md:p-6 max-h-96' 
+            className='col-span-12 p-1 md:p-6' 
             title={t.videoGallery}
             description={t.videoGalleryDesc}
           >
             <div className="flex justify-start gap-4 overflow-x-auto pb-2 h-full">
               {mappedDyno?.videos.map((video, index) => (
                 <div key={index} className="group relative flex-shrink-0 rounded-md overflow-hidden border border-border hover:shadow-lg transition-shadow duration-300">
-                  <VideoPlayer src={video.file_url} className="w-[90vw] md:w-[40vw] h-96" title=''/>
+                  <VideoPlayer src={video.file_url} className="w-[90vw] md:w-[40vw] aspect-video md:h-96" title=''/>
                 </div>
               ))}
             </div>
