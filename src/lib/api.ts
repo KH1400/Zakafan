@@ -281,3 +281,5 @@ export const apiGetSocialPosts = ({dynographId, withoutDynoId = false}: {dynogra
 
 export const apiPatchSocialPost = (newsId: number, body: News) => 
   api.patch(`dynograph/dynograph-news/${newsId}`, {json: body});
+
+export const apiPostStorePublicUploadUrl = () => '/api/public-upload';
