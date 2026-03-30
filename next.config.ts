@@ -25,20 +25,7 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       }
     ],
-  },
-  async headers() {
-    return [
-      {
-        source: '/uploads/:path*',
-        headers: [
-          {
-            key: 'Content-Disposition',
-            value: 'attachment',
-          },
-        ],
-      },
-    ]
-  },
+  }
 };
 
 export default nextConfig;

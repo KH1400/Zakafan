@@ -1,6 +1,6 @@
-FROM node:22 AS base
-# FROM docker.arvancloud.ir/node:22 AS base
-# RUN npm config set registry https://mirror-npm.runflare.com
+# FROM ghcr.io/node:22 AS base
+FROM docker.arvancloud.ir/node:22 AS base
+RUN npm config set registry https://mirror-npm.runflare.com
 
 # RUN apk add --no-cache libc6-compat
 # RUN npm install --global corepack@latest 

@@ -7,3 +7,5 @@ services:
     restart: unless-stopped
     ports:
       - 3000:3000
+    volumes:
+      - "./public/uploads:/app/public/uploads"

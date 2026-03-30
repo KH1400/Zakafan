@@ -49,7 +49,7 @@ export function useMultiFileUpload({
   const [files, setFiles] = useState<FileMeta[]>([]);
   const {token} = useAuth();
   const handleFileSelect = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>, dataType: DataType) => {
+    (e: React.ChangeEvent<HTMLInputElement>, dataType?: DataType) => {
 
       const selectedFiles = Array.from(e.target.files || []);
       const newFiles: FileMeta[] = [];
@@ -81,6 +81,87 @@ export function useMultiFileUpload({
     [validateFile, allowPreview, multiple]
   );
 
+  const uploadPublicFile = useCallback(
+    async (meta: FileMeta, options: UploadOptions = {}): Promise<string | null> => {
+      const mergedOptions = { ...uploadOptions, ...options };
+      const controller = new AbortController();
+      const formData = new FormData();
+      formData.append("file", meta.file);
+
+      // شروع آپلود در استیت
+      setFiles((prev) =>
+        prev.map((f) =>
+          f.id === meta.id
+            ? { ...f, controller, error: null, status: "uploading", progress: 0 }
+            : f
+        )
+      );
+
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", process.env.NEXT_PUBLIC_UPLOAD_BASE_URL);
+        xhr.setRequestHeader("Authorization", `Bearer ${process.env.NEXT_PUBLIC_UPLOAD_TOKEN || ""}`);
+
+        // مدیریت پیشرفت
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const percent = Math.round((event.loaded / event.total) * 100);
+            setFiles((prev) =>
+              prev.map((f) => (f.id === meta.id ? { ...f, progress: percent } : f))
+            );
+          }
+        };
+
+        // مدیریت موفقیت
+        xhr.onload = () => {
+          try {
+            const response = JSON.parse(xhr.responseText);
+            if (!response?.id) throw new Error("Invalid response: missing ID");
+
+            setFiles((prev) =>
+              prev.map((f) =>
+                f.id === meta.id
+                  ? { ...f, status: "success", uploadedData: response, controller: undefined }
+                  : f
+              )
+            );
+            onUploadComplete?.({ ...meta, uploadedData: response });
+            resolve(response.id);
+          } catch (err) {
+            setFiles((prev) =>
+              prev.map((f) => (f.id === meta.id ? { ...f, status: "error", error: err } : f))
+            );
+            onError?.(meta.file, err);
+            reject(err);
+          }
+        };
+
+        // مدیریت خطا
+        xhr.onerror = () => {
+          const errorText = xhr.statusText || "Upload failed";
+          setFiles((prev) =>
+            prev.map((f) => (f.id === meta.id ? { ...f, status: "error", error: errorText } : f))
+          );
+          onError?.(meta.file, errorText);
+          reject(errorText);
+        };
+
+        // مدیریت Abort
+        xhr.onabort = () => {
+          setFiles((prev) =>
+            prev.map((f) =>
+              f.id === meta.id ? { ...f, status: "idle", progress: 0, controller: undefined } : f
+            )
+          );
+          resolve(null);
+        };
+
+        xhr.send(formData);
+      });
+    },
+    [token, onUploadComplete, onError, uploadOptions]
+  );
+
   const uploadFile = useCallback(
     async (meta: FileMeta, options: UploadOptions = {}): Promise<string | null> => {
       const mergedOptions = { ...uploadOptions, ...options };
@@ -93,7 +174,7 @@ export function useMultiFileUpload({
       formData.append("file_name", fileName);
       formData.append("process_document", mergedOptions.processDocument ? "true" : "false");
       formData.append("file", meta.file);
-      formData.append("data_type", meta.dataType);
+      formData.append("data_type", meta?.dataType);
       formData.append("is_public", "true");
 
       // شروع آپلود در استیت
@@ -268,6 +349,7 @@ export function useMultiFileUpload({
     handleFileSelect,
     uploadAll,
     uploadFile,
+    uploadPublicFile,
     removeFile,
     resetFiles,
   };
