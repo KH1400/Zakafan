@@ -26,6 +26,7 @@ export interface FileMeta {
 
 export interface UseMultiFileUploadProps {
   onUploadComplete?: (meta: FileMeta) => void;
+  onUploadAllComplete?: (ids: FileMeta[]) => void;
   onError?: (file: File, error: any) => void;
   validateFile?: (file: File) => boolean;
   allowPreview?: boolean;
@@ -36,6 +37,7 @@ export interface UseMultiFileUploadProps {
 
 export function useMultiFileUpload({
   onUploadComplete,
+  onUploadAllComplete,
   onError,
   validateFile,
   allowPreview = true,
@@ -48,8 +50,6 @@ export function useMultiFileUpload({
   const {token} = useAuth();
   const handleFileSelect = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>, dataType: DataType) => {
-
-      // console.log("handleFileSelect", e.target.files);
 
       const selectedFiles = Array.from(e.target.files || []);
       const newFiles: FileMeta[] = [];
@@ -82,8 +82,7 @@ export function useMultiFileUpload({
   );
 
   const uploadFile = useCallback(
-    async (meta: FileMeta, options: UploadOptions = {}) => {
-      // console.log("uploading", meta);
+    async (meta: FileMeta, options: UploadOptions = {}): Promise<string | null> => {
       const mergedOptions = { ...uploadOptions, ...options };
       const controller = new AbortController();
       const formData = new FormData();
@@ -92,12 +91,12 @@ export function useMultiFileUpload({
         `${uuidv4()}.${meta.file.name.split(".").pop()}`;
 
       formData.append("file_name", fileName);
-      // formData.append("bucket_name", mergedOptions.bucketName || "");
       formData.append("process_document", mergedOptions.processDocument ? "true" : "false");
       formData.append("file", meta.file);
       formData.append("data_type", meta.dataType);
       formData.append("is_public", "true");
-      // console.log("uploading", meta);
+
+      // شروع آپلود در استیت
       setFiles((prev) =>
         prev.map((f) =>
           f.id === meta.id
@@ -106,11 +105,12 @@ export function useMultiFileUpload({
         )
       );
 
-      try {
+      return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.open("POST", apiPostStoreUploadUrl());
         xhr.setRequestHeader("Authorization", `Bearer ${token || ""}`);
 
+        // مدیریت پیشرفت
         xhr.upload.onprogress = (event) => {
           if (event.lengthComputable) {
             const percent = Math.round((event.loaded / event.total) * 100);
@@ -120,13 +120,12 @@ export function useMultiFileUpload({
           }
         };
 
+        // مدیریت موفقیت
         xhr.onload = () => {
           try {
             const response = JSON.parse(xhr.responseText);
-            console.log(response)
-            if (!response?.id) {
-              throw new Error("Invalid response: missing ID");
-            }
+            if (!response?.id) throw new Error("Invalid response: missing ID");
+
             setFiles((prev) =>
               prev.map((f) =>
                 f.id === meta.id
@@ -135,56 +134,90 @@ export function useMultiFileUpload({
               )
             );
             onUploadComplete?.({ ...meta, uploadedData: response });
+            resolve(response.id);
           } catch (err) {
-            console.log('test', err)
             setFiles((prev) =>
-              prev.map((f) =>
-                f.id === meta.id ? { ...f, status: "error", error: err } : f
-              )
+              prev.map((f) => (f.id === meta.id ? { ...f, status: "error", error: err } : f))
             );
             onError?.(meta.file, err);
+            reject(err);
           }
         };
 
+        // مدیریت خطا
         xhr.onerror = () => {
-          console.log('error')
+          const errorText = xhr.statusText || "Upload failed";
           setFiles((prev) =>
-            prev.map((f) =>
-              f.id === meta.id ? { ...f, status: "error", error: xhr.statusText } : f
-            )
+            prev.map((f) => (f.id === meta.id ? { ...f, status: "error", error: errorText } : f))
           );
-          onError?.(meta.file, xhr.statusText);
+          onError?.(meta.file, errorText);
+          reject(errorText);
         };
 
+        // مدیریت Abort
         xhr.onabort = () => {
           setFiles((prev) =>
             prev.map((f) =>
               f.id === meta.id ? { ...f, status: "idle", progress: 0, controller: undefined } : f
             )
           );
+          resolve(null);
         };
 
         xhr.send(formData);
-      } catch (err) {
-        console.error(err);
-        setFiles((prev) =>
-          prev.map((f) =>
-            f.id === meta.id ? { ...f, status: "error", error: err } : f
-          )
-        );
-        onError?.(meta.file, err);
-      }
+      });
     },
     [token, onUploadComplete, onError, uploadOptions]
   );
 
-  const uploadAll = useCallback((options?: UploadOptions) => {
-    files.forEach((meta) => {
-      if (meta.status === "idle" || meta.status === "error") {
-        uploadFile(meta, options);
-      }
-    });
-  }, [files, uploadFile]);
+  const uploadAll = useCallback(async (options?: UploadOptions): Promise<FileMeta[]> => {
+    const pendingFiles = files.filter(
+      (f) => f.status === "idle" || f.status === "error"
+    );
+
+    if (pendingFiles.length === 0) return [];
+
+    const sortedFiles = [...pendingFiles].sort((a, b) =>
+      a.file.name.localeCompare(b.file.name, undefined, {
+        numeric: true,
+        sensitivity: "base",
+      })
+    );
+
+    try {
+      // ۱. اجرای آپلودها
+      await Promise.all(sortedFiles.map((meta) => uploadFile(meta, options)));
+
+      // ۲. دریافت اطلاعات نهایی از استیت با استفاده از یک Promise برای مدیریت Async
+      return new Promise((resolve) => {
+        setFiles((currentFiles) => {
+          const finalUploadedFiles: FileMeta[] = [];
+          
+          sortedFiles.forEach((sortedFile) => {
+            const found = currentFiles.find((f) => f.id === sortedFile.id);
+            if (found && found.status === "success") {
+              finalUploadedFiles.push(found);
+            }
+          });
+
+          // ۳. حل خطای "Cannot update a component while rendering"
+          // با استفاده از setTimeout، اجرای کالبک را به خارج از چرخه رندر فعلی منتقل می‌کنیم
+          if (onUploadAllComplete && finalUploadedFiles.length > 0) {
+            setTimeout(() => {
+              onUploadAllComplete(finalUploadedFiles);
+            }, 0);
+          }
+          
+          resolve(finalUploadedFiles);
+          return currentFiles; 
+        });
+      });
+
+    } catch (err) {
+      console.error("Bulk upload failed:", err);
+      return [];
+    }
+  }, [files, uploadFile, onUploadAllComplete]);
 
   const removeFile = useCallback((id: string) => {
     setFiles((prev) => {

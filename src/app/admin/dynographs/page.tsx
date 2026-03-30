@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import { Edit, Trash2, FileText, Image, Globe, CheckCircle, XCircle, Plus, Eye, Video, MessageSquareText, Edit2 } from 'lucide-react';
-import { apiGetDynoMastersByCategoryHref, apiCreateDynographMaster, apiCreateDynographChild, apiDeleteDynographMaster, apiUpdateDynographMaster, apiUpdateDynographChild, apiGetDynoCategories } from '../../../lib/api';
+import { apiGetDynoMastersByCategoryHref, apiCreateDynographMaster, apiCreateDynographChild, apiDeleteDynographMaster, apiUpdateDynographMaster, apiUpdateDynographChild, apiGetDynoCategories, apiGetDynoMasterBySlug } from '../../../lib/api';
 import { Dyno, DynoCategory, DynoChildDtoIn, DynoDtoIn, DynoMasterDtoIn, DynoMasterDtoOut, Language, languages, slugify } from '../../../lib/content-types';
 import { Button } from '../../../components/ui/button';
 import { NewDynographModal } from './new-dynograph-modal';
@@ -52,7 +52,6 @@ const DynographListPage = () => {
     try {
       // همزمان fetch کردن دو تا API
       const dynosResponse: any = await apiGetDynoMastersByCategoryHref({}).json();
-      // console.log(dynosResponse);
       const dynosData = dynosResponse.masters.map((dynMaster: any) => ({
         id: dynMaster.id,
         slug: dynMaster.slug,
@@ -111,10 +110,19 @@ const DynographListPage = () => {
     setSubmitLoading(true);
     if(!dynoMaster.id) return
     if(!dynoMaster.dynographs["fa"].title || !dynoMaster.dynographs["en"].title || !dynoMaster.dynographs["ar"].title || !dynoMaster.dynographs["he"].title){
-      toast({
+            toast({
         variant: "error",
         title: "اطلاعات ناقص",
         description: `عنوان را به تمام زبان‌ها وارد کنید.`,
+      });
+      setSubmitLoading(false);
+      return
+    }
+    if(!dynoMaster.dynographs["fa"].description || !dynoMaster.dynographs["en"].description || !dynoMaster.dynographs["ar"].description || !dynoMaster.dynographs["he"].description){
+      toast({
+        variant: "error",
+        title: "اطلاعات ناقص",
+        description: `توضیحات را به تمام زبان‌ها وارد کنید.`,
       });
       setSubmitLoading(false);
       return
@@ -215,6 +223,15 @@ const DynographListPage = () => {
       setSubmitLoading(false);
       return
     }
+    if(!dynoMaster.dynographs["fa"].description || !dynoMaster.dynographs["en"].description || !dynoMaster.dynographs["ar"].description || !dynoMaster.dynographs["he"].description){
+      toast({
+        variant: "error",
+        title: "اطلاعات ناقص",
+        description: `توضیحات را به تمام زبان‌ها وارد کنید.`,
+      });
+      setSubmitLoading(false);
+      return
+    }
     if(dynoMaster.categories.length === 0){
       toast({
         variant: "error",
@@ -223,9 +240,21 @@ const DynographListPage = () => {
       });
       setSubmitLoading(false);
       return
-    }  
+    }
+    const slug = slugify(dynoMaster.dynographs["en"].title)
+    const res = await apiGetDynoMasterBySlug({slug})
+    if(res){
+      toast({
+        variant: "error",
+        title: "اطلاعات ناقص",
+        description: `عنوان انگلیسی تکراری است`,
+      });
+      setSubmitLoading(false);
+      return
+    }
+
     if(dynoMaster.slug.trim().length === 0){
-      dynoMaster.slug = slugify(dynoMaster.dynographs["en"].title)
+      dynoMaster.slug = slug
     }
 
     const dinoIds = Object.fromEntries(languages.map(lang => ([lang.lang, ""])));

@@ -14,6 +14,7 @@ interface FileUploadComponentProps {
   maxSize?: number; // in MB
   disable?: boolean;
   onUploadComplete?: (meta: FileMeta) => void;
+  onUploadAllComplete?: (meta: FileMeta[]) => void;
   onError?: (file: File, error: any) => void;
   className?: string;
   title?: string;
@@ -47,6 +48,7 @@ export default function FileUploadComponent({
   maxSize = 10, // 10MB default
   disable = false,
   onUploadComplete,
+  onUploadAllComplete,
   onError,
   className = "",
   title = "آپلود فایل",
@@ -68,6 +70,7 @@ export default function FileUploadComponent({
     multiple,
     validateFile,
     onUploadComplete,
+    onUploadAllComplete,
     onError,
     autoUpload: false,
     uploadOptions: {

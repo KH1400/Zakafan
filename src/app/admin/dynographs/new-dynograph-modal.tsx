@@ -186,7 +186,7 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
                     dataType="pdf"
                     multiple={false}
                     processDocument={true}
-                    maxSize={10}
+                    maxSize={30}
                     accept=".pdf"
                     title="آپلود پی دی اف"
                     onError={(error) => console.log('Error:', error)}
@@ -212,7 +212,7 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
                     dataType="docx"
                     multiple={false}
                     processDocument={true}
-                    maxSize={10}
+                    maxSize={30}
                     accept=".docx"
                     title="آپلود داکیومنت ورد"
                     onError={(error) => console.log('Error:', error)}
@@ -238,7 +238,7 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
                     dataType="html"
                     multiple={false}
                     processDocument={true}
-                    maxSize={10}
+                    maxSize={30}
                     accept=".html"
                     title="آپلود HTML"
                     onError={(error) => console.log('Error:', error)}
@@ -264,7 +264,7 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
                     dataType="info"
                     multiple={false}
                     processDocument={false}
-                    maxSize={10}
+                    maxSize={30}
                     accept="image/*"
                     title="آپلود اینفو"
                     onError={(error) => console.log('Error:', error)}
@@ -290,15 +290,16 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
                     dataType="infoimage"
                     multiple={true}
                     processDocument={false}
-                    maxSize={10}
+                    maxSize={20}
                     accept="image/*"
                     title="آپلود اسلایدهای اینفو"
                     onError={(error) => console.log('Error:', error)}
-                    onUploadComplete={(meta) => {
+                    onUploadAllComplete={(metas) => {
+                      console.log(metas)
                       setDynoMaster(prevState => {
                         const newState = {
                           ...prevState,
-                          dynographs: {...prevState?.dynographs, [language.lang]: {...prevState?.dynographs[language.lang], infoimages: [...prevState?.dynographs[language.lang].infoimages, {id: meta.uploadedData?.id, file_url: meta.uploadedData?.file_url}]}}
+                          dynographs: {...prevState?.dynographs, [language.lang]: {...prevState?.dynographs[language.lang], infoimages: metas.map((meta) => {return {id: meta.uploadedData?.id, file_url: meta.uploadedData?.file_url}})}}
                         };
                         onChange(newState);
                         return newState;
@@ -340,7 +341,7 @@ export const NewDynographModal = ({onChange, defaultDynoMaster, loading, onClose
                     dataType="video"
                     multiple={true}
                     processDocument={false}
-                    maxSize={50}
+                    maxSize={250}
                     accept="video/*"
                     title="آپلود ویدئوها"
                     onError={(error) => console.log('Error:', error)}

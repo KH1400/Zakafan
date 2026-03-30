@@ -55,14 +55,13 @@ export default function DynosPage({ slug }: { slug: string }) {
 
         const grouped = dyns.masters.reduce((acc: any, master: any) => {
           const version = master.version;
-
           const dyno = {
             id: master.id,
             title: master.dynographs[language].title,
             description:
-              master.dynographs[language].description[language] ||
-              master.dynographs["fa"]?.description ||
-              master.dynographs[language].title,
+              master.dynographs[language]?.description[language] ||
+              master.dynographs[language]?.description ||
+              master.dynographs[language]?.title,
             image: master.image_file,
             slug: master.slug.toLocaleLowerCase(),
             imageHint: master.image_hint,
